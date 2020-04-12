@@ -1,0 +1,12 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load qr_tags %}
+<h1 class="mb-4">Ajouter un nouveau client</h1>
+
+<div class="text-center w-100">
+    <a href="{{ link }}">Link to Landing Page</a> <br />
+    {% qr_from_text link "l" %}
+</div>
+
+{% endblock %}

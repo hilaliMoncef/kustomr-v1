@@ -1,0 +1,18 @@
+{% load static %}
+<div class="sidebar col-3 container px-4 py-4 border-right" style="height: 100vh;">
+    <a href="" class="d-block w-100 text-center mb-5"><img src="{% static 'assets/img/logo.png' %}" alt="Elevator" width="140" /></a>
+    <ul class="list-unstyled text-center">
+        <h4>Menu</h4>
+        {% if request.user.is_authenticated %}
+            {% if request.user.is_vendor %}
+            <li><a href="{% url 'vendor_home' %}">Accueil</a></li>
+            <li><a href="{% url 'vendor_new_customer' %}">Ajouter un client</a></li>
+            {% elif request.user.is_staff %}
+            <li><a href="">Admin</a></li>
+            {% endif %}
+        <li><a href="{% url 'logout' %}">Se déconnecter</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Connexion</a></li>
+        {% endif %}
+    </ul>
+</div>

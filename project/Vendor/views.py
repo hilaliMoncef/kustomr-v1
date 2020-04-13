@@ -15,6 +15,8 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, 'dashboard.html', locals())
 
 
+
+# A adapter, uniquement les admins qui générent des nouveaux clients
 class NewCustomerView(LoginRequiredMixin, View):
     """
     Cette page permet de générer un QR Code à scanner par l'utilisateur.

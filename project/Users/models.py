@@ -1,29 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
-# Create your models here.
 
-class Vendor(models.Model):
-    # Choices for store type
-    STORE_TYPE_CHOICES = [
-        ('FOOD', 'Restaurant & bar'),
-        ('SUPERMARKET', 'Supermarché'),
-    ]
-    # Choices for store type
-    STORE_TYPES_VISITS_CHOICES = [
-        ('SM', 'Entre 50 et 200'),
-        ('MD', 'Entre 200 et 500'),
-        ('LG', 'Entre 500 et 1000'),
-        ('XL', '1000+'),
-    ]
-
-    store_name = models.CharField(max_length=255)
-    store_type = models.CharField(max_length=40, choices=STORE_TYPE_CHOICES, default='FOOD')
-    store_visits = models.CharField(max_length=40, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
-
-    def __str__(self):
-        return self.store_name
-    
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -63,10 +41,12 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
-    is_vendor = models.BooleanField(default=False)
-    vendor = models.OneToOneField(Vendor,on_delete=models.CASCADE, null=True, blank=True, related_name="user")
     phone = models.CharField(max_length=255)
-
+    is_vendor = models.BooleanField(default=False)
+    is_customer = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = UserManager()
+
+    def __str__(self):
+        return '{} {}'.format(self.first_name, self.last_name)

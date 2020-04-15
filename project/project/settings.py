@@ -59,11 +59,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-USE_SSL = os.getenv('USE_SSL') == 'True'
+# USE_SSL = os.getenv('USE_SSL') == 'True'
 
-if USE_SSL:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
+# if USE_SSL:
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#     SECURE_SSL_REDIRECT = True
 
 ROOT_URLCONF = 'project.urls'
 
@@ -97,7 +97,6 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'Users.User'
-LOGIN_URL = 'login'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -132,7 +131,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Login urls
-LOGIN_URL = '/users/login/'
+LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
 
 

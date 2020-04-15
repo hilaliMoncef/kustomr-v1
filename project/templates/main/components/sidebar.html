@@ -1,18 +1,48 @@
 {% load static %}
-<div class="sidebar col-3 container px-4 py-4 border-right" style="height: 100vh;">
-    <a href="" class="d-block w-100 text-center mb-5"><img src="{% static 'assets/img/logo.png' %}" alt="Elevator" width="140" /></a>
-    <ul class="list-unstyled text-center">
-        <h4>Menu</h4>
+<div class="py-4 px-3">
+    <ul class="navbar-nav flex-column">
         {% if request.user.is_authenticated %}
-            {% if request.user.is_vendor %}
-            <li><a href="{% url 'vendor_home' %}">Accueil</a></li>
-            <li><a href="{% url 'vendor_new_customer' %}">Ajouter un client</a></li>
-            {% elif request.user.is_staff %}
-            <li><a href="">Admin</a></li>
-            {% endif %}
-        <li><a href="{% url 'logout' %}">Se déconnecter</a></li>
-        {% else %}
-        <li><a href="{% url 'login' %}">Connexion</a></li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Dashboard</a>
+        </li>
+
+        <!-- VENDOR LINKS -->
+        {% if request.user.is_vendor %}
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-users"></i> Clients</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-chart-area"></i> Analyse</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-divide"></i> Réductions</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-broadcast-tower"></i> Marketing</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-link"></i> Social</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-book"></i> Formations</a>
+        </li>
+
+        <!-- ADMINISTRATION LINKS-->
+        {% elif request.user.is_staff %}
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-tachometer-alt"></i> Administration</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=""><i class="fas fa-briefcase"></i> Commerçants</a>
+        </li>
+        {% endif %}
         {% endif %}
     </ul>
+</div>
+<div class="fixed-bottom" style="width: 250px;">
+    <div class="d-flex align-items-center justify-content-around">
+        <a href="" class="nav-link"><i class="fas fa-cog"></i> Réglages</a>
+        <div class="divider"></div>
+        <a href="" class="nav-link"><i class="fas fa-question-circle"></i> Assistance</a>
+    </div>
 </div>

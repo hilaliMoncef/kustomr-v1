@@ -47,4 +47,4 @@ class DashboardView(View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def get(self, request, *args, **kwargs):
-        return render(request, 'home.html', locals())
+        return render(request, 'customer/home.html', locals())

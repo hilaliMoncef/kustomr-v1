@@ -12,7 +12,8 @@ class DashboardView(LoginRequiredMixin, View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def get(self, request, *args, **kwargs):
-        return render(request, 'dashboard.html', locals())
+        customers = request.user.vendor.customers.all()
+        return render(request, 'vendor/home.html', locals())
 
 
 

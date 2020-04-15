@@ -1,7 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 
 @login_required
 def index(request):
-    return render(request, 'main/home.html', locals())
+    if request.user.is_staff:
+        return redirect('admin_home')
+    elif request.user.is_vendor:
+        return redirect('vendor_home')
+    elif request.user.is_customer:
+        return redirect('customer_home')
+    else:
+        raise Http404()

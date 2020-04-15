@@ -19,23 +19,8 @@
 
 <body>
 
-  <div class="dashboard-main-wrapper">
-    <div class="dashboard-header">
-      {% block header %}{% include 'main/components/header.html' %}{% endblock %}
-    </div>
-    <div class="dashboard-content">
-      <div class="nav-left-sidebar bg-primary" id="sidebar">
-        {% block sidebar %}{% include 'main/components/sidebar.html' %}{% endblock %}
-      </div>
-      <div id="main">
-        <div class="w-100 h-100">
-          <div class="overlay"></div>
-          <div class="content p-5">
-            {% block content %}{% endblock %}
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="dashboard-full-page-wrapper">
+      {% block content %}{% endblock %}
   </div>
 
   <!-- Optional JavaScript -->
@@ -52,20 +37,6 @@
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
   <script src="{% static 'assets/js/toastr.min.js' %}"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-      $(".nav-left-sidebar").mCustomScrollbar({
-        theme: "minimal"
-      });
-
-      $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-        $('#main').toggleClass('active');
-        $('.collapse.in').toggleClass('in');
-        $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-      });
-    });
-  </script>
 
   <!-- Custom error handling -->
   <script>

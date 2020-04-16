@@ -30,8 +30,11 @@
       <div id="main">
         <div class="w-100 h-100">
           <div class="overlay"></div>
-          <div class="content p-5">
+          <div class="content py-5 px-5 mb-4">
             {% block content %}{% endblock %}
+          </div>
+          <div class="dashboard-footer">
+            {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
           </div>
         </div>
       </div>
@@ -41,10 +44,12 @@
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="{% static 'assets/js/jquery.js' %}"></script>
+
   <!-- Popper.js -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
     crossorigin="anonymous"></script>
+
   <!-- Bootstrap JS -->
   <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 

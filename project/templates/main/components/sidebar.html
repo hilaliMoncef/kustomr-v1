@@ -2,14 +2,28 @@
 <div class="py-4 px-3">
     <ul class="navbar-nav flex-column">
         {% if request.user.is_authenticated %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Dashboard</a>
-        </li>
 
         <!-- VENDOR LINKS -->
         {% if request.user.is_vendor %}
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-users"></i> Clients</a>
+            {% url 'vendor_home' as url %}
+            <a class="nav-link {% if request.path == url %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" aria-expanded="false" data-target="#submenu-clients" aria-controls="submenu-clients" href="#submenu-clients">
+                <i class="fas fa-users"></i> Clients
+            </a>
+
+            <div id="submenu-clients" class="collapse submenu">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vendor_customers' %}">Tous les clients</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vendor_add_points' %}">Ajouter des points de fidélité</a>
+                    </li>
+                </ul>
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" href=""><i class="fas fa-chart-area"></i> Analyse</a>
@@ -30,10 +44,19 @@
         <!-- ADMINISTRATION LINKS-->
         {% elif request.user.is_staff %}
         <li class="nav-item">
+            {% url 'admin_home' as url %}
+            <a class="nav-link {% if request.path == url %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href=""><i class="fas fa-tachometer-alt"></i> Administration</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href=""><i class="fas fa-briefcase"></i> Commerçants</a>
+        </li>
+        {% elif request.user.is_customer %}
+        <li class="nav-item">
+            {% url 'customer_home' as url %}
+            <a class="nav-link {% if request.path == url %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
         </li>
         {% endif %}
         {% endif %}

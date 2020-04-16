@@ -5,6 +5,7 @@ from Vendor.models import Vendor
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="customer")
+    imported = models.BooleanField(default=False)
     store_linked = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="customers")
     points = models.IntegerField(default=0)
 

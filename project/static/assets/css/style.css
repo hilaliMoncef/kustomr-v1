@@ -427,11 +427,14 @@ a:hover {
     }
  }
 
+ .row {
+     margin-bottom: 30px;
+ }
 
 /* ==========================================================================
    4. Sidebar
    ========================================================================== */
-
+   
 .nav-left-sidebar .nav-divider {
     font-size: 12px;
     letter-spacing: 1px;
@@ -452,6 +455,10 @@ a:hover {
     color: #fff;
     opacity: 0.5;
     transition: 0.3s all;
+}
+
+.nav-left-sidebar .nav-link.active {
+    opacity: 1;
 }
 
 .nav-left-sidebar .nav-link:hover {
@@ -517,6 +524,57 @@ a:hover {
 
 #topNav .nav-link:hover {
     opacity: 1;
+}
+
+.dashboard-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    padding: 20px 0;
+}
+
+.nav-left-sidebar .nav-link[data-toggle="collapse"] {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-left-sidebar .nav-link[data-toggle="collapse"]::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    right: 20px;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+.nav-left-sidebar .nav-link[data-toggle="collapse"][aria-expanded="false"]:after {
+    transform: rotate(-90deg);
+}
+
+.nav-left-sidebar .nav-link[data-toggle="collapse"]:after {
+    transition: transform .35s ease, opacity .35s ease;
+    opacity: .5;
+}
+
+.nav-left-sidebar .submenu {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    /* margin-top: 5px; */
+    background: #E25677;
+}
+
+.nav-left-sidebar .submenu .nav-link {
+    padding: 7px 12px;
+    text-transform: none;
 }
 
 /* ==========================================================================
@@ -673,7 +731,7 @@ address {}
 
 
 /* ==========================================================================
-   6. Cards
+   8. Cards
    ========================================================================== */
 
 
@@ -687,10 +745,58 @@ address {}
 .card-header {
     background-color: white;
     border: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0px;
 }
 
 .card-header .title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
+    color: #ABABAB;
+}
+
+
+/* ==========================================================================
+   9. Tables
+   ========================================================================== */
+
+.table thead th {
+    border-top: 0;
+    letter-spacing: 1px;
+    font-weight: normal;
+    padding-bottom: .5rem;
+    border-width: 1px;
+    border-color: rgba(132, 132, 132, 0.3)
+}
+
+.table tbody tr td {
+    color: rgb(132, 132, 132);
+    border-color: rgba(132, 132, 132, 0.1)
+}
+
+/* ==========================================================================
+   10. Misc
+   ========================================================================== */
+
+#main .divider {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+#main .divider .hr {
+    display: inline-flex;
+    flex: 1;
+    height: 1px;
+    width: 100%;
+    background-color: #848484;
+    opacity: 0.3;
+}
+
+#main .divider .text {
+    font-size: 16px;
+    margin: 0px 20px;
 }

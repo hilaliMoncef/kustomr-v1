@@ -5,6 +5,9 @@ from django.dispatch import receiver
 
 # Create your models here.
 class Vendor(models.Model):
+    """
+        This model represents the Store manager. It is linked to a regular user account.
+    """
     # Choices for store type
     STORE_TYPE_CHOICES = [
         ('FOOD', 'Restaurant & bar'),
@@ -22,5 +25,22 @@ class Vendor(models.Model):
     store_type = models.CharField(max_length=40, choices=STORE_TYPE_CHOICES, default='FOOD')
     store_visits = models.CharField(max_length=40, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
 
+    # Social links
+    facebook = models.CharField(max_length=255, default=None, null=True, blank=True)
+    instagram = models.CharField(max_length=255, default=None, null=True, blank=True)
+    tripadvisor = models.CharField(max_length=255, default=None, null=True, blank=True)
+
     def __str__(self):
         return self.store_name
+
+
+class Discount(models.Model):
+    """
+        This model represents all discounts created by the Vendor. They can be applied to the Customers.
+    """
+    is_active = models.BooleanField(default=True)
+    name = models.CharField(max_length=255)
+    expiry = models.DateTimeField(default=None, null=True, blank=True)
+
+    def __str__(self):
+        return '{} - Expire le {}'.format(self.name, self.expiry)

@@ -1,0 +1,153 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+<div class="card">
+    <div class="card-header">
+        <span class="card-title text-uppercase">Paramètres</span>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-nfos-tab" data-toggle="pill" href="#v-pills-infos" role="tab"
+                        aria-controls="v-pills-infos" aria-selected="true">Informations générales</a>
+                    <a class="nav-link" id="v-pills-reward-card-tab" data-toggle="pill" href="#v-pills-reward-card"
+                        role="tab" aria-controls="v-pills-reward-card" aria-selected="false">Carte de fidélité</a>
+                    <a class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab"
+                        aria-controls="v-pills-password" aria-selected="false">Mots de passe</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-infos" role="tabpanel"
+                        aria-labelledby="v-pills-infos-tab">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="infos" />
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input class="form-control" disabled name="email" value="{{ request.user.email }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="store_name">Nom de l'etablissement</label>
+                                <input class="form-control" name="store_name" value="{{ vendor.store_name }}">
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="store_type">Type d'établissement</label>
+                                        <select class="custom-select" name="store_type">
+                                            {% for x,y in form_infos.fields.store_type.choices %}
+                                            <option value="{{ x }}" {% if form.fields.store_type.value == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="store_visits">Nombre de visites</label>
+                                        <select class="custom-select" name="store_visits">
+                                            {% for x,y in form_infos.fields.store_visits.choices %}
+                                            <option value="{{ x }}" {% if form.fields.store_visits.value == x %}
+                                                selected{% endif %}>{{ y }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group">
+                                <label for="facebook">Facebook</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-facebook"></i></span>
+                                    </div>
+                                    <input class="form-control" name="facebook" value="{{ vendor.facebook }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="instagram">Instagram</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-instagram"></i></span>
+                                    </div>
+                                    <input class="form-control" name="instagram" value="{{ vendor.instagram }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tripadvisor">Tripadvisor</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-tripadvisor"></i></span>
+                                    </div>
+                                    <input class="form-control" name="tripadvisor" value="{{ vendor.tripadvisor }}">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col text-center">
+                                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-reward-card" role="tabpanel"
+                        aria-labelledby="v-pills-reward-card-tab">
+                        <div class="reward-card mx-auto mb-4" style="background-color: #{{ vendor.reward_card_layout.bg_color}}; color: #{{ vendor.reward_card_layout.text_color }}">
+                            <div class="reward-card-logo">
+                                {% if vendor.reward_card_layout.logo %}<img src="{{ vendor.reward_card_layout.logo.url }}" alt="Logo {{ vendor.store_name }}" />{% endif %}
+                            </div>
+                            <div class="reward-card-header d-flex flex-column">
+                                <span class="reward-card-title">Carte avantage</span>
+                                <span class="reward-card-subtitle">Points: 290</span>
+                            </div>
+
+                            <div class="reward-card-barcode">
+                                <span class="barcode">12093712030</span>
+                            </div>
+                        </div>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="reward_card" />
+                            <div class="form-group">
+                                <label for="icon">
+                                    Couleur de fond
+                                </label>
+                                <input class="form-control" type="text" name="bg_color" value="{{ vendor.reward_card_layout.bg_color }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="icon">
+                                    Couleur de texte
+                                </label>
+                                <input class="form-control" type="text" name="text_color" value="{{ vendor.reward_card_layout.text_color }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="icon">
+                                    Icône
+                                </label>
+                                <input class="form-control-file" type="file" name="icon" value="{{ vendor.reward_card_layout.icon }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="logo">
+                                    Logo
+                                </label>
+                                <input class="form-control-file" type="file" name="logo" value="{{ vendor.reward_card_layout.logo }}">
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-success">Enregistrer</button>
+                            </div>
+                        </form>
+                        
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-password" role="tabpanel"
+                        aria-labelledby="v-pills-password-tab">
+                        passwords</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

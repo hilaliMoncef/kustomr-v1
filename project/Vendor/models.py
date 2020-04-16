@@ -34,6 +34,31 @@ class Vendor(models.Model):
         return self.store_name
 
 
+class RewardCardLayout(models.Model):
+    """
+        This model represents a design of vendor's reward card, it will be used with Apple Wallet.
+    """
+    vendor = models.OneToOneField(Vendor, on_delete=models.CASCADE, null=True, blank=True, related_name="reward_card_layout")
+    icon = models.FileField(upload_to='fidelity/icons/', default=None, null=True, blank=True)
+    logo = models.FileField(upload_to='fidelity/logos/', default=None, null=True, blank=True)
+    bg_color = models.CharField(max_length=6, default="000000")
+    text_color = models.CharField(max_length=6, default="ffffff")
+
+    def __str__(self):
+        return 'Fidelity Card Layout for {}'.format(self.vendor)
+
+
+@receiver(post_save, sender=Vendor)
+def create_default_layout(sender, instance, **kwargs):
+    """
+        This function is connected to Vendor Modeal creation to create a default RewardCardLayout
+    """
+    if instance.created:
+        RewardCardLayout.objects.create(vendor=instance)
+
+
+
+
 class Discount(models.Model):
     """
         This model represents all discounts created by the Vendor. They can be applied to the Customers.

@@ -64,8 +64,15 @@
 </div>
 <div class="fixed-bottom" style="width: 250px;">
     <div class="d-flex align-items-center justify-content-around">
-        <a href="" class="nav-link"><i class="fas fa-cog"></i> Réglages</a>
+        {% if request.user.is_authenticated %}
+
+        <!-- VENDOR LINKS -->
+        {% if request.user.is_vendor %}
+        <a href="{% url 'vendor_settings' %}" class="nav-link"><i class="fas fa-cog"></i> Réglages</a>
         <div class="divider"></div>
         <a href="" class="nav-link"><i class="fas fa-question-circle"></i> Assistance</a>
+        {% endif %}
+
+        {% endif %}
     </div>
 </div>

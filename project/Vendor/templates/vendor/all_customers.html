@@ -1,0 +1,141 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="divider">
+    <div class="hr"></div>
+    <div class="text">Retrouvez vos clients ci-dessous :</div>
+    <div class="hr"></div>
+    <div class="dropdown">
+        <button class="btn btn-sm btn-outline-primary ml-3 dropdown-toggle" type="button" id="exportLinks"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-file-export"></i> Exporter
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-right" id="exportLinksDropdown" aria-labelledby="exportLinks">
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card position-relative">
+            <div class="card-float bottom right">
+                <a href="" class="btn-round btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                </a>
+            </div>
+            <div class="card-header">
+                <span class="title text-uppercase">Listing clients</span>
+            </div>
+            <div class="card-body">
+                <table class="table w-100" id="customer_listing">
+                    <thead>
+                        <tr>
+                            <th scope="col">Utilisateurs</th>
+                            <th scope="col">Téléphone</th>
+                            <th scope="col">Numéro clients</th>
+                            <th scope="col">Points accumulés</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td>{{ customer.user }}</td>
+                            <td>{{ customer.user.phone }}</td>
+                            <td>#{{ customer.id }}</td>
+                            <td>{{ customer.points }} point{% if customer.points > 1 %}s{% endif %}</td>
+                            <td>{{ customer.user.date_joined }}</td>
+                            <td>
+                                {% if customer.user.is_active %}
+                                <span class="badge badge-success">Actif</span>
+                                {% else %}
+                                <span class="badge badge-danger">Inactif</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        var table = $('#customer_listing').DataTable({
+            paging: true,
+            ordering: true,
+            searching: true,
+            responsive: true,
+            buttons: {
+                dom: {
+                    container: {
+                        tag: 'div'
+                    },
+                    button: {
+                        tag: 'a',
+                        className: 'dropdown-item',
+                    }
+                },
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: 'Copier',
+                        className: 'dropdown-item',
+                        tag: 'a'
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'dropdown-item',
+                        tag: 'a'
+                    },
+                    {
+                        extend: 'pdf',
+                        text: 'PDF',
+                        className: 'dropdown-item',
+                        tag: 'a'
+                    }
+                ]
+            },
+            language: {
+                "decimal": "",
+                "emptyTable": "Aucune donnée disponible",
+                "info": "_START_ à _END_ entrées visibles sur _TOTAL_",
+                "infoEmpty": "0 à 0 entrées visibles sur 0",
+                "infoFiltered": "(filtrés d'un total de _MAX_ entrées)",
+                "infoPostFix": "",
+                "thousands": " ",
+                "lengthMenu": "Voir _MENU_ entrées",
+                "loadingRecords": "Chargement...",
+                "processing": "Traitement...",
+                "search": "Rechercher:",
+                "zeroRecords": "Aucune correspondance trouvée.",
+                "paginate": {
+                    "first": "Premier",
+                    "last": "Dernier",
+                    "next": "Suivant",
+                    "previous": "Précédent"
+                },
+                "aria": {
+                    "sortAscending": ": activer pour trier la colonne dans l'ordre ascendant",
+                    "sortDescending": ": activer pour trier la colonne dans l'ordre descendant"
+                }
+            }
+        });
+
+
+        $('#exportLinksDropdown').append(table.buttons().container());
+        console.log(table.buttons().container()[0])
+        //table.buttons().container().appendTo( $('#exportLinksDropdown', table.table().container() ) );
+    });
+</script>
+{% endblock %}

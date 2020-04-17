@@ -135,6 +135,15 @@ LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
 
 
+# SendGrid API
+SENDGRID_API_KEY = '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'
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 

@@ -243,6 +243,26 @@ a:hover {
     border-radius: 2px;
 }
 
+.btn-round {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    transition: 0.3s all;
+}
+
+.btn-round:hover {
+    -webkit-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0.7);
+    -moz-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0.7);
+    box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0.7);
+}
+
+.btn-round i {
+    font-size: 20px;
+}
+
 .btn-primary {
     background-color: #D92550 !important;
     border-color: #D92550 !important;
@@ -329,6 +349,118 @@ a:hover {
     background: linear-gradient(90deg, rgba(199,26,65,1) 0%, rgba(227,89,122,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c71a41",endColorstr="#e3597a",GradientType=1);
     border: none;
+}
+
+.btn-outline-primary {
+    background-color: transparent !important;
+    border-color: #D92550 !important;
+    color: #D92550 !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #D92550 !important;
+    color: #fff !important;
+}
+
+.btn-outline-brand {
+    background-color: transparent !important;
+    border-color: #ffc750 !important;
+    color: #ffc750 !important;
+}
+
+.btn-outline-secondary {
+    background-color: transparent !important;
+    border-color: #ff407b !important;
+    color: #ff407b !important;
+}
+
+.btn-outline-success {
+    background-color: transparent !important;
+    border-color: #2ec551 !important;
+    color: #2ec551 !important;
+}
+
+.btn-outline-success:hover {
+    background-color: #2ec551 !important;
+    color: #fff !important;
+}
+
+.btn-outline-danger {
+    background-color: transparent !important;
+    border-color: #ef172c !important;
+    color: #ef172c !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ef172c !important;
+    border-color: #ef172c !important;
+    color: #fff !important;
+}
+
+.btn-outline-warning {
+    background-color: transparent !important;
+    border-color: #ffc108 !important;
+    color: #ffc108 !important;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc108 !important;
+    border-color: #ffc108 !important;
+    color: #fff !important;
+}
+
+.btn-outline-info {
+    background-color: transparent !important;
+    border-color: #25d5f2 !important;
+    color: #25d5f2 !important;
+}
+
+.btn-outline-light {
+    background-color: transparent !important;
+    border-color: #f9f9ff !important;
+    color: #f9f9ff !important;
+}
+
+.btn-outline-dark {
+    background-color: transparent !important;
+    border-color: #2e2f39 !important;
+    color: #2e2f39 !important;
+}
+
+.btn-outline-primary-light {
+    background-color: transparent !important;
+    border-color: #dbdeff !important;
+    color: #dbdeff !important;
+}
+
+.btn-outline-info-light {
+    background-color: transparent !important;
+    border-color: #dffaff !important;
+    color: #dffaff;
+}
+
+.btn-outline-secondary-light {
+    background-color: transparent !important;
+    border-color: #ffdbe6 !important;
+    color: #ffdbe6 !important;
+}
+
+.btn-outline-danger-light {
+    background-color: transparent !important;
+    border-color: #fbd3d5 !important;
+    color: #fbd3d5 !important;
+}
+
+.btn-outline-brand-light {
+    background-color: transparent !important;
+    border-color: #fff2d5 !important;
+    color: #fff2d5 !important;
+}
+
+.btn-outline-success-light {
+    background-color: transparent !important;
+    border-color: #c5fad3 !important;
+    color: #c5fad3 !important;
 }
 
 
@@ -655,6 +787,11 @@ input[type=file] {
     box-shadow: 0 0 0 0.2rem rgba(214, 214, 255, .75);
 }
 
+.custom-select {
+    color: #71748d;
+    font-size: 14px;
+}
+
 .col-form-label {
     font-size: 15px;
 }
@@ -742,6 +879,18 @@ address {}
     -webkit-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
     -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
     box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+}
+
+.card-float {
+    position: absolute;
+}
+
+.card-float.bottom {
+    bottom: -20px;
+}
+
+.card-float.right {
+    right: -20px;
 }
 
 .card-header {
@@ -858,4 +1007,11 @@ address {}
 .barcode {
     font-size: 32px;
     font-family: 'Libre Barcode 39 Extended Text', cursive;
+}
+
+@media (max-width: 768px) { 
+    .reward-card {
+        width:100%;
+        height: 150px;
+    }
 }

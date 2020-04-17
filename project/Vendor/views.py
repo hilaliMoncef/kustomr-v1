@@ -5,7 +5,10 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import VendorForm, RewardCardLayoutForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 import qrcode
+import json
 
 
 class DashboardView(LoginRequiredMixin, View):
@@ -13,10 +16,17 @@ class DashboardView(LoginRequiredMixin, View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def get(self, request, *args, **kwargs):
-        customers = request.user.vendor.customers.all()
+        customers = request.user.vendor.customers.all()[:5]
         return render(request, 'vendor/home.html', locals())
 
 
+class CustomersView(LoginRequiredMixin, View):
+    """
+    Cette page permet de gérer au commerçant de gérer ses clients
+    """
+    def get(self, request, *args, **kwargs):
+        customers = request.user.vendor.customers.all()
+        return render(request, 'vendor/all_customers.html', locals())
 
 
 class SettingsView(LoginRequiredMixin, View):
@@ -28,6 +38,7 @@ class SettingsView(LoginRequiredMixin, View):
         vendor = request.user.vendor
         form_infos = VendorForm(instance=vendor)
         form_reward_card = RewardCardLayoutForm(instance=vendor.reward_card_layout)
+        form_password_change = PasswordChangeForm(request.user)
         return render(request, 'vendor/settings.html', locals())
 
     def post(self, request, *args, **kwargs):
@@ -36,17 +47,35 @@ class SettingsView(LoginRequiredMixin, View):
             form = VendorForm(request.POST, instance=request.user.vendor)
             if form.is_valid() and form.has_changed():
                 form.save()
-                messages.add_message(request, messages.SUCCESS, 'Vos informations personnelles ont été modifiées')
+                messages.add_message(request, messages.SUCCESS, 'Vos informations personnelles ont été modifiées.')
             return redirect('vendor_settings')
         elif request.POST['form_type'] == 'reward_card':
             # If the RewardCardLayout form is submitted
             form = RewardCardLayoutForm(request.POST, request.FILES, instance=request.user.vendor.reward_card_layout)
             if form.is_valid():
                 form.save()
-                messages.add_message(request, messages.SUCCESS, 'Le design a bien été modifié')
+                messages.add_message(request, messages.SUCCESS, 'Le design a bien été modifié.')
             else:
                 print(form.errors)
-            return redirect('vendor_settings')
+        elif request.POST['form_type'] == 'password':
+            # If the PasswordChange form is submitted -- we use the default form from Django
+            form = PasswordChangeForm(request.user, request.POST)
+            if form.is_valid():
+                form.save()
+                # Updating the password logs out all other sessions for the user
+                # except the current one.
+                update_session_auth_hash(request, form.user)
+                messages.add_message(request, messages.SUCCESS, 'Votre mot de passé a été modifié.')
+            else:
+                errors = json.loads(form.errors.as_json())
+                for error in errors:
+                    messages.add_message(request, messages.ERROR, errors[error][0]['message'])
+        else:
+            # In case we have a weird user manipulation
+            messages.add_message(request, messages.ERROR, 'Erreur inconnue')
+
+        # Always redirect to the settings page
+        return redirect('vendor_settings')
 
 # A adapter, uniquement les admins qui générent des nouveaux clients
 class NewCustomerView(LoginRequiredMixin, View):

@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'assets/DataTables/datatables.min.css' %}" />
   <link rel="stylesheet" href="{% static 'assets/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'fonts/circular-std/style.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
@@ -30,7 +31,7 @@
       <div id="main">
         <div class="w-100 h-100">
           <div class="overlay"></div>
-          <div class="content py-5 px-5 mb-4">
+          <div class="content py-md-5 px-md-5 py-3 px-2 mb-4">
             {% block content %}{% endblock %}
           </div>
           <div class="dashboard-footer">
@@ -53,9 +54,14 @@
   <!-- Bootstrap JS -->
   <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 
+  <!-- DataTables -->
+  <script type="text/javascript" src="{% static 'assets/DataTables/datatables.min.js' %}"></script>
+
   <!-- jQuery Custom Scroller CDN -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
+  <!-- ToasterJS for error handling-->
   <script src="{% static 'assets/js/toastr.min.js' %}"></script>
   <script type="text/javascript">
     $(document).ready(function () {
@@ -71,6 +77,9 @@
       });
     });
   </script>
+
+  <!-- Script block -->
+  {% block script %}{% endblock %}
 
   <!-- Custom error handling -->
   <script>

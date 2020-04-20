@@ -136,7 +136,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 # SendGrid API
-SENDGRID_API_KEY = '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'
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'

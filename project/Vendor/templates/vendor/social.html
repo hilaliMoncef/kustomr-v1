@@ -1,0 +1,60 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+    <div class="col-md-8 col">
+        <div class="divider">
+            <div class="hr"></div>
+            <div class="text">Retrouvez vos réseaux sociaux ci-dessous :</div>
+            <div class="hr"></div>
+        </div>
+    </div>
+    <div class="col-md-4 col">
+        <a href="#" class="btn btn-primary w-100">Créer une publication</a>
+        <div class="card mt-3">
+            <div class="card-body">
+                <div id="social-calendar"></div>
+                <hr>
+                <h4 class="text-center">Aujourd'hui</h4>
+                <ul class="metrics list-unstyled mt-4">
+                    <li>
+                        <span>Panier moyen</span>
+                        <span class="text-primary font-weight-bold">36,65€</span>
+                    </li>
+                    <li>
+                        <span>Fréquence des visites</span>
+                        <span class="text-primary font-weight-bold">3 fois / mois</span>
+                    </li>
+                    <li>
+                        <span>Taux d'engagement</span>
+                        <span class="text-primary font-weight-bold">5</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        var calendarEl = document.getElementById('social-calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid', 'frLocale'],
+            height: 'auto',
+            locale: 'fr',
+            fixedWeekCount: false
+        });
+
+        calendar.render();
+    });
+</script>
+{% endblock %}

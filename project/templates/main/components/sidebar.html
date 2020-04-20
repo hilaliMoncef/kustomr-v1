@@ -1,6 +1,44 @@
 {% load static %}
-<div class="py-4 px-3">
+<div class="py-4">
     <ul class="navbar-nav flex-column">
+        <li class="nav-item dropdown d-lg-none">
+            <a class="nav-link d-flex align-items-center" data-toggle="collapse" aria-expanded="false" data-target="#submenu-myuser" aria-controls="submenu-myuser" href="#submenu-myuser">
+                <img src="{% static 'assets/img/users/placeholder.png' %}" alt=""
+                    class="user-avatar-md rounded-circle mr-2">
+
+                {% if user.is_vendor %}
+                <div class="d-flex flex-column">
+                    <strong class="">{{ user }}</strong>
+                    <small>{{ user.vendor.store_name }}</small>
+                </div>
+                {% elif user.is_staff %}
+                <div class="d-flex flex-column">
+                    <strong class="">{{ user }}</strong>
+                    <small>Administrateur</small>
+                </div>
+                {% elif user.is_customer %}
+                <div class="d-flex flex-column">
+                    <strong class="">{{ user }}</strong>
+                    <small>Client</small>
+                </div>
+                {% endif %}
+            </a>
+            {% if user.is_vendor %}
+            <div class="collapse submenu" id="submenu-myuser">
+                <a class="dropdown-item" href="{% url 'vendor_settings' %}"><i class="fas fa-cog mr-2"></i>Réglages</a>
+                <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-power-off mr-2"></i>Déconnexion</a>
+            </div>
+            {% elif user.is_staff %}
+            <div class="collapse submenu" id="submenu-myuser">
+                <a class="dropdown-item" href="/django-admin"><i class="fas fa-user mr-2"></i>Administration Django</a>
+                <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-power-off mr-2"></i>Déconnexion</a>
+            </div>
+            {% elif user.is_customer %}
+            <div class="collapse submenu" id="submenu-myuser">
+                <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-power-off mr-2"></i>Déconnexion</a>
+            </div>
+            {% endif %}
+        </li>
         {% if request.user.is_authenticated %}
 
         <!-- VENDOR LINKS -->
@@ -29,13 +67,16 @@
             <a class="nav-link" href=""><i class="fas fa-chart-area"></i> Analyse</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-divide"></i> Réductions</a>
+            {% url 'vendor_discounts' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-divide"></i> Réductions</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-broadcast-tower"></i> Marketing</a>
+            {% url 'vendor_marketing' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-broadcast-tower"></i> Marketing</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-link"></i> Social</a>
+            {% url 'vendor_social' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-link"></i> Social</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href=""><i class="fas fa-book"></i> Formations</a>

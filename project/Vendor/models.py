@@ -49,11 +49,11 @@ class RewardCardLayout(models.Model):
 
 
 @receiver(post_save, sender=Vendor)
-def create_default_layout(sender, instance, **kwargs):
+def create_default_layout(sender, instance, created, **kwargs):
     """
         This function is connected to Vendor Modeal creation to create a default RewardCardLayout
     """
-    if instance.created:
+    if created:
         RewardCardLayout.objects.create(vendor=instance)
 
 

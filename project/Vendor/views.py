@@ -29,6 +29,34 @@ class CustomersView(LoginRequiredMixin, View):
         return render(request, 'vendor/all_customers.html', locals())
 
 
+class DiscountsView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les principales stats sur le commerçant
+    """
+    def get(self, request, *args, **kwargs):
+        customers = request.user.vendor.customers.all()[:5]
+        return render(request, 'vendor/discounts.html', locals())
+
+
+class MarketingView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les principales stats sur le commerçant
+    """
+    def get(self, request, *args, **kwargs):
+        customers = request.user.vendor.customers.all()[:5]
+        return render(request, 'vendor/marketing.html', locals())
+
+
+class SocialView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les principales stats sur le commerçant
+    """
+    def get(self, request, *args, **kwargs):
+        customers = request.user.vendor.customers.all()[:5]
+        return render(request, 'vendor/social.html', locals())
+
+
+
 class SettingsView(LoginRequiredMixin, View):
     """
     Cette vue permet de gérer les paramètres d'une page commerçant, 

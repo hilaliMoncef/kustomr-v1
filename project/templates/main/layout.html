@@ -95,19 +95,6 @@
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
       });
-
-      $("#toggleRightbar").click(function (e) {
-        e.preventDefault();
-        var target = $(this).attr('data-target');
-        $("#" + target).toggleClass("d-block");
-        $("#right-sidebar").toggleClass("toggled");
-      });
-      $("#closeRightbar").click(function (e) {
-        e.preventDefault();
-        var target = $(this).attr('data-target');
-        $("#" + target).toggleClass("d-block");
-        $("#right-sidebar").toggleClass("toggled");
-      });
     });
   </script>
 

@@ -43,7 +43,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=255)
-    birthday = models.DateField()
+    birthday = models.DateField(default=None, null=True, blank=True)
     is_vendor = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'

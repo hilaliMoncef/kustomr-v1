@@ -10,6 +10,6 @@ def index(request):
     elif request.user.is_vendor:
         return redirect('vendor_home')
     elif request.user.is_customer:
-        return redirect('customer_home')
+        return redirect('logout')
     else:
         raise Http404()

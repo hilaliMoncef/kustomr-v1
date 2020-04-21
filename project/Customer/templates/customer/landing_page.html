@@ -7,20 +7,56 @@
         <form method="POST" class="mt-4">
             {% csrf_token %}
             {% if form.errors %}
-            {% for field in form %}
-            {% for error in field.errors %}
-            <div class="alert alert-danger">
-                <strong>Erreur : </strong> {{ error|escape }}
-            </div>
-            {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-            <div class="alert alert-danger">
-                <strong>Erreur : </strong>{{ error|escape }}
-            </div>
-            {% endfor %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Erreur : </strong> {{ error|escape }}
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>Erreur : </strong>{{ error|escape }}
+                </div>
+                {% endfor %}
             {% endif %}
-            {{ form.as_p }}
+
+            <div class="form-group">
+                <label for="first_name">Prénom</label>
+                <input type="text" class="form-control" name="first_name" />
+            </div> 
+            <div class="form-group">
+                <label for="last_name">Nom</label>
+                <input type="text" class="form-control" name="last_name" />
+            </div> 
+            <div class="form-group">
+                <label for="birthday">Date de naissance</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    </div>
+                    <input type="date" class="form-control" name="birthday" />
+                </div>
+            </div> 
+            <hr>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    </div>
+                    <input type="text" class="form-control" name="email" />
+                </div>
+            </div> 
+            <div class="form-group">
+                <label for="phone">Téléphone</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    </div>
+                    <input type="text" class="form-control" name="phone" />
+                </div>
+            </div> 
             <button type="submit" class="btn btn-success">S'inscrire</button>
         </form>
     </div>

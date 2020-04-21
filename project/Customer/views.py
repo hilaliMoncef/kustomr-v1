@@ -48,11 +48,11 @@ class LandingPageView(View):
                     'vendor': vendor
                 })
                 to_email = user.email
-                send_mail(mail_subject, message, 'hilali.moncef@gmail.com',[to_email], fail_silently=False)
+                send_mail(mail_subject, message, 'hilali.moncef@gmail.com', [to_email], html_message=message, fail_silently=False)
 
                 ## Then we log the newly created user
                 login(request, user)
-                messages.add_message(request, messages.SUCCESS, 'Votre compte a bien été créé. Veuillez le confirmer.')
+                messages.add_message(request, messages.SUCCESS, 'Votre compte a bien été créé.')
                 return redirect("customer_home", vendor=vendor.pk, store_name=slugify(vendor.store_name), token=customer.token.token)
             else:
                 messages.add_message(request, messages.ERROR, 'Une ou plusieurs erreurs se sont produites durant la validation du formulaire.')

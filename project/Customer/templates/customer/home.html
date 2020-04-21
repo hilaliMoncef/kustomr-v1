@@ -1,6 +1,100 @@
-{% extends 'main/layout.html' %}
+{% extends 'secondary/layout.html' %}
 
 {% block content %}
-    <h1>Bienvenue {{ user }}</h1>
-    <h4>Vous avez {{ user.customer.points }} points de fidélité.</h4>
+{% load static %}
+<div class="w-100">
+    <img src="{% static 'assets/img/bg01.jpg' %}" class="object-fit" style="width: 100%; height: 300px;"
+        alt="{{ vendor.store_name }}" />
+</div>
+
+<div class="container-fluid">
+    <div class="row row-flowing">
+        <div class="col-md-5 col-12 mb-3">
+            <div class="card h-100 mx-3 text-normal">
+                <div class="card-header">
+                    <div class="title w-100 text-center text-uppercase">
+                        Mon profil
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="profil-infos list-unstyled">
+                        <li>
+                            <span>Nom et prénom</span>
+                            <span class="font-weight-bold text-dark">{{ customer.user }}</span>
+                        </li>
+                        <li>
+                            <span>Numéro de téléphone</span>
+                            <span class="font-weight-bold text-dark">{{ customer.user.phone }}</span>
+                        </li>
+                        <li>
+                            <span>Date de naissance</span>
+                            <span class="font-weight-bold text-dark">{{ customer.user.birthday }}</span>
+                        </li>
+                        <li>
+                            <span>Email</span>
+                            <span class="font-weight-bold text-dark">{{ customer.user.email }}</span>
+                        </li>
+                    </ul>
+                    <div class="card card-outline-primary py-2 mt-5">
+                        <span class="h3 text-primary font-weight-bold mb-1">{{ customer.points }}</span>
+                        <span>Prochaine récompense dans <span class="text-primary">20 points</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 col-12 mb-3">
+            <div class="card h-100 mx-3">
+                <div class="card-header">
+                    <div class="title  w-100 text-center text-uppercase">
+                        Mon profil
+                    </div>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="row w-100 mx-auto">
+                        <div class="col-xl-6 col-12 mb-3">
+                            <div class="reward-card mx-auto mr-2"
+                                style="background-color: {{ vendor.reward_card_layout.bg_color}}; color: {{ vendor.reward_card_layout.text_color }}">
+                                <div class="reward-card-logo-center">
+                                    <div class="reward-card-logo-wrapper">
+                                        {% if vendor.reward_card_layout.logo %}<img
+                                            src="{{ vendor.reward_card_layout.logo.url }}"
+                                            alt="Logo {{ vendor.store_name }}" />{% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="reward-card-name">
+                                    <span class="text-uppercase h5 font-weight-bold pb-2">Carte de fidélité</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-12">
+                            <div class="reward-card mx-auto"
+                                style="background-color: {{ vendor.reward_card_layout.bg_color}}; color: {{ vendor.reward_card_layout.text_color }}">
+                                <div class="reward-card-logo">
+                                    {% if vendor.reward_card_layout.logo %}<img
+                                        src="{{ vendor.reward_card_layout.logo.url }}"
+                                        alt="Logo {{ vendor.store_name }}" />{% endif %}
+                                </div>
+                                <div class="reward-card-header d-flex flex-column">
+                                    <span class="reward-card-title">
+                                        Nom et prénom :
+                                    </span>
+                                    <span class="reward-card-subtitle mb-2">{{ customer.user }}</span>
+                                    <span class="reward-card-title">
+                                        Numéro client :
+                                    </span>
+                                    <span class="reward-card-subtitle">{{ customer.pk }}</span>
+                                </div>
+
+                                <div class="reward-card-barcode">
+                                    <span class="barcode">{{ customer.pk }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

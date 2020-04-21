@@ -10,4 +10,5 @@ urlpatterns = [
     path('discounts', views.DiscountsView.as_view(), name="vendor_discounts"),
     path('marketing', views.MarketingView.as_view(), name="vendor_marketing"),
     path('social', views.SocialView.as_view(), name="vendor_social"),
+    path('training', views.TrainingView.as_view(), name="vendor_training"),
 ]

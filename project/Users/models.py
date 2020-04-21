@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.shortcuts import get_object_or_404
 
 
 
@@ -42,6 +43,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=255)
+    birthday = models.DateField()
     is_vendor = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
@@ -50,3 +52,18 @@ class User(AbstractUser):
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
+
+    def get_customer(self, store=None):
+        """
+        A function used to get the customer associated.
+        If a user is associated with several customers (same customer with different stores), we return the whole queryset.
+        Else if there is only one user, we return this user
+        """
+        if store:
+            customer = get_object_or_404(self.customers, store_linked__pk=store)
+        else:
+            if self.customers.count() > 1:
+                customer = self.customers
+            else:
+                customer = self.customers.first()
+        return customer

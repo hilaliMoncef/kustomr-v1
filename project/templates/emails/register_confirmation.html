@@ -1,0 +1,9 @@
+{% autoescape off %}
+Bonjour {{ customer.user }},<br><br/>
+
+Votre compte chez {{ vendor.store_name }} a bien été crée.<br>
+
+Pour accéder à votre tableau de bord, voir vos points de fidélités ou les dernières promotions, cliquez sur ce le lien ci-dessous : <br>
+http://{{ domain }}{% url 'customer_home' vendor=vendor.pk store_name=vendor.store_name|slugify token=customer.token.token %}
+
+{% endautoescape %}

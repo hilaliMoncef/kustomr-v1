@@ -1,0 +1,148 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        .bg-primary {
+            background-color: {{ vendor.reward_card_layout.bg_color }} !important;
+        } 
+        .text-primary {
+            color: {{ vendor.reward_card_layout.bg_color }} !important;
+        } 
+        body {
+            color: {{ vendor.reward_card_layout.text_color }} !important;
+        }
+    </style>
+    <title>Elevator</title>
+</head>
+
+<body id="secondary">
+    <nav class="navbar navbar-expand-lg py-5 bg-primary">
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <ul class="list-unstyled align-items-center m-0 d-none d-md-flex">
+                {% if vendor.facebook %}
+                <li>
+                    <a href="" class="social-button mr-1"><i class="fab fa-facebook-f"></i></a>
+                </li>
+                {% endif %}
+                {% if vendor.instagram %}
+                <li>
+                    <a href="" class="social-button mx-2"><i class="fab fa-instagram"></i></a>
+                </li>
+                {% endif %}
+                {% if vendor.twitter %}
+                <li>
+                    <a href="" class="social-button ml-1"><i class="fab fa-twitter"></i></a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="store-logo mx-auto">
+                <img src="{{ vendor.reward_card_layout.logo.url }}" alt="{{ vendor.store_name }}" />
+            </div>
+            {% if vendor.website %}
+            <a href="{{ website }}" target="_blank" class=" d-none d-md-flex">Voir le site web ></a>
+            {% endif %}
+        </div>
+    </nav>
+    <div id="content-secondary">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="footer-secondary" class="mt-5 pt-3">
+        <div class="bg-white container-fluid py-3 w-100 d-flex align-items-center justify-content-between">
+                <div class=""></div>
+                <div class="links text-primary">
+                    <a href="" class="text-primary">A propos</a>
+                    <span class="mx-2">|</span>
+                    <a href="{% url 'logout_customer' vendor=vendor.pk %}" class="text-primary">Déconnexion</a>
+                </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'assets/js/jquery.js' %}"></script>
+
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+    <!-- ToasterJS for error handling-->
+    <script src="{% static 'assets/js/toastr.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sidebarCollapse").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
+            $("#toggleRightbar").click(function (e) {
+                e.preventDefault();
+                var target = $(this).attr('data-target');
+                $("#" + target).toggleClass("d-block");
+                $("#right-sidebar").toggleClass("toggled");
+            });
+            $("#closeRightbar").click(function (e) {
+                e.preventDefault();
+                var target = $(this).attr('data-target');
+                $("#" + target).toggleClass("d-block");
+                $("#right-sidebar").toggleClass("toggled");
+            });
+        });
+    </script>
+
+
+    <!-- Script block -->
+    {% block script %}{% endblock %}
+
+    <!-- Custom error handling -->
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "800",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        toastr.error('{{ message }}');
+        {% elif message.tags == 'success' %}
+        toastr.success('{{ message }}');
+        {% elif message.tags == 'warning' %}
+        toastr.warning('{{ message }}');
+        {% else %}
+        toastr.info('{{ message }}');
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </script>
+</body>
+
+</html>

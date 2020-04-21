@@ -79,7 +79,8 @@
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-link"></i> Social</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-book"></i> Formations</a>
+            {% url 'vendor_training' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-book"></i> Formations</a>
         </li>
 
         <!-- ADMINISTRATION LINKS-->

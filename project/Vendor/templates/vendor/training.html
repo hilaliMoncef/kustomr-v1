@@ -1,0 +1,71 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header justify-content-center">
+                <div class="title text-center">
+                    Email marketing
+                </div>
+            </div>
+            <div class="card-body mt-3 p-0">
+                <video-js id="my-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
+                    poster="{% static 'assets/img/defaultvideo.webp' %}" data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=pw0Pg37BgHk"}] }'>
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                    </p>
+                </video-js>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header justify-content-center">
+                <div class="title text-center">
+                    Email marketing
+                </div>
+            </div>
+            <div class="card-body mt-3 p-0">
+                <video-js id="my-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
+                    poster="{% static 'assets/img/defaultvideo.webp' %}" data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=pw0Pg37BgHk"}] }'>
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                    </p>
+                </video-js>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header justify-content-center">
+                <div class="title text-center">
+                    Email marketing
+                </div>
+            </div>
+            <div class="card-body mt-3 p-0">
+                <video-js id="my-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
+                    poster="{% static 'assets/img/defaultvideo.webp' %}" data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=pw0Pg37BgHk"}] }'>
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                    </p>
+                </video-js>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://vjs.zencdn.net/7.7.5/video.js"></script>
+<script src="{% static 'assets/js/youtube.min.js' %}"></script>
+{% endblock %}

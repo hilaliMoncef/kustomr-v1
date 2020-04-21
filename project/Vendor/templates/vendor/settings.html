@@ -60,6 +60,15 @@
                             </div>
                             <hr>
                             <div class="form-group">
+                                <label for="facebook">Site web</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                    </div>
+                                    <input class="form-control" name="website" value="{{ vendor.website }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="facebook">Facebook</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -95,51 +104,90 @@
                     </div>
                     <div class="tab-pane fade" id="v-pills-reward-card" role="tabpanel"
                         aria-labelledby="v-pills-reward-card-tab">
-                        <div class="reward-card mx-auto mb-4" style="background-color: #{{ vendor.reward_card_layout.bg_color}}; color: #{{ vendor.reward_card_layout.text_color }}">
-                            <div class="reward-card-logo">
-                                {% if vendor.reward_card_layout.logo %}<img src="{{ vendor.reward_card_layout.logo.url }}" alt="Logo {{ vendor.store_name }}" />{% endif %}
-                            </div>
-                            <div class="reward-card-header d-flex flex-column">
-                                <span class="reward-card-title">Carte avantage</span>
-                                <span class="reward-card-subtitle">Points: 290</span>
-                            </div>
+                        <div class="row w-100 mx-auto">
+                            <div class="col-xl-6 col-12 mb-3">
+                                <div class="reward-card mx-auto mr-2"
+                                    style="background-color: {{ vendor.reward_card_layout.bg_color}}; color: {{ vendor.reward_card_layout.text_color }}">
+                                    <div class="reward-card-logo-center">
+                                        <div class="reward-card-logo-wrapper">
+                                            {% if vendor.reward_card_layout.logo %}<img
+                                                src="{{ vendor.reward_card_layout.logo.url }}"
+                                                alt="Logo {{ vendor.store_name }}" />{% endif %}
+                                        </div>
+                                    </div>
 
-                            <div class="reward-card-barcode">
-                                <span class="barcode">12093712030</span>
+                                    <div class="reward-card-name">
+                                        <span class="text-uppercase h5 font-weight-bold pb-2">Carte de fidélité</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-12">
+                                <div class="reward-card mx-auto"
+                                    style="background-color: {{ vendor.reward_card_layout.bg_color}}; color: {{ vendor.reward_card_layout.text_color }}">
+                                    <div class="reward-card-logo">
+                                        {% if vendor.reward_card_layout.logo %}<img
+                                            src="{{ vendor.reward_card_layout.logo.url }}"
+                                            alt="Logo {{ vendor.store_name }}" />{% endif %}
+                                    </div>
+                                    <div class="reward-card-header d-flex flex-column">
+                                        <span class="reward-card-title">
+                                            Nom et prénom :
+                                        </span>
+                                        <span class="reward-card-subtitle mb-2">Jean Dupont</span>
+                                        <span class="reward-card-title">
+                                            Numéro client :
+                                        </span>
+                                        <span class="reward-card-subtitle">00000001</span>
+                                    </div>
+
+                                    <div class="reward-card-barcode">
+                                        <span class="barcode">00000001</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="hidden" name="form_type" value="reward_card" />
-                            <div class="form-group">
-                                <label for="icon">
-                                    Couleur de fond
-                                </label>
-                                <input class="form-control" type="text" name="bg_color" value="{{ vendor.reward_card_layout.bg_color }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="icon">
-                                    Couleur de texte
-                                </label>
-                                <input class="form-control" type="text" name="text_color" value="{{ vendor.reward_card_layout.text_color }}">
+                            <div class="form-row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="icon">
+                                            Couleur de fond
+                                        </label>
+                                        <input class="form-control" type="color" name="bg_color"
+                                            value="{{ vendor.reward_card_layout.bg_color }}">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="icon">
+                                            Couleur de texte
+                                        </label>
+                                        <input class="form-control" type="color" name="text_color"
+                                            value="{{ vendor.reward_card_layout.text_color }}">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="icon">
                                     Icône
                                 </label>
-                                <input class="form-control-file" type="file" name="icon" value="{{ vendor.reward_card_layout.icon }}">
+                                <input class="form-control-file" type="file" name="icon"
+                                    value="{{ vendor.reward_card_layout.icon }}">
                             </div>
                             <div class="form-group">
                                 <label for="logo">
                                     Logo
                                 </label>
-                                <input class="form-control-file" type="file" name="logo" value="{{ vendor.reward_card_layout.logo }}">
+                                <input class="form-control-file" type="file" name="logo"
+                                    value="{{ vendor.reward_card_layout.logo }}">
                             </div>
                             <div class="form-group text-center">
                                 <button type="submit" class="btn btn-success">Enregistrer</button>
                             </div>
                         </form>
-                        
+
                     </div>
                     <div class="tab-pane fade" id="v-pills-password" role="tabpanel"
                         aria-labelledby="v-pills-password-tab">

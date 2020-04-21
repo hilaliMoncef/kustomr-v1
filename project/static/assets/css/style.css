@@ -182,6 +182,10 @@ a:hover {
    2.2. Text Colors
    ------------------------------ */
 
+.text-normal {
+    color: #848484;
+}
+
 .text-primary {
     color: #C71A41 !important;
 }
@@ -958,6 +962,43 @@ address {}
     height: 100%;
 }
 
+.card-social .card-header {
+    display: flex;
+    flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
+.card-social .card-header hr {
+    width: 40px;
+    height: 1px;
+    margin-bottom: 5px;
+}
+
+.card-social.facebook .card-header .title {
+    color: #3b5999;
+}
+
+.card-social.facebook .card-header hr {
+    background-color: #3b5999;
+}
+
+.card-social.instagram .card-header .title {
+    color: #e4405f;
+}
+
+.card-social.instagram .card-header hr {
+    background-color: #e4405f;
+}
+
+.card-social.twitter .card-header .title {
+    color: #55acee;
+}
+
+.card-social.twitter .card-header hr {
+    background-color: #55acee;
+}
+
 /* ==========================================================================
    9. Tables
    ========================================================================== */
@@ -979,6 +1020,11 @@ address {}
 /* ==========================================================================
    10. Misc
    ========================================================================== */
+
+.object-fit {
+    object-fit: cover; 
+    object-position: center center;
+}
 
 .content .divider {
     display: flex;
@@ -1008,8 +1054,9 @@ address {}
     display: block;
     border-radius: 8px;
     border: 1px solid #848484;
-    width: 400px;
-    height: 250px;
+    width: 350px;
+    min-height: 200px;
+    max-height: 240px;
     position: relative;
 }
 
@@ -1021,7 +1068,24 @@ address {}
     height: 50px;
 }
 
-.reward-card .reward-card-logo img {
+.reward-card .reward-card-logo-center {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reward-card .reward-card-logo-center .reward-card-logo-wrapper {
+    width: 100px;
+    height: 100px;
+}
+
+.reward-card .reward-card-logo img, 
+.reward-card .reward-card-logo-center img {
     object-fit: contain;
     width: 100%;
     height: 100%;
@@ -1036,8 +1100,6 @@ address {}
 }
 
 .reward-card .reward-card-title {
-    font-size: 18px;
-    text-transform: uppercase;
     font-weight: bold;
 }
 
@@ -1048,6 +1110,13 @@ address {}
 .reward-card .reward-card-barcode {
     position: absolute;
     bottom: 5px;
+    width: 100%;
+    text-align: center;
+}
+
+.reward-card .reward-card-name {
+    position: absolute;
+    bottom: 20px;
     width: 100%;
     text-align: center;
 }
@@ -1099,7 +1168,7 @@ address {}
 }
 
 /* ==========================================================================
-   11. Timeline (credits to Matys Janssen)
+   11. Timeline
    ========================================================================== */
 
 .timeline-wrapper {
@@ -1146,4 +1215,42 @@ address {}
 .timeline li .dot:hover {
     border: 1px solid #C7003A;
     background-color: #fff;
+}
+
+/* ==========================================================================
+   12. Secondary customer page styling
+   ========================================================================== */
+
+#secondary .social-button {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    border-radius: 7px;
+}
+
+#secondary .profil-infos li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+#secondary .row-flowing {
+    margin-top: -70px;
+}
+
+#secondary .store-logo {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#secondary .store-logo img {
+    object-fit: cover;
+    object-position: center center;
 }

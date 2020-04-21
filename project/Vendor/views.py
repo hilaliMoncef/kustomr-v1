@@ -56,6 +56,14 @@ class SocialView(LoginRequiredMixin, View):
         return render(request, 'vendor/social.html', locals())
 
 
+class TrainingView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les principales stats sur le commerçant
+    """
+    def get(self, request, *args, **kwargs):
+        customers = request.user.vendor.customers.all()[:5]
+        return render(request, 'vendor/training.html', locals())
+
 
 class SettingsView(LoginRequiredMixin, View):
     """

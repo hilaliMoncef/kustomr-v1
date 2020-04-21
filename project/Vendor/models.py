@@ -26,6 +26,7 @@ class Vendor(models.Model):
     store_visits = models.CharField(max_length=40, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
 
     # Social links
+    website = models.CharField(max_length=255, default=None, null=True, blank=True)
     facebook = models.CharField(max_length=255, default=None, null=True, blank=True)
     instagram = models.CharField(max_length=255, default=None, null=True, blank=True)
     tripadvisor = models.CharField(max_length=255, default=None, null=True, blank=True)
@@ -41,8 +42,8 @@ class RewardCardLayout(models.Model):
     vendor = models.OneToOneField(Vendor, on_delete=models.CASCADE, null=True, blank=True, related_name="reward_card_layout")
     icon = models.FileField(upload_to='fidelity/icons/', default=None, null=True, blank=True)
     logo = models.FileField(upload_to='fidelity/logos/', default=None, null=True, blank=True)
-    bg_color = models.CharField(max_length=6, default="000000")
-    text_color = models.CharField(max_length=6, default="ffffff")
+    bg_color = models.CharField(max_length=7, default="#000000")
+    text_color = models.CharField(max_length=7, default="#ffffff")
 
     def __str__(self):
         return 'Fidelity Card Layout for {}'.format(self.vendor)

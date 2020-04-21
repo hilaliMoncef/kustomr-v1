@@ -10,6 +10,75 @@
             <div class="text">Retrouvez vos réseaux sociaux ci-dessous :</div>
             <div class="hr"></div>
         </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card card-social facebook">
+                    <div class="card-header">
+                        <span class="title text-uppercase">Facebook</span>
+                        <hr>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div class="flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark">17546</span>
+                            <span>J'aime</span>
+                        </div>
+                        <div class="flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark">7,56%</span>
+                            <span>Engagement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card card-social instagram">
+                    <div class="card-header">
+                        <span class="title text-uppercase">Instagram</span>
+                        <hr>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div class="flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark">17546</span>
+                            <span>J'aime</span>
+                        </div>
+                        <div class="flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark">7,56%</span>
+                            <span>Engagement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card card-social twitter">
+                    <div class="card-header">
+                        <span class="title text-uppercase">Twitter</span>
+                        <hr>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div class="flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark">17546</span>
+                            <span>J'aime</span>
+                        </div>
+                        <div class="flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark">7,56%</span>
+                            <span>Engagement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="title text-uppercase">Vos réseaux sociaux</div>
+                    </div>
+                    <div class="card-body">
+                        <div id="social-chart">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-4 col">
         <a href="#" class="btn btn-primary w-100">Créer une publication</a>
@@ -56,5 +125,84 @@
 
         calendar.render();
     });
+
+    // CHARTS
+    var socialChartoptions = {
+        chart: {
+            stacked: true,
+            type: 'bar',
+            toolbar: { show: false },
+            height: 290,
+        },
+        plotOptions: {
+            bar: {
+                columnWidth: '10%'
+            }
+        },
+        colors: ['#3b5999', '#e4405f', '#55acee'],
+        series: [{
+            name: 'Facebook',
+            data: [175, 125, 225, 175, 160, 189, 206, 134, 159, 216, 148, 123]
+        }, {
+            name: 'Instagram',
+            data: [175, 125, 225, 175, 160, 189, 206, 134, 159, 216, 148, 123]
+        }, {
+            name: 'Twitter',
+            data: [175, 125, 225, 175, 160, 189, 206, 134, 159, 216, 148, 123]
+        }],
+        grid: {
+            borderColor: '#F2F2F2',
+            padding: {
+                left: 0,
+                right: 0
+            }
+        },
+        legend: {
+            show: true,
+            position: 'top',
+            horizontalAlign: 'left',
+            offsetX: 0,
+            fontSize: '14px',
+            markers: {
+                radius: 50,
+                width: 10,
+                height: 10,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        xaxis: {
+            labels: {
+                style: {
+                    colors: '#A1A1A1',
+                }
+            },
+            axisTicks: {
+                show: false,
+            },
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            axisBorder: {
+                show: false,
+            },
+        },
+        yaxis: {
+            tickAmount: 5,
+            labels: {
+                style: {
+                    color: '#A1A1A1',
+                }
+            }
+        },
+        tooltip: {
+            x: { show: false }
+        },
+    }
+    var socialChart = new ApexCharts(
+        document.querySelector("#social-chart"),
+        socialChartoptions
+    );
+
+    socialChart.render();
 </script>
 {% endblock %}

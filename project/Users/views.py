@@ -46,6 +46,11 @@ class LogoutView(View):
     """
     Cette vue permet de déconnecter n'importe quel utilisateur. Elle ne renvoit aucune erreur.
     """
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return redirect('login')
+    def get(self, request, vendor=None, *args, **kwargs):
+        if request.user.is_customer and vendor:
+            vendor = request.user.get_customer(store=vendor).store_linked
+            logout(request)
+            return redirect('customer_landing_page', vendor=vendor.pk, store_name=vendor.store_name)
+        else:
+            logout(request)
+            return redirect('login')

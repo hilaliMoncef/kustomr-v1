@@ -2,118 +2,332 @@
 
 {% block content %}
 {% load static %}
-
+{% load humanize %}
 <div class="row">
-    <div class="col-md-9 col">
+    <div class="col-md-9 col-12 mb-3">
         <div class="divider">
             <div class="hr"></div>
             <div class="text">Retrouvez vos promotions ci-dessous :</div>
             <div class="hr"></div>
         </div>
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-header">
-                <div class="title text-uppercase">Vos réductions et promotions</div>
+                <div class="title text-uppercase">Vos réductions</div>
             </div>
             <div class="card-body">
                 <div class="row">
+                    {% for discount in request.user.vendor.discounts.all %}
                     <div class="col-md-4 mb-4">
-                        <div class="card">
+                        <div class="card card-flip">
                             <div class="card-img-top overflow-hidden position-relative">
+                                {% if discount.image %}
+                                <img class="img-fluid" alt="" src="{{ discount.image.url }}" />
+                                {% else %}
                                 <img class="img-fluid" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
+                                {% endif %}
                                 <div class="overlay"></div>
                                 <div class="discount-info px-2 py-1">
-                                    <span class="h6 m-0 text-white font-weight-bold">Noêl 2020</span>
-                                    <span class="badge badge-success">Success</span>
+                                    <span class="h6 m-0 text-white font-weight-bold">{{ discount.name }}</span>
+                                    {% if discount.status_text == 'Actif' %}
+                                    <span class="badge badge-success">{{ discount.status_text }}</span>
+                                    {% elif discount.status_text == 'Expiré'%}
+                                    <span class="badge badge-danger">{{ discount.status_text }}</span>
+                                    {% else %}
+                                    <span class="badge badge-warning">{{ discount.status_text }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <a href="#" class="card-footer">
+
+                            <a href="#" data-toggle="modal" data-target="#modalDiscount-{{ discount.pk }}" class="card-footer">
                                 <div class="d-flex justify-content-between align-items">
-                                    <span>Activé</span>
+                                    <span>Voir détails</span>
                                     <span><i class="fas fa-caret-right"></i></span>
                                 </div>
                             </a>
                         </div>
                     </div>
+
+                    <div class="modal fade" id="modalDiscount-{{ discount.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Réduction : {{ discount.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="border p-3"><strong>Description :</strong> {{ discount.description }}</p>
+                                    <hr>
+                                    <ul class="metrics list-unstyled mb-0">
+                                        <li>
+                                            <span>Nom de la réduction</span>
+                                            <span class="text-primary font-weight-bold">{{ discount.name }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Minimum de points</span>
+                                            <span class="text-primary font-weight-bold">{{ discount.min_points }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Date de début</span>
+                                            <span class="text-primary font-weight-bold">{{ discount.start_date|naturalday }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Date de fin</span>
+                                            <span class="text-primary font-weight-bold">{{ discount.end_date|naturalday }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Nombre d'utilisation</span>
+                                            <span class="text-primary font-weight-bold">0</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col">
+                        <p>Aucune réduction.</p>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="title text-uppercase">Vos offres</div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for offer in request.user.vendor.offers.all %}
                     <div class="col-md-4 mb-4">
                         <div class="card">
                             <div class="card-img-top overflow-hidden position-relative">
+                                {% if offer.image %}
+                                <img class="img-fluid" alt="" src="{{ offer.image.url }}" />
+                                {% else %}
                                 <img class="img-fluid" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
+                                {% endif %}
                                 <div class="overlay"></div>
                                 <div class="discount-info px-2 py-1">
-                                    <span class="h6 m-0 text-white font-weight-bold">Noêl 2020</span>
-                                    <span class="badge badge-success">Success</span>
+                                    <span class="h6 m-0 text-white font-weight-bold">{{ offer.name }}</span>
+                                    {% if offer.status_text == 'Actif' %}
+                                    <span class="badge badge-success">{{ offer.status_text }}</span>
+                                    {% elif offer.status_text == 'Expiré'%}
+                                    <span class="badge badge-danger">{{ offer.status_text }}</span>
+                                    {% else %}
+                                    <span class="badge badge-warning">{{ offer.status_text }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <a href="#" class="card-footer">
+                            <a href="#" data-toggle="modal" data-target="#modalOffer-{{ offer.pk }}" class="card-footer">
                                 <div class="d-flex justify-content-between align-items">
-                                    <span>Activé</span>
+                                    <span>Voir détails</span>
                                     <span><i class="fas fa-caret-right"></i></span>
                                 </div>
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <div class="card-img-top overflow-hidden position-relative">
-                                <img class="img-fluid" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
-                                <div class="overlay"></div>
-                                <div class="discount-info px-2 py-1">
-                                    <span class="h6 m-0 text-white font-weight-bold">Noêl 2020</span>
-                                    <span class="badge badge-success">Success</span>
+
+                    <div class="modal fade" id="modalOffer-{{ offer.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Offre : {{ offer.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="p-3 border"><strong>Description :</strong> {{ offer.description }}</p>
+                                    <ul class="metrics list-unstyled mb-0">
+                                        <li>
+                                            <span>Nom de l'offre</span>
+                                            <span class="text-primary font-weight-bold">{{ offer.name }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Coût en points</span>
+                                            <span class="text-primary font-weight-bold">{{ offer.cost }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Date de début</span>
+                                            <span class="text-primary font-weight-bold">{{ offer.start_date|naturalday }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Date de fin</span>
+                                            <span class="text-primary font-weight-bold">{{ offer.end_date|naturalday }}</span>
+                                        </li>
+                                        <li>
+                                            <span>Nombre d'utilisation</span>
+                                            <span class="text-primary font-weight-bold">0</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
-                            <a href="#" class="card-footer">
-                                <div class="d-flex justify-content-between align-items">
-                                    <span>Activé</span>
-                                    <span><i class="fas fa-caret-right"></i></span>
-                                </div>
-                            </a>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <div class="card-img-top overflow-hidden position-relative">
-                                <img class="img-fluid" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
-                                <div class="overlay"></div>
-                                <div class="discount-info px-2 py-1">
-                                    <span class="h6 m-0 text-white font-weight-bold">Noêl 2020</span>
-                                    <span class="badge badge-success">Success</span>
-                                </div>
-                            </div>
-                            <a href="#" class="card-footer">
-                                <div class="d-flex justify-content-between align-items">
-                                    <span>Activé</span>
-                                    <span><i class="fas fa-caret-right"></i></span>
-                                </div>
-                            </a>
-                        </div>
+                    {% empty %}
+                    <div class="col">
+                        <p>Aucune réduction.</p>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3 col">
-        <a href="#" class="btn btn-primary w-100">Créer une réduction</a>
+    <div class="col-md-3 col-12">
+        <a href="#" class="btn btn-primary w-100" data-toggle="modal" data-target="#addDiscount">Créer une
+            réduction</a>
+
+        <!-- Form Modal -->
+        <div class="modal fade" id="addDiscount" tabindex="-1" role="dialog" aria-labelledby="addDiscountTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addDiscountTitle">Créer une réduction</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Type de réduction</label>
+                            <select class="custom-select discount-type-select" name="type">
+                                <option value="discount" selected>Réduction</option>
+                                <option value="offer">Offre spéciale</option>
+                            </select>
+                        </div>
+                        <hr>
+                        <form method="POST" id="discount-form" class="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="type" value="discount">
+                            <div class="form-group">
+                                <label for="name">Nom de la réduction :</label>
+                                <input type="text" name="name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Description :</label>
+                                <textarea name="description" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="min_points">Minimum de points :</label>
+                                <input type="number" min="0" name="min_points" class="form-control" value="0"
+                                    required />
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="start_date">Date de début :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="date" name="start_date" class="form-control" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="end_date">Date de fin :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="date" name="end_date" class="form-control" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Image :</label>
+                                <input type="file" name="image" class="form-control-file" />
+                            </div>
+                        </form>
+                        <form method="POST" id="offer-form" class="d-none" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="type" value="offer">
+                            <div class="form-group">
+                                <label for="name">Nom de l'offre :</label>
+                                <input type="text" name="name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Description :</label>
+                                <textarea name="description" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="cost">Coût en points :</label>
+                                <input type="number" min="0" name="cost" class="form-control" value="0" required />
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="start_date">Date de début :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="date" name="start_date" class="form-control" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="end_date">Date de fin :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i>
+                                                </div>
+                                            </div>
+                                            <input type="date" name="end_date" class="form-control" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Image :</label>
+                                <input type="file" name="image" class="form-control-file" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" id="submit-discount">Sauvegarder</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <ul class="metrics list-unstyled mt-4">
             <li>
-                <span>Panier moyen</span>
-                <span class="text-primary font-weight-bold">36,65€</span>
+                <span>Réduction la plus utilisée</span>
+                <span class="text-primary font-weight-bold">-</span>
             </li>
             <li>
-                <span>Fréquence des visites</span>
-                <span class="text-primary font-weight-bold">3 fois / mois</span>
+                <span>Réduction la moins utilisée</span>
+                <span class="text-primary font-weight-bold">-</span>
             </li>
             <li>
-                <span>Taux d'engagement</span>
-                <span class="text-primary font-weight-bold">5</span>
+                <span>Nombre de réductions actives</span>
+                <span class="text-primary font-weight-bold">{{ active_reductions }}</span>
             </li>
             <li>
-                <span>Dernière visite</span>
-                <span class="text-primary font-weight-bold">15 Avril 2020</span>
+                <span>Nombre de réductions à venir</span>
+                <span class="text-primary font-weight-bold">{{ future_reductions }}</span>
             </li>
             <li>
-                <span>Point de vente favoris</span>
-                <span class="text-primary font-weight-bold">Paris 17ème</span>
+                <span>Nombre de réductions expirées</span>
+                <span class="text-primary font-weight-bold">{{ expired_reductions }}</span>
             </li>
         </ul>
         <div class="card bg-info">
@@ -124,8 +338,9 @@
             </div>
             <div class="card-body">
                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet dolor perspiciatis fugiat optio
-                corporis. Eaque tempore pariatur repellat quibusdam sunt numquam, voluptas tempora debitis soluta
-                perferendis nemo modi nobis mollitia?</p>
+                    corporis. Eaque tempore pariatur repellat quibusdam sunt numquam, voluptas tempora debitis
+                    soluta
+                    perferendis nemo modi nobis mollitia?</p>
                 <ul class="list-unstyled">
                     <li class="py-3 border-top border-bottom">Lien aide réduction</li>
                     <li class="py-3 border-bottom">Lien aide réduction</li>
@@ -138,4 +353,32 @@
 </div>
 
 
+{% endblock %}
+
+{% block script %}
+<script>
+
+    $('.discount-type-select').on('change', function () {
+        if ($(this).val() == 'discount') {
+            $('#discount-form').removeClass('d-none');
+            $('#discount-form').addClass('d-block');
+            $('#offer-form').removeClass('d-block');
+            $('#offer-form').addClass('d-none');
+        } else {
+            $('#offer-form').removeClass('d-none');
+            $('#offer-form').addClass('d-block');
+            $('#discount-form').removeClass('d-block');
+            $('#discount-form').addClass('d-none');
+        }
+    });
+
+    $('#submit-discount').on('click', function (e) {
+        e.preventDefault();
+        if ($('.discount-type-select').val() == 'discount') {
+            $('#discount-form').submit();
+        } else {
+            $('#offer-form').submit();
+        }
+    })
+</script>
 {% endblock %}

@@ -10,9 +10,9 @@
 <div class="container-fluid">
     <div class="row row-flowing">
         <div class="col-md-5 col-12 mb-3">
-            <div class="card h-100 mx-3 text-normal">
+            <div class="card h-100 mr-3 text-normal">
                 <div class="card-header">
-                    <div class="title w-100 text-center text-uppercase">
+                    <div class="title w-100 text-center text-uppercase text-primary">
                         Mon profil
                     </div>
                 </div>
@@ -37,16 +37,16 @@
                     </ul>
                     <div class="card card-outline-primary py-2 mt-5">
                         <span class="h3 text-primary font-weight-bold mb-1">{{ customer.points }}</span>
-                        <span>Prochaine récompense dans <span class="text-primary">20 points</span></span>
+                        <span>Prochaine récompense dans <span class="text-primary">{{ customer.next_gift }} points</span></span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-7 col-12 mb-3">
-            <div class="card h-100 mx-3">
+            <div class="card h-100 ml-3">
                 <div class="card-header">
-                    <div class="title  w-100 text-center text-uppercase">
-                        Mon profil
+                    <div class="title text-primary w-100 text-center text-uppercase">
+                        Ma carte de fidélité
                     </div>
                 </div>
                 <div class="card-body d-flex align-items-center justify-content-between">
@@ -92,6 +92,94 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="title text-uppercase text-center w-100 text-primary">Mes réductions et promotions</div>
+                </div>
+                <div class="card-body">
+                    <div class="row text-normal">
+                        {% for discount in discounts %}
+                        <div class="col-md-6 col-12 mb-3 overflow-hidden" style="max-height: 200px;">
+                            <div class="card h-100">
+                                <div class="card-img-top h-100 overflow-hidden position-relative" style="border-radius: 7px; border-bottom-left-radius: 7px; border-bottom-right-radius: 7px;">
+                                    <img src="{% static 'assets/img/bg01.jpg' %}" class="object-fit" alt="" />
+                                    <div class="overlay"></div>
+                                    <div class="discount-info px-2 py-1 d-flex flex-column align-items-start">
+                                        <div class="d-flex align-items-center w-100 justify-content-between">
+                                            <span class="h6 m-0 text-white font-weight-bold">{{ discount.name }}</span>
+                                            {% if discount.status_text == 'Actif' %}
+                                            <span class="badge badge-success">{{ discount.status_text }}</span>
+                                            {% elif discount.status_text == 'Expiré'%}
+                                            <span class="badge badge-danger">{{ discount.status_text }}</span>
+                                            {% else %}
+                                            <span class="badge badge-warning">{{ discount.status_text }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-white text-left">
+                                            {{ discount.description }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="title text-uppercase w-100 text-primary text-center">
+                        Information de la boutique {{ vendor.store_name }}
+                    </div>
+                </div>
+                <div class="card-body text-normal">
+                    <div class="text-center mt-2 font-weight-bold">
+                        15 rue de Paris - 75019 Paris
+                    </div>
+                    <div class="text-center mb-2 font-weight-bold">
+                        06650208473
+                    </div>
+                    <div class="h6 font-weight-bold mt-4 text-center">Horaires d'ouverture</div>
+                    <table class="table table-bordered table-hours">
+                        <tbody>
+                            <tr>
+                                <td>Lundi</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Mardi</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Mercredi</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Jeudi</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Vendredi</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Samedi</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                            <tr>
+                                <td>Dimanche</td>
+                                <td>8:00-17:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -51,7 +51,9 @@
                 {% endif %}
             </ul>
             <div class="store-logo mx-auto">
+                {% if vendor.reward_card_layout.logo %}
                 <img src="{{ vendor.reward_card_layout.logo.url }}" alt="{{ vendor.store_name }}" />
+                {% endif %}
             </div>
             {% if vendor.website != 'None' %}
             <a href="{{ vendor.website }}" target="_blank" class=" d-none d-md-flex">Voir le site web ></a>

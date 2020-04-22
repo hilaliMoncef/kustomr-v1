@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from .forms import SignUpForm
 from django.utils.text import slugify
+from django.utils import timezone
 
 
 class LandingPageView(View):
@@ -69,4 +70,12 @@ class DashboardView(View):
         if not request.user.is_authenticated:
             login(request, token.customer.user)
         customer = request.user.get_customer(store=self.kwargs['vendor'])
-        return render(request, 'customer/home.html', locals())
+        discounts = list(vendor.discounts.filter(is_active=True, end_date__gte=timezone.now()))
+        offers = list(vendor.offers.filter(is_active=True, end_date__gte=timezone.now()))
+        
+        context = {
+            'vendor': vendor,
+            'customer': customer,
+            'discounts': discounts + offers
+        }
+        return render(request, 'customer/home.html', context)

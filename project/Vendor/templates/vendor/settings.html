@@ -26,6 +26,7 @@
                         <form method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="form_type" value="infos" />
+                            <h5>Informations générales</h5>
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input class="form-control" disabled name="email" value="{{ request.user.email }}">
@@ -59,6 +60,7 @@
                                 </div>
                             </div>
                             <hr>
+                            <h5>Liens & réseaux sociaux</h5>
                             <div class="form-group">
                                 <label for="facebook">Site web</label>
                                 <div class="input-group">
@@ -84,6 +86,42 @@
                                         <span class="input-group-text"><i class="fab fa-instagram"></i></span>
                                     </div>
                                     <input class="form-control" name="instagram" value="{{ vendor.instagram }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="youtube">Youtube</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-youtube"></i></span>
+                                    </div>
+                                    <input class="form-control" name="youtube" value="{{ vendor.youtube }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="linkedin">LinkedIn</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                                    </div>
+                                    <input class="form-control" name="linkedin" value="{{ vendor.linkedin }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pinterest">Pinterest</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-pinterest"></i></span>
+                                    </div>
+                                    <input class="form-control" name="pinterest" value="{{ vendor.pinterest }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="snapchat">Snapchat</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fab fa-snapchat"></i></span>
+                                    </div>
+                                    <input class="form-control" name="snapchat" value="{{ vendor.snapchat }}">
                                 </div>
                             </div>
                             <div class="form-group">

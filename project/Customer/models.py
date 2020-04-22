@@ -3,6 +3,7 @@ from Users.models import User
 from Vendor.models import Vendor
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 class CustomerToken(models.Model):
@@ -21,6 +22,13 @@ class Customer(models.Model):
 
     def __str__(self):
         return 'Customer : {}'.format(self.user)
+
+    @property
+    def next_gift(self):
+        discounts = list(self.store_linked.discounts.filter(is_active=True, end_date__gte=timezone.now(), min_points__gt=self.points).values_list('min_points', flat=True))
+        offers = list(self.store_linked.offers.filter(is_active=True, end_date__gte=timezone.now(), cost__gt=self.points).values_list('cost', flat=True))
+        all_points = discounts + offers
+        return min(all_points) - self.points
 
 
 @receiver(post_save, sender=Customer)

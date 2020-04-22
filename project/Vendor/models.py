@@ -2,6 +2,7 @@ from django.db import models
 from Users.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 # Create your models here.
 class Vendor(models.Model):
@@ -29,6 +30,10 @@ class Vendor(models.Model):
     website = models.CharField(max_length=255, default=None, null=True, blank=True)
     facebook = models.CharField(max_length=255, default=None, null=True, blank=True)
     instagram = models.CharField(max_length=255, default=None, null=True, blank=True)
+    youtube = models.CharField(max_length=255, default=None, null=True, blank=True)
+    linkedin = models.CharField(max_length=255, default=None, null=True, blank=True)
+    pinterest = models.CharField(max_length=255, default=None, null=True, blank=True)
+    snapchat = models.CharField(max_length=255, default=None, null=True, blank=True)
     tripadvisor = models.CharField(max_length=255, default=None, null=True, blank=True)
 
     def __str__(self):
@@ -64,9 +69,56 @@ class Discount(models.Model):
     """
         This model represents all discounts created by the Vendor. They can be applied to the Customers.
     """
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="discounts")
+    image = models.FileField(default=None, blank=True, null=True, upload_to="discounts/")
     is_active = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
-    expiry = models.DateTimeField(default=None, null=True, blank=True)
+    description = models.TextField()
+    min_points = models.IntegerField(default=0)
+    start_date = models.DateTimeField(default=None, null=True, blank=True)
+    end_date = models.DateTimeField(default=None, null=True, blank=True)
 
     def __str__(self):
-        return '{} - Expire le {}'.format(self.name, self.expiry)
+        return 'Réduction "{}" - {}'.format(self.name, self.status_text)
+
+    @property
+    def status_text(self):
+        if self.is_active:
+            if timezone.now() >= self.start_date and timezone.now() <= self.end_date:
+                return 'Actif'
+            elif timezone.now() < self.start_date:
+                return 'A venir'
+            else:
+                return 'Expiré'
+        else:
+            return 'Désactivé'
+        
+
+
+class Offer(models.Model):
+    """
+        This model represents all offers created by the Vendor. They can be applied to the Customers using customers points.
+    """
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="offers")
+    image = models.FileField(default=None, blank=True, null=True, upload_to="offers/")
+    is_active = models.BooleanField(default=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    cost = models.IntegerField()
+    start_date = models.DateTimeField(default=None, null=True, blank=True)
+    end_date = models.DateTimeField(default=None, null=True, blank=True)
+
+    def __str__(self):
+        return 'Offre "{}" - {}'.format(self.name, self.status_text)
+
+    @property
+    def status_text(self):
+        if self.is_active:
+            if timezone.now() >= self.start_date and timezone.now() <= self.end_date:
+                return 'Actif'
+            elif timezone.now() < self.start_date:
+                return 'A venir'
+            else:
+                return 'Expiré'
+        else:
+            return 'Désactivé'

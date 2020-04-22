@@ -4,9 +4,10 @@ from django.views import View
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.utils import timezone
 import qrcode
 import json
 
@@ -34,8 +35,30 @@ class DiscountsView(LoginRequiredMixin, View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def get(self, request, *args, **kwargs):
-        customers = request.user.vendor.customers.all()[:5]
+        discount_form = DiscountForm()
+        offer_form = OfferForm()
+        vendor = request.user.vendor
+        future_reductions = vendor.discounts.filter(start_date__gt=timezone.now()).count() + vendor.offers.filter(start_date__gt=timezone.now()).count()
+        active_reductions = vendor.discounts.filter(start_date__lte=timezone.now(), end_date__gte=timezone.now()).count() + vendor.offers.filter(start_date__lte=timezone.now(), end_date__gte=timezone.now()).count()
+        expired_reductions = vendor.discounts.filter(end_date__lt=timezone.now()).count() + vendor.offers.filter(end_date__lt=timezone.now()).count()
         return render(request, 'vendor/discounts.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        form_type = request.POST['type']
+        if form_type == 'discount':
+            form = DiscountForm(request.POST, request.FILES)
+        else:
+            form = OfferForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.vendor = request.user.vendor
+            obj.save()
+        else:
+            errors = json.loads(form.errors.as_json())
+            for error in errors:
+                messages.add_message(request, messages.ERROR, '{} : {}'.format(error, errors[error][0]['message']))
+        return redirect('vendor_discounts')
 
 
 class MarketingView(LoginRequiredMixin, View):
@@ -92,7 +115,9 @@ class SettingsView(LoginRequiredMixin, View):
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'Le design a bien été modifié.')
             else:
-                print(form.errors)
+                errors = json.loads(form.errors.as_json())
+                for error in errors:
+                    messages.add_message(request, messages.ERROR, errors[error][0]['message'])
         elif request.POST['form_type'] == 'password':
             # If the PasswordChange form is submitted -- we use the default form from Django
             form = PasswordChangeForm(request.user, request.POST)

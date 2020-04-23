@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div>
-                        <h2>187</h2>
+                        <h2>{{ customers_total }}</h2>
                     </div>
                 </div>
                 <div class="chart">
@@ -39,7 +39,7 @@
         </div>
     </div>
     <div class="col-lg-4 col-md-6 col-12">
-        <div class="card">
+        <div class="card coming-soon">
             <div class="card card-statistics">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -69,7 +69,7 @@
         </div>
     </div>
     <div class="col-lg-4 col-md-6 col-12">
-        <div class="card">
+        <div class="card coming-soon">
             <div class="card card-statistics">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
@@ -105,7 +105,7 @@
         <div class="card">
             <div class="card-header">
                 <span class="title text-uppercase">Evénements récents</span>
-                <a href="">Voir tout ></a>
+                <a href="{% url 'vendor_customers' %}">Voir tout ></a>
             </div>
             <div class="card-body">
                 <table class="table">
@@ -113,40 +113,38 @@
                         <tr>
                             <th scope="col">Utilisateurs</th>
                             <th scope="col">Numéro clients</th>
-                            <th scope="col">Montant</th>
+                            <th scope="col">Points</th>
                             <th scope="col">Date</th>
                             <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for customer in customers %}
                         <tr>
-                            <td>Herman Beck</td>
-                            <td>5231230</td>
-                            <td>77,99€</td>
-                            <td>13 avril 2020</td>
-                            <td>Achat</td>
+                            <td>{{ customer.user }}</td>
+                            <td>#{{ customer.pk }}</td>
+                            <td>{{ customer.points }}</td>
+                            <td>{{ customer.user.date_joined }}</td>
+                            <td>
+                                {% if customer.user.is_active %}
+                                <span class="badge badge-success">Actif</span>
+                                {% else %}
+                                <span class="badge badge-danger">Inactif</span>
+                                {% endif %}
+                            </td>
                         </tr>
+                        {% empty %}
                         <tr>
-                            <td>Herman Beck</td>
-                            <td>5231230</td>
-                            <td>77,99€</td>
-                            <td>13 avril 2020</td>
-                            <td>Achat</td>
+                            <td colspan="5" class="text-center">Aucun évenement récent.</td>
                         </tr>
-                        <tr>
-                            <td>Herman Beck</td>
-                            <td>5231230</td>
-                            <td>77,99€</td>
-                            <td>13 avril 2020</td>
-                            <td>Achat</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     <div class="col-lg-4 col-12 mb-3">
-        <div class="card">
+        <div class="card coming-soon">
             <div class="card-header">
                 <span class="title text-uppercase">Produits les plus vendus</span>
             </div>
@@ -164,7 +162,7 @@
 
 {% block script %}
 <script>
-    var salesChartoptions = {
+    var memberChartoptions = {
         chart: {
             height: 100,
             type: 'area',
@@ -200,8 +198,8 @@
             }
         },
         series: [{
-            name: 'Sales',
-            data: [10, 15, 7, 12, 3, 16]
+            name: 'Membres',
+            data: {{ customer_count }}
         }],
 
         xaxis: {
@@ -223,12 +221,12 @@
         },
     }
 
-    var salesChart = new ApexCharts(
+    var membersChart = new ApexCharts(
         document.querySelector("#members-chart-1"),
-        salesChartoptions
+        memberChartoptions
     );
 
-    salesChart.render();
+    membersChart.render();
 
     var panierChartoptions = {
         chart: {

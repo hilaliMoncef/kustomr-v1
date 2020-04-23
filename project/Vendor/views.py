@@ -4,12 +4,13 @@ from django.views import View
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
 import qrcode
 import json
+import pandas as pd
 
 
 class DashboardView(LoginRequiredMixin, View):
@@ -17,8 +18,23 @@ class DashboardView(LoginRequiredMixin, View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def get(self, request, *args, **kwargs):
-        customers = request.user.vendor.customers.all()[:5]
-        return render(request, 'vendor/home.html', locals())
+        vendor = request.user.vendor
+        customers = vendor.customers.all()[:5]
+
+        customers_total = vendor.customers.count()
+        
+        # Creating a dataframe
+        df = pd.DataFrame(vendor.customers.values('id', 'user__date_joined'))
+        df['user__date_joined'] = pd.to_datetime(df['user__date_joined'])
+        df.set_index('user__date_joined', drop=True, inplace=True)
+        customer_count = list(df.resample('D').count()['id'])
+
+        context = {
+            'customers': customers,
+            'customers_total': customers_total,
+            'customer_count': customer_count
+        }
+        return render(request, 'vendor/home.html', context)
 
 
 class CustomersView(LoginRequiredMixin, View):
@@ -96,6 +112,7 @@ class SettingsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         vendor = request.user.vendor
         form_infos = VendorForm(instance=vendor)
+        form_opening_hours = VendorOpeningHoursForm(instance=vendor.opening_hours)
         form_reward_card = RewardCardLayoutForm(instance=vendor.reward_card_layout)
         form_password_change = PasswordChangeForm(request.user)
         return render(request, 'vendor/settings.html', locals())
@@ -107,6 +124,12 @@ class SettingsView(LoginRequiredMixin, View):
             if form.is_valid() and form.has_changed():
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'Vos informations personnelles ont été modifiées.')
+            return redirect('vendor_settings')
+        elif request.POST['form_type'] == 'opening_hours':
+            form = VendorOpeningHoursForm(request.POST, instance=request.user.vendor.opening_hours)
+            if form.is_valid() and form.has_changed():
+                form.save()
+                messages.add_message(request, messages.SUCCESS, 'Vos horaires d\'ouverture ont été modifiées.')
             return redirect('vendor_settings')
         elif request.POST['form_type'] == 'reward_card':
             # If the RewardCardLayout form is submitted

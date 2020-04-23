@@ -43,11 +43,18 @@
       {% block sidebar %}{% include 'main/components/sidebar.html' %}{% endblock %}
     </div>
     <div id="page-content-wrapper">
-      <div class="container content py-md-4 px-md-3 py-3 px-2 mb-4">
+      <div class="container-fluid position-relative content py-md-4 px-md-3 py-3 px-2 mb-4">
         {% block content %}{% endblock %}
+        
+        <!-- Floating button -->
+        <div class="card-float bottom right">
+            <a href="" class="btn-round btn-primary">
+                <i class="fas fa-user-plus"></i>
+            </a>
+        </div>
       </div>
       <div class="dashboard-footer">
-        {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
+          {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
       </div>
     </div>
     <div id="right-sidebar">
@@ -85,6 +92,9 @@
 
   <!-- jQuery Flip JS -->
   <script src="{% static 'assets/js/jquery.flip.min.js' %}"></script>
+
+  <!--  jQuery Loading Plugin -->
+  <script src="{% static 'assets/js/jquery.loading.min.js' %}"></script>
 
   <!-- ToasterJS for error handling-->
   <script src="{% static 'assets/js/toastr.min.js' %}"></script>

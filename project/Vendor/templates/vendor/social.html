@@ -3,7 +3,7 @@
 {% block content %}
 {% load static %}
 
-<div class="row">
+<div class="row d-none" id="loggedIn">
     <div class="col-md-8 col">
         <div class="divider">
             <div class="hr"></div>
@@ -18,12 +18,12 @@
                         <hr>
                     </div>
                     <div class="card-body d-flex align-items-center justify-content-between">
-                        <div class="flex-column align-items-center text-center">
-                            <span class="font-weight-bold text-dark">17546</span>
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark" id="fb-fan-count">17546</span>
                             <span>J'aime</span>
                         </div>
-                        <div class="flex-column align-items-center text-center">
-                            <span class="font-weight-bold text-dark">7,56%</span>
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <span class="font-weight-bold text-dark" id="fb-fan-engagement">7,56%</span>
                             <span>Engagement</span>
                         </div>
                     </div>
@@ -36,11 +36,11 @@
                         <hr>
                     </div>
                     <div class="card-body d-flex align-items-center justify-content-between">
-                        <div class="flex-column align-items-center text-center">
+                        <div class="d-flex flex-column align-items-center text-center">
                             <span class="font-weight-bold text-dark">17546</span>
                             <span>J'aime</span>
                         </div>
-                        <div class="flex-column align-items-center text-center">
+                        <div class="d-flex flex-column align-items-center text-center">
                             <span class="font-weight-bold text-dark">7,56%</span>
                             <span>Engagement</span>
                         </div>
@@ -54,11 +54,11 @@
                         <hr>
                     </div>
                     <div class="card-body d-flex align-items-center justify-content-between">
-                        <div class="flex-column align-items-center text-center">
+                        <div class="d-flex flex-column align-items-center text-center">
                             <span class="font-weight-bold text-dark">17546</span>
                             <span>J'aime</span>
                         </div>
-                        <div class="flex-column align-items-center text-center">
+                        <div class="d-flex flex-column align-items-center text-center">
                             <span class="font-weight-bold text-dark">7,56%</span>
                             <span>Engagement</span>
                         </div>
@@ -82,7 +82,7 @@
     </div>
     <div class="col-md-4 col">
         <a href="#" class="btn btn-primary w-100">Créer une publication</a>
-        <div class="card mt-3">
+        <div class="card my-3">
             <div class="card-body">
                 <div id="social-calendar"></div>
                 <hr>
@@ -103,17 +103,131 @@
                 </ul>
             </div>
         </div>
+        <button type="button" class="btn btn-info" id="logoutAPI">Déconnexino API</button>
 
     </div>
 
+</div>
+
+<div class="row d-none" id="logIn">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="fb-login-button" data-scope="manage_pages,read_insights" data-size="medium"
+                    data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="false"
+                    data-use-continue-as="true" data-width=""></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 {% endblock %}
 
 {% block script %}
+<script async defer crossorigin="anonymous"
+    src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v6.0&appId=2676493982591304&autoLogAppEvents=1"></script>
 <script>
     $(document).ready(function () {
+        // FACEBOOK SDK LOGIC HERE
+        var userToken, userID, pageToken, pageID;
+
+        $.ajaxSetup({ cache: true });
+        $("#page-content-wrapper").loading();
+        $.getScript('https://connect.facebook.net/fr_FR/sdk.js', function () {
+            FB.init({
+                appId: '2676493982591304',
+                version: 'v5.0' // or v2.1, v2.2, v2.3, ...
+            });
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        });
+
+        function statusChangeCallback(response) {
+            console.log(response);
+            if (response.status == 'connected') {
+                // OK : We are connected and we have a token
+                $('#loggedIn').removeClass('d-none');
+                $('#logIn').addClass('d-none');
+                userToken = response.authResponse.accessToken;
+                userID = response.authResponse.userID;
+
+                // Now using this tokens we get the Page infos and Token
+                FB.api(
+                    "/" + userID + "/accounts",
+                    {
+                        "access_token": userToken
+                    },
+                    function (response) {
+                        if (response && !response.error) {
+                            pageToken = response.data[0].access_token;
+                            pageID = response.data[0].id;
+                            console.log(pageID);
+
+                            // We call the function to retrieve page data
+                            getPageInfo();
+                            getPageMetrics();
+                            $("#page-content-wrapper").loading('stop');
+                        }
+                    }
+                );
+            } else if (response.status == 'unknown') {
+                // UNAUTHORIZED : We are not connected, show login button
+                $('#logIn').removeClass('d-none');
+                $('#loggedIn').addClass('d-none');
+                $("#page-content-wrapper").loading('stop');
+            }
+        }
+
+        function getPageInfo() {
+            // This fucntion is used to get Facebook Page infos
+            FB.api(
+                "/"+ pageID,
+                {
+                    "fields": "fan_count"
+                },
+                function (response) {
+                    if (response && !response.error) {
+                        /* handle the result */
+                        $('#fb-fan-count').text(response.fan_count);
+                    }
+                    console.warn(response)
+                }
+            );
+        }
+
+        function getPageMetrics() {
+            // This fucntion is used to get Facebook Page infos
+            FB.api(
+                "/"+ pageID +"/insights",
+                {
+                    "metric": "page_engaged_users,page_impressions",
+                    "period": "week",
+                    "access_token" : pageToken
+                },
+                function (response) {
+                    if (response && !response.error) {
+                        /* handle the result */
+                        var taux = response.data[0].values[0].value / response.data[1].values[0].value
+                        $('#fb-fan-engagement').text(taux);
+                    }
+                    console.warn(response)
+                }
+            );
+        }
+
+        $('#logoutAPI').click(function(e) {
+            e.preventDefault();
+            FB.logout(response.authResponse, function(resp) {
+                // user is now logged out
+                $('#loggedIn').addClass('d-none');
+                $('#logIn').removeClass('d-none');
+            });
+        });
+
+
+
         var calendarEl = document.getElementById('social-calendar');
 
         var calendar = new FullCalendar.Calendar(calendarEl, {

@@ -21,6 +21,7 @@ body {
     background-color: #F1F4F6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden !important;
+    height: 100vh;
 }
 
 
@@ -492,13 +493,29 @@ a.text-primary:hover {
     align-items: center;
 }
 
+#wrapper {
+    height: calc(100vh - 65px);
+}
+
 #sidebar-wrapper {
-    min-height: 100vh;
+    position: fixed;
+    z-index: 901;
+    top: 65px;
+    left: 0;
+    min-height: 100%;
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
+}
+
+.dashboard-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 900;
 }
   
 #brand {
@@ -510,10 +527,31 @@ a.text-primary:hover {
 #sidebar-wrapper .nav-item {
     width: 240px;
 }
+
+#sidebar-wrapper > div.position-relative {
+    height: calc(100vh - 65px);
+}
+
+#sidebar-wrapper .sidebar-buttons-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    
+}
+
+#sidebar-wrapper .sidebar-buttons-bottom .nav-link {
+    font-size: 12px !important;
+}
   
 #page-content-wrapper {
     position: relative;
-    min-width: 100vw;
+    min-width: 100%;
+    margin-top: 65px;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -521,11 +559,18 @@ a.text-primary:hover {
 }
 
 .dashboard-footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    min-width: 100%;
+    width: 100%;
     background-color: white;
     padding: 20px 0;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+    -webkit-box-shadow: 0px -8px 10px -5px rgba(0,0,0,0.15);
+    -moz-box-shadow: 0px -8px 10px -5px rgba(0,0,0,0.15);
+    box-shadow: 0px -8px 10px -5px rgba(0,0,0,0.15);
 }
 
 #right-sidebar {
@@ -533,7 +578,7 @@ a.text-primary:hover {
     top: 0;
     right: 0;
     background-color: white;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     z-index: 1000;
     margin-right: -100%;
@@ -542,6 +587,18 @@ a.text-primary:hover {
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
     overflow-y: scroll;
+}
+
+#right-sidebar .wrapper {
+    min-height: 100vh;
+    position: relative;
+}
+
+#right-sidebar .rightbar-buttons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
 }
 
 #right-sidebar.toggled {
@@ -556,10 +613,19 @@ a.text-primary:hover {
     #page-content-wrapper {
         min-width: 0;
         width: 100%;
+        margin-left: 240px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -250px;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        margin-left: 0;
+    }
+
+    #wrapper .dashboard-footer {
+        width: calc(100% - 240px);
     }
 
     #right-sidebar {
@@ -904,16 +970,34 @@ address {}
     box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
 }
 
-.card-float {
+.card.coming-soon::after {
+    content: 'Bientôt disponible..';
     position: absolute;
+    z-index: 800;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #C71A41;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.card-float {
+    position: fixed;
 }
 
 .card-float.bottom {
-    bottom: -20px;
+    bottom: 70px;
 }
 
 .card-float.right {
-    right: -20px;
+    right: 20px;
 }
 
 .card-header {
@@ -1189,6 +1273,39 @@ address {}
     text-align: center;
 }
 
+.card-news {
+    overflow: hidden;
+    border: 0;
+    width: 100%;
+    -webkit-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0);
+    -moz-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0);
+    box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0);
+    transition: all 400ms ease-in-out;
+}
+
+.card-news .bottom-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.5) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.5) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.5) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#000000",GradientType=1);
+    transition: all 400ms ease-in-out;
+}
+
+.card-news:hover .bottom-overlay {
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.7) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.7) 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,.7) 100%);
+}
+
+.card-news .card-body {
+    z-index: 100;
+}
+
 /* ==========================================================================
    11. Timeline
    ========================================================================== */
@@ -1275,4 +1392,81 @@ address {}
 #secondary .store-logo img {
     object-fit: cover;
     object-position: center center;
+}
+
+
+/* ==========================================================================
+   13. SOCIAL CARDS
+   ========================================================================== */
+
+.card-facebook {
+    background-color: #3b5999;
+    color: #fff;
+}
+.card-facebook:hover {
+    background-color: #334e86;
+    color: #fff;
+}
+
+.card-instagram {
+    background-color: #CA007D;
+    color: #fff;
+}
+.card-instagram:hover {
+    background-color: rgb(179, 2, 111);
+    color: #fff;
+}
+
+.card-twitter {
+    background-color: #55acee;
+    color: #fff;
+}
+.card-twitter:hover {
+    background-color: #4fa0dd;
+    color: #fff;
+}
+
+.card-youtube {
+    background-color: #cd201f;
+    color: #fff;
+}
+.card-youtube:hover {
+    background-color: #b91a1a;
+    color: #fff;
+}
+
+.card-pinterest {
+    background-color: #bd081c;
+    color: #fff;
+}
+.card-pinterest:hover {
+    background-color: #a50618;
+    color: #fff;
+}
+
+.card-snapchat {
+    background-color: #FFFC00;
+    color: #000;
+}
+.card-snapchat:hover {
+    background-color: rgb(240, 236, 2);
+    color: #000;
+}
+
+.card-linkedin {
+    background-color: #0077B5;
+    color: #fff;
+}
+.card-linkedin:hover {
+    background-color: rgb(1, 108, 165);
+    color: #fff;
+}
+
+.card-tripadvisor {
+    background-color: #34E0A2;
+    color: #fff;
+}
+.card-tripadvisor:hover {
+    background-color: rgb(45, 199, 143);
+    color: #fff;
 }

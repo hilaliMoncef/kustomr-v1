@@ -11,8 +11,10 @@
         <div class="row">
             <div class="col-md-3 col-12">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" id="v-pills-nfos-tab" data-toggle="pill" href="#v-pills-infos" role="tab"
+                    <a class="nav-link active" id="v-pills-infos-tab" data-toggle="pill" href="#v-pills-infos" role="tab"
                         aria-controls="v-pills-infos" aria-selected="true">Informations générales</a>
+                    <a class="nav-link" id="v-pills-hours-tab" data-toggle="pill" href="#v-pills-hours" role="tab"
+                        aria-controls="v-pills-hours" aria-selected="true">Horaires d'ouverture</a>
                     <a class="nav-link" id="v-pills-reward-card-tab" data-toggle="pill" href="#v-pills-reward-card"
                         role="tab" aria-controls="v-pills-reward-card" aria-selected="false">Carte de fidélité</a>
                     <a class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab"
@@ -58,6 +60,14 @@
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="store_phone">Numéro de contact</label>
+                                <input class="form-control" name="store_phone" value="{{ vendor.store_phone }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="store_adress">Adresse de l'établissement</label>
+                                <textarea class="form-control" name="store_adress">{{ vendor.store_adress }}</textarea>
                             </div>
                             <hr>
                             <h5>Liens & réseaux sociaux</h5>
@@ -137,6 +147,59 @@
                                 <div class="col text-center">
                                     <button type="submit" class="btn btn-success">Enregistrer</button>
                                 </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-hours" role="tabpanel"
+                        aria-labelledby="v-pills-hours-tab">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="opening_hours" />
+                            <h5>Horaires d'ouverture</h5>
+                            <div class="form-group row">
+                                <label for="monday" class="col-sm-2 col-form-label">Lundi : </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="monday" value="{{ vendor.opening_hours.monday }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tuesday" class="col-sm-2 col-form-label">Mardi: </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="tuesday" value="{{ vendor.opening_hours.tuesday }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="wednesday" class="col-sm-2 col-form-label">Mercredi: </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="wednesday" value="{{ vendor.opening_hours.wednesday }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="thursday" class="col-sm-2 col-form-label">Jeudi: </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="thursday" value="{{ vendor.opening_hours.thursday }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="friday" class="col-sm-2 col-form-label">Vendredi: </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="friday" value="{{ vendor.opening_hours.friday }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="saturday" class="col-sm-2 col-form-label">Samedi: </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="saturday" value="{{ vendor.opening_hours.saturday }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="sunday" class="col-sm-2 col-form-label">Dimanche: </label>
+                                <div class="col-sm-10">
+                                    <input class="form-control flex-grow-1" name="sunday" value="{{ vendor.opening_hours.sunday }}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button type="submit" class="btn btn-success mx-auto">Enregistrer</button>
                             </div>
                         </form>
                     </div>

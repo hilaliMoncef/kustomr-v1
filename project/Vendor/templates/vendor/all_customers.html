@@ -22,11 +22,6 @@
 <div class="row">
     <div class="col-12 mb-3">
         <div class="card position-relative">
-            <div class="card-float bottom right">
-                <a href="" class="btn-round btn-primary">
-                    <i class="fas fa-user-plus"></i>
-                </a>
-            </div>
             <div class="card-header">
                 <span class="title text-uppercase">Listing clients</span>
             </div>
@@ -76,7 +71,7 @@
 
 {% block rightbar %}
 {% for customer in customers %}
-<div id="data-{{ customer.pk }}" class="d-none">
+<div id="data-{{ customer.pk }}" class="wrapper d-none">
     <div class="container">
         <div class="py-4 px-4">
             <div class="row d-flex align-items-center justify-content-between">
@@ -172,7 +167,7 @@
             </div>
         </div>
     </div>
-    <div class="w-100 d-flex align-items-center">
+    <div class="rightbar-buttons d-flex align-items-center">
         <button type="button" class="btn btn-primary btn-list border-right flex-grow-1"><i
                 class="fas fa-envelope mr-2"></i>
             Envoyer un mail</button>

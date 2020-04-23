@@ -1,12 +1,18 @@
 from django.forms import ModelForm
 from django.forms import ValidationError
-from .models import Vendor, RewardCardLayout, Discount, Offer
+from .models import Vendor, RewardCardLayout, Discount, Offer, VendorOpeningHours
 
 
 class VendorForm(ModelForm):
     class Meta:
         model = Vendor
         exclude = ['user']
+
+
+class VendorOpeningHoursForm(ModelForm):
+    class Meta:
+        model = VendorOpeningHours
+        exclude = ['vendor']
 
 
 class RewardCardLayoutForm(ModelForm):

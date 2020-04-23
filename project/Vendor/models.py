@@ -26,18 +26,36 @@ class Vendor(models.Model):
     store_type = models.CharField(max_length=40, choices=STORE_TYPE_CHOICES, default='FOOD')
     store_visits = models.CharField(max_length=40, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
 
+    # Store infos
+    store_phone = models.CharField(max_length=255)
+    store_adress = models.TextField()
+
     # Social links
-    website = models.CharField(max_length=255, default=None, null=True, blank=True)
-    facebook = models.CharField(max_length=255, default=None, null=True, blank=True)
-    instagram = models.CharField(max_length=255, default=None, null=True, blank=True)
-    youtube = models.CharField(max_length=255, default=None, null=True, blank=True)
-    linkedin = models.CharField(max_length=255, default=None, null=True, blank=True)
-    pinterest = models.CharField(max_length=255, default=None, null=True, blank=True)
-    snapchat = models.CharField(max_length=255, default=None, null=True, blank=True)
-    tripadvisor = models.CharField(max_length=255, default=None, null=True, blank=True)
+    website = models.CharField(max_length=255, default='', null=True, blank=True)
+    facebook = models.CharField(max_length=255, default='', null=True, blank=True)
+    instagram = models.CharField(max_length=255, default='', null=True, blank=True)
+    youtube = models.CharField(max_length=255, default='', null=True, blank=True)
+    linkedin = models.CharField(max_length=255, default='', null=True, blank=True)
+    pinterest = models.CharField(max_length=255, default='', null=True, blank=True)
+    snapchat = models.CharField(max_length=255, default='', null=True, blank=True)
+    tripadvisor = models.CharField(max_length=255, default='', null=True, blank=True)
 
     def __str__(self):
         return self.store_name
+
+
+class VendorOpeningHours(models.Model):
+    vendor = models.OneToOneField(Vendor, on_delete=models.CASCADE, related_name="opening_hours")
+    monday = models.CharField(max_length=100, blank=True, default="-")
+    tuesday = models.CharField(max_length=100, blank=True, default="-")
+    wednesday = models.CharField(max_length=100, blank=True, default="-")
+    thursday = models.CharField(max_length=100, blank=True, default="-")
+    friday = models.CharField(max_length=100, blank=True, default="-")
+    saturday = models.CharField(max_length=100, blank=True, default="-")
+    sunday = models.CharField(max_length=100, blank=True, default="-")
+
+    def __str__(self):
+        return 'Heures d\'ouvertures de {}'.format(self.vendor.store_name)
 
 
 class RewardCardLayout(models.Model):
@@ -57,9 +75,10 @@ class RewardCardLayout(models.Model):
 @receiver(post_save, sender=Vendor)
 def create_default_layout(sender, instance, created, **kwargs):
     """
-        This function is connected to Vendor Modeal creation to create a default RewardCardLayout
+        This function is connected to Vendor Modeal creation to create a default RewardCardLayout and a default Opening Hours
     """
     if created:
+        VendorOpeningHours.objects.create(vendor=instance)
         RewardCardLayout.objects.create(vendor=instance)
 
 

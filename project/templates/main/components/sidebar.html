@@ -93,6 +93,10 @@
         <li class="nav-item">
             <a class="nav-link" href=""><i class="fas fa-briefcase"></i> Commerçants</a>
         </li>
+        <li class="nav-item">
+            {% url 'admin_trainings' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-book"></i> Formations</a>
+        </li>
         {% elif request.user.is_customer %}
         <li class="nav-item">
             {% url 'customer_home' as url %}

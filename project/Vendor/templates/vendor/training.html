@@ -4,16 +4,32 @@
 {% load static %}
 
 <div class="row">
-    <div class="col-md-4">
+    {% for training in trainings %}
+    <div class="col-md-4 col-12">
         <div class="card mb-3">
-            <div class="card-header justify-content-center">
-                <div class="title text-center">
-                    Email marketing
+            <div class="card-header justify-content-between">
+                <div class="text-center d-flex flex-column align-items-start">
+                    <span class="title">{{ training.name }}</span>
+                    <div class="d-flex font-weight-normal">
+                        {% if not training.is_free %}
+                        <span class="badge badge-info mr-1"><i class="fas fa-dollar-sign"></i></span>
+                        {% endif %}
+                        {% if training.is_active %}
+                        <span class="badge badge-success">Actif</span>
+                        {% else %}
+                        <span class="badge badge-danger">Désactivé</span>
+                        {% endif %}
+                    </div>
                 </div>
+                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Description : {{ training.description }}">
+                    <i class="fas fa-info-circle"></i>
+                </a>
             </div>
             <div class="card-body mt-3 p-0">
-                <video-js id="my-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
-                    poster="{% static 'assets/img/defaultvideo.webp' %}" data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=pw0Pg37BgHk"}] }'>
+                <video-js id="training-{{ training.pk }}"
+                    class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
+                    {% if traning.poster %}poster="{{ training.poster.url }}" {% endif %}
+                    data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "{{ training.link }}"}] }'>
                     <p class="vjs-no-js">
                         To view this video please enable JavaScript, and consider upgrading to a
                         web browser that
@@ -23,44 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header justify-content-center">
-                <div class="title text-center">
-                    Email marketing
-                </div>
-            </div>
-            <div class="card-body mt-3 p-0">
-                <video-js id="my-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
-                    poster="{% static 'assets/img/defaultvideo.webp' %}" data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=pw0Pg37BgHk"}] }'>
-                    <p class="vjs-no-js">
-                        To view this video please enable JavaScript, and consider upgrading to a
-                        web browser that
-                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                    </p>
-                </video-js>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-header justify-content-center">
-                <div class="title text-center">
-                    Email marketing
-                </div>
-            </div>
-            <div class="card-body mt-3 p-0">
-                <video-js id="my-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
-                    poster="{% static 'assets/img/defaultvideo.webp' %}" data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=pw0Pg37BgHk"}] }'>
-                    <p class="vjs-no-js">
-                        To view this video please enable JavaScript, and consider upgrading to a
-                        web browser that
-                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                    </p>
-                </video-js>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}
@@ -68,4 +47,9 @@
 {% block script %}
 <script src="https://vjs.zencdn.net/7.7.5/video.js"></script>
 <script src="{% static 'assets/js/youtube.min.js' %}"></script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 {% endblock %}

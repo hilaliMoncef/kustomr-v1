@@ -1,64 +1,114 @@
-{% extends 'full-page/layout.html' %}
+{% extends 'secondary/layout.html' %}
 
 {% block content %}
-<div class="card">
-    <div class="card-body">
-        <h1>Bienvenue chez {{ vendor.store_name }}</h1>
-        <form method="POST" class="mt-4">
-            {% csrf_token %}
-            {% if form.errors %}
+{% load static %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-5 col-12 mb-md-0 mb-5">
+            <div class="h3 text-primary font-weight-bold">Bienvenue chez {{ vendor.store_name }}</div>
+            <p class="lead">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque, repudiandae placeat quod
+                aspernatur.</p>
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                {% if form.errors %}
                 {% for field in form %}
-                    {% for error in field.errors %}
-                    <div class="alert alert-danger">
-                        <strong>Erreur : </strong> {{ error|escape }}
-                    </div>
-                    {% endfor %}
+                {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>Erreur : </strong> {{ error|escape }}
+                </div>
+                {% endfor %}
                 {% endfor %}
                 {% for error in form.non_field_errors %}
                 <div class="alert alert-danger">
                     <strong>Erreur : </strong>{{ error|escape }}
                 </div>
                 {% endfor %}
-            {% endif %}
-
-            <div class="form-group">
-                <label for="first_name">Prénom</label>
-                <input type="text" class="form-control" name="first_name" />
-            </div> 
-            <div class="form-group">
-                <label for="last_name">Nom</label>
-                <input type="text" class="form-control" name="last_name" />
-            </div> 
-            <div class="form-group">
-                <label for="birthday">Date de naissance</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                {% endif %}
+                <div class="form-row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="first_name">Prénom</label>
+                            <input type="text" class="form-control" name="first_name" />
+                        </div>
                     </div>
-                    <input type="date" class="form-control" name="birthday" />
-                </div>
-            </div> 
-            <hr>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="last_name">Nom</label>
+                            <input type="text" class="form-control" name="last_name" />
+                        </div>
                     </div>
-                    <input type="text" class="form-control" name="email" />
                 </div>
-            </div> 
-            <div class="form-group">
-                <label for="phone">Téléphone</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <div class="form-group">
+                    <label for="birthday">Date de naissance</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        </div>
+                        <input type="date" class="form-control" name="birthday" />
                     </div>
-                    <input type="text" class="form-control" name="phone" />
                 </div>
-            </div> 
-            <button type="submit" class="btn btn-success">S'inscrire</button>
-        </form>
+                <hr>
+                <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        </div>
+                        <input type="text" class="form-control" name="phone" placeholder="ex: 06 61 45 .." />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        </div>
+                        <input type="text" class="form-control" name="email" placeholder="ex: jeandupont@mail.com" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" required id="accept_agreement">
+                        <label class="custom-control-label" for="accept_agreement">J'accepte les termes des <a href="#"
+                                class="text-primary">conditions d'utilisation</a>.</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit"
+                        class="btn btn-primary rounded text-uppercase font-weight-bold w-100">S'inscrire</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-5 offset-md-2 col-12">
+            <div class="h4 text-normal font-weight-bold text-uppercase">Lorem ipsum dolor sit amet consectetur
+                adipisicing elit.</div>
+            <ul class="list-unstyled checked-list text-normal mt-4">
+                <li>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam molestiae.
+                </li>
+                <li>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam molestiae.
+                </li>
+                <li>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam molestiae.
+                </li>
+                <li>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam molestiae.
+                </li>
+            </ul>
+            <div class="position-relative mt-5">
+                <blockquote class="blockquote">
+                    <p class="mb-0 text-normal">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                    </p>
+                </blockquote>
+            </div>
+            <div class="blockquote-source d-flex flex-column align-items-end mt-4 text-normal">
+                <strong>Alexander McQueen</strong>
+                <span>Utilisateur du programme</span>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

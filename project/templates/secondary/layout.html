@@ -26,6 +26,17 @@
         .card-outline-primary {
             border-color: {{ vendor.reward_card_layout.bg_color }} !important;
         }
+        .btn-primary {
+            background-color: {{ vendor.reward_card_layout.bg_color }} !important;
+            border-color: {{ vendor.reward_card_layout.bg_color }} !important;
+            color: {{ vendor.reward_card_layout.text_color }} !important;
+        }
+        .checked-list li:before {
+            color: {{ vendor.reward_card_layout.bg_color }} !important;
+        }
+        .blockquote::before, .blockquote::after {
+            color: {{ vendor.reward_card_layout.bg_color }} !important;
+        }
     </style>
     <title>Elevator</title>
 </head>
@@ -69,8 +80,10 @@
                 <div class=""></div>
                 <div class="links text-primary">
                     <a href="" class="text-primary">A propos</a>
+                    {% if request.user.is_authenticated %}
                     <span class="mx-2">|</span>
                     <a href="{% url 'logout_customer' vendor=vendor.pk %}" class="text-primary">Déconnexion</a>
+                    {% endif %}
                 </div>
         </div>
     </div>

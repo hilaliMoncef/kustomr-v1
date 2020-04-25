@@ -4,20 +4,20 @@
 {% load static %}
 
 <div class="row d-none" id="loggedIn">
-    <div class="col-md-8 col">
+    <div class="col-md-8 col-12 mb-md-0 mb-4">
         <div class="divider">
             <div class="hr"></div>
             <div class="text">Retrouvez vos réseaux sociaux ci-dessous :</div>
             <div class="hr"></div>
         </div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-6">
                 <div class="card card-social facebook">
                     <div class="card-header">
                         <span class="title text-uppercase">Facebook</span>
                         <hr>
                     </div>
-                    <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card-body d-flex align-items-center justify-content-around">
                         <div class="d-flex flex-column align-items-center text-center">
                             <span class="font-weight-bold text-dark" id="fb-fan-count">17546</span>
                             <span>J'aime</span>
@@ -29,37 +29,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-6">
                 <div class="card card-social instagram">
                     <div class="card-header">
                         <span class="title text-uppercase">Instagram</span>
                         <hr>
                     </div>
-                    <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="card-body d-flex align-items-center justify-content-around">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <span class="font-weight-bold text-dark">17546</span>
+                            <span class="font-weight-bold text-dark" id="ig-fan-count">17546</span>
                             <span>J'aime</span>
                         </div>
                         <div class="d-flex flex-column align-items-center text-center">
-                            <span class="font-weight-bold text-dark">7,56%</span>
-                            <span>Engagement</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card card-social twitter">
-                    <div class="card-header">
-                        <span class="title text-uppercase">Twitter</span>
-                        <hr>
-                    </div>
-                    <div class="card-body d-flex align-items-center justify-content-between">
-                        <div class="d-flex flex-column align-items-center text-center">
-                            <span class="font-weight-bold text-dark">17546</span>
-                            <span>J'aime</span>
-                        </div>
-                        <div class="d-flex flex-column align-items-center text-center">
-                            <span class="font-weight-bold text-dark">7,56%</span>
+                            <span class="font-weight-bold text-dark" id="ig-fan-engagement">7,56%</span>
                             <span>Engagement</span>
                         </div>
                     </div>
@@ -80,7 +62,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 col">
+    <div class="col-md-4 col-12">
         <a href="#" class="btn btn-primary w-100">Créer une publication</a>
         <div class="card my-3">
             <div class="card-body">
@@ -103,7 +85,7 @@
                 </ul>
             </div>
         </div>
-        <button type="button" class="btn btn-info" id="logoutAPI">Déconnexino API</button>
+        <button type="button" class="btn btn-secondary w-100" id="logoutAPI">Déconnexion API</button>
 
     </div>
 
@@ -112,10 +94,16 @@
 <div class="row d-none" id="logIn">
     <div class="col">
         <div class="card">
+            <div class="card-header">
+                <div class="title">Autorisations et accès</div>
+            </div>
             <div class="card-body">
-                <div class="fb-login-button" data-scope="manage_pages,read_insights" data-size="medium"
-                    data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="false"
-                    data-use-continue-as="true" data-width=""></div>
+                <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Distinctio, fuga voluptatum.
+                    Perferendis magnam quae reiciendis, saepe quas voluptatibus amet sed modi? Numquam et reprehenderit
+                    obcaecati sunt provident, suscipit eveniet voluptates?</p>
+                <div class="fb-login-button" data-scope="manage_pages,read_insights,instagram_manage_insights"
+                    data-size="medium" data-button-type="continue_with" data-layout="rounded"
+                    data-auto-logout-link="false" data-use-continue-as="true" data-width=""></div>
             </div>
         </div>
     </div>
@@ -129,8 +117,78 @@
     src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v6.0&appId=2676493982591304&autoLogAppEvents=1"></script>
 <script>
     $(document).ready(function () {
+        // WE PREPARE CHART OPTIONS HERE
+        var socialChartoptions = {
+            chart: {
+                type: 'bar',
+                toolbar: { show: false },
+                height: 290,
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '15%'
+                }
+            },
+            colors: ['#3b5999', '#e4405f', '#55acee'],
+            series: [],
+            noData: {
+                text: 'Loading...'
+            },
+            grid: {
+                borderColor: '#F2F2F2',
+                padding: {
+                    left: 0,
+                    right: 0
+                }
+            },
+            legend: {
+                show: true,
+                position: 'top',
+                horizontalAlign: 'left',
+                offsetX: 0,
+                fontSize: '14px',
+                markers: {
+                    radius: 50,
+                    width: 10,
+                    height: 10,
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            xaxis: {
+                labels: {
+                    style: {
+                        colors: '#A1A1A1',
+                    }
+                },
+                axisBorder: {
+                    show: false,
+                },
+            },
+            yaxis: {
+                tickAmount: 5,
+                labels: {
+                    style: {
+                        color: '#A1A1A1',
+                    }
+                }
+            },
+            tooltip: {
+                x: { show: false }
+            },
+        }
+
+        var socialChart = new ApexCharts(
+            document.querySelector("#social-chart"),
+            socialChartoptions
+        );
+
+        socialChart.render();
+
         // FACEBOOK SDK LOGIC HERE
-        var userToken, userID, pageToken, pageID;
+        var userToken, userID, pageToken, pageID, instaID;
+        var likes, day_likes;
 
         $.ajaxSetup({ cache: true });
         $("#page-content-wrapper").loading();
@@ -145,7 +203,6 @@
         });
 
         function statusChangeCallback(response) {
-            console.log(response);
             if (response.status == 'connected') {
                 // OK : We are connected and we have a token
                 $('#loggedIn').removeClass('d-none');
@@ -163,11 +220,28 @@
                         if (response && !response.error) {
                             pageToken = response.data[0].access_token;
                             pageID = response.data[0].id;
-                            console.log(pageID);
+
+                            FB.api(
+                                "/" + pageID,
+                                {
+                                    "fields": "instagram_business_account",
+                                    "access_token": userToken
+                                },
+                                function (response) {
+                                    if (response && !response.error) {
+                                        instaID = response.instagram_business_account.id;
+
+                                        // We call the function to retrieve page data for instagram
+                                        getInstagramInfo();
+                                        getIGGraphData();
+                                        //$("#page-content-wrapper").loading('stop');
+                                    }
+                                });
 
                             // We call the function to retrieve page data
                             getPageInfo();
                             getPageMetrics();
+                            getFBGraphData();
                             $("#page-content-wrapper").loading('stop');
                         }
                     }
@@ -183,7 +257,7 @@
         function getPageInfo() {
             // This fucntion is used to get Facebook Page infos
             FB.api(
-                "/"+ pageID,
+                "/" + pageID,
                 {
                     "fields": "fan_count"
                 },
@@ -192,7 +266,6 @@
                         /* handle the result */
                         $('#fb-fan-count').text(response.fan_count);
                     }
-                    console.warn(response)
                 }
             );
         }
@@ -200,32 +273,152 @@
         function getPageMetrics() {
             // This fucntion is used to get Facebook Page infos
             FB.api(
-                "/"+ pageID +"/insights",
+                "/" + pageID + "/insights",
                 {
-                    "metric": "page_engaged_users,page_impressions",
-                    "period": "week",
-                    "access_token" : pageToken
+                    "metric": "page_engaged_users,page_impressions_unique",
+                    "period": "lifetime",
+                    "access_token": pageToken
                 },
                 function (response) {
                     if (response && !response.error) {
                         /* handle the result */
-                        var taux = response.data[0].values[0].value / response.data[1].values[0].value
-                        $('#fb-fan-engagement').text(taux);
+                        var taux;
+                        if (response.data.length > 0) {
+                            taux = response.data[0].values[0].value / response.data[1].values[0].value
+                        } else {
+                            taux = 0;
+                        }
+                        $('#fb-fan-engagement').text(taux.toString() + '%');
                     }
-                    console.warn(response)
                 }
             );
         }
 
-        $('#logoutAPI').click(function(e) {
+        function getInstagramInfo() {
+            // This fucntion is used to get Facebook Page infos
+            FB.api(
+                "/" + instaID,
+                {
+                    "fields": "followers_count"
+                },
+                function (response) {
+                    if (response && !response.error) {
+                        /* handle the result */
+                        $('#ig-fan-count').text(response.followers_count);
+                    }
+                }
+            );
+        }
+
+        function getInstagramMetrics() {
+            // We use this api call to get information about engagement rate of the IG Page
+            FB.api(
+                "/" + pageID + "/insights",
+                {
+                    "metric": "page_engaged_users,page_impressions_unique",
+                    "period": "lifetime",
+                    "access_token": pageToken
+                },
+                function (response) {
+                    if (response && !response.error) {
+                        /* handle the result */
+                        var taux;
+                        if (response.data.length > 0) {
+                            taux = response.data[0].values[0].value / response.data[1].values[0].value
+                        } else {
+                            taux = 0;
+                        }
+                        $('#fb-fan-engagement').text(taux.toString() + '%');
+                    }
+                }
+            );
+        }
+
+        function getUnixTime(date) {
+            return Math.round(date.getTime() / 1000);
+        }
+
+        function getLastWeek(date, offset) {
+            return date.setDate(date.getDate() - offset)
+        }
+
+        function getMonday(d) {
+            d = new Date(d);
+            var day = d.getDay(),
+                diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+            return new Date(d.setDate(diff));
+        }
+
+        function getFBGraphData() {
+            // This fucntion is used to get Facebook Page infos
+            var today = Math.round(new Date().getTime() / 1000);
+            var last_4_week = Math.round(getLastWeek(new Date(), 28) / 1000);
+            FB.api(
+                "/" + pageID + "/insights",
+                {
+                    "metric": "page_fan_adds_unique",
+                    "period": "day",
+                    "date_preset": "lifetime",
+                    "since": last_4_week,
+                    "until": today,
+                    "pretty": 0,
+                    "access_token": pageToken
+                },
+                function (response) {
+                    if (response && !response.error) {
+                        /* handle the result */
+                        var series = response.data[0].values.map(value => ({ x: moment(value.end_time).format("Do MMM"), y: value.value }));
+                        socialChart.appendSeries({
+                            name: 'Facebook New Likes',
+                            data: series
+                        })
+                    }
+                }
+            );
+
+        }
+
+        function getIGGraphData() {
+            // This fucntion is used to get Facebook Page infos
+            var today = Math.round(new Date().getTime() / 1000);
+            var last_4_week = Math.round(getLastWeek(new Date(), 28) / 1000);
+            FB.api(
+                "/" + instaID + "/insights",
+                {
+                    "metric": "follower_count",
+                    "period": "day",
+                    "date_preset": "lifetime",
+                    "since": last_4_week,
+                    "until": today,
+                    "pretty": 0,
+                    "access_token": pageToken
+                },
+                function (response) {
+                    console.log(response);
+                    if (response && !response.error) {
+                        /* handle the result */
+                        var seriesIG = response.data[0].values.map(value => ({ x: moment(value.end_time).format("Do MMM"), y: value.value }));
+                        console.log(seriesIG)
+                        socialChart.appendSeries({
+                            name: 'Instagram New Followers',
+                            data: seriesIG
+                        });
+                    }
+                }
+            );
+
+        }
+
+        $('#logoutAPI').click(function (e) {
             e.preventDefault();
-            FB.logout(response.authResponse, function(resp) {
+            FB.logout(function (resp) {
                 // user is now logged out
                 $('#loggedIn').addClass('d-none');
                 $('#logIn').removeClass('d-none');
             });
         });
 
+        // CALENDAR
 
 
         var calendarEl = document.getElementById('social-calendar');
@@ -238,85 +431,10 @@
         });
 
         calendar.render();
+
+
     });
 
-    // CHARTS
-    var socialChartoptions = {
-        chart: {
-            stacked: true,
-            type: 'bar',
-            toolbar: { show: false },
-            height: 290,
-        },
-        plotOptions: {
-            bar: {
-                columnWidth: '10%'
-            }
-        },
-        colors: ['#3b5999', '#e4405f', '#55acee'],
-        series: [{
-            name: 'Facebook',
-            data: [175, 125, 225, 175, 160, 189, 206, 134, 159, 216, 148, 123]
-        }, {
-            name: 'Instagram',
-            data: [175, 125, 225, 175, 160, 189, 206, 134, 159, 216, 148, 123]
-        }, {
-            name: 'Twitter',
-            data: [175, 125, 225, 175, 160, 189, 206, 134, 159, 216, 148, 123]
-        }],
-        grid: {
-            borderColor: '#F2F2F2',
-            padding: {
-                left: 0,
-                right: 0
-            }
-        },
-        legend: {
-            show: true,
-            position: 'top',
-            horizontalAlign: 'left',
-            offsetX: 0,
-            fontSize: '14px',
-            markers: {
-                radius: 50,
-                width: 10,
-                height: 10,
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        xaxis: {
-            labels: {
-                style: {
-                    colors: '#A1A1A1',
-                }
-            },
-            axisTicks: {
-                show: false,
-            },
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            axisBorder: {
-                show: false,
-            },
-        },
-        yaxis: {
-            tickAmount: 5,
-            labels: {
-                style: {
-                    color: '#A1A1A1',
-                }
-            }
-        },
-        tooltip: {
-            x: { show: false }
-        },
-    }
-    var socialChart = new ApexCharts(
-        document.querySelector("#social-chart"),
-        socialChartoptions
-    );
 
-    socialChart.render();
 </script>
 {% endblock %}

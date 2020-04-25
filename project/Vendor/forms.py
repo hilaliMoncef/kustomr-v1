@@ -34,6 +34,12 @@ class DiscountForm(ModelForm):
             raise ValidationError("Les dates de début et de fin ne correspondent pas.")
 
 
+class DiscountImageForm(ModelForm):
+    class Meta:
+        model = Discount
+        fields = ['image']
+
+
 class OfferForm(ModelForm):
     class Meta:
         model = Offer
@@ -45,3 +51,9 @@ class OfferForm(ModelForm):
         end_date = cleaned_data.get("end_date")
         if end_date < start_date:
             raise ValidationError("Les dates de début et de fin ne correspondent pas.")
+
+
+class OfferImageForm(ModelForm):
+    class Meta:
+        model = Offer
+        fields = ['image']

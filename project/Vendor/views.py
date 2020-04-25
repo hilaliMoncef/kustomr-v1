@@ -1,10 +1,12 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.urls import reverse
 from django.utils.text import slugify
+from Admin.models import Training
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm
+from .models import Discount, Offer
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
@@ -50,6 +52,17 @@ class DiscountsView(LoginRequiredMixin, View):
     """
     Cette page permet de récupérer les principales stats sur le commerçant
     """
+    def dispatch(self, *args, **kwargs):
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'put':
+            return self.put(*args, **kwargs)
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        if method == 'image':
+            return self.update_image(*args, **kwargs)
+        return super(DiscountsView, self).dispatch(*args, **kwargs)
+
+
     def get(self, request, *args, **kwargs):
         discount_form = DiscountForm()
         offer_form = OfferForm()
@@ -70,6 +83,53 @@ class DiscountsView(LoginRequiredMixin, View):
             obj = form.save(commit=False)
             obj.vendor = request.user.vendor
             obj.save()
+            messages.add_message(request, messages.SUCCESS, 'La réduction "{}" a été créée.'.format(obj.name))
+        else:
+            errors = json.loads(form.errors.as_json())
+            for error in errors:
+                messages.add_message(request, messages.ERROR, '{} : {}'.format(error, errors[error][0]['message']))
+        return redirect('vendor_discounts')
+
+    def put(self, request, *args, **kwargs):
+        form_type = request.POST['type']
+        if form_type == 'discount':
+            discount = get_object_or_404(Discount, pk=request.POST['pk'])
+            form = DiscountForm(request.POST, instance=discount)
+        else:
+            offer = get_object_or_404(Offer, pk=request.POST['pk'])
+            form = OfferForm(request.POST, instance=offer)
+        
+        if form.is_valid():
+            instance = form.save()
+            messages.add_message(request, messages.SUCCESS, 'La réduction "{}" a été modifiée.'.format(instance.name))
+        else:
+            errors = json.loads(form.errors.as_json())
+            for error in errors:
+                messages.add_message(request, messages.ERROR, '{} : {}'.format(error, errors[error][0]['message']))
+        return redirect('vendor_discounts')
+
+    def delete(self, request, *args, **kwargs):
+        form_type = request.POST['type']
+        if form_type == 'discount':
+            obj = get_object_or_404(Discount, pk=request.POST['pk'])
+        else:
+            obj = get_object_or_404(Offer, pk=request.POST['pk'])
+        messages.add_message(request, messages.SUCCESS, 'La formation "{}" a été supprimée.'.format(obj.name))
+        obj.delete()
+        return redirect('vendor_discounts')
+
+    def update_image(self, request, *args, **kwargs):
+        form_type = request.POST['type']
+        if form_type == 'discount':
+            discount = get_object_or_404(Discount, pk=request.POST['pk'])
+            form = DiscountImageForm(request.POST, request.FILES, instance=discount)
+        else:
+            offer = get_object_or_404(Offer, pk=request.POST['pk'])
+            form = OfferImageForm(request.POST, request.FILES, instance=offer)
+
+        if form.is_valid():
+            instance = form.save()
+            messages.add_message(request, messages.SUCCESS, 'La réduction "{}" a été modifiée.'.format(instance.name))
         else:
             errors = json.loads(form.errors.as_json())
             for error in errors:
@@ -100,7 +160,7 @@ class TrainingView(LoginRequiredMixin, View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def get(self, request, *args, **kwargs):
-        customers = request.user.vendor.customers.all()[:5]
+        trainings = Training.objects.filter(is_active=True).order_by('-date_added')
         return render(request, 'vendor/training.html', locals())
 
 

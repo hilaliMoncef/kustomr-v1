@@ -116,29 +116,29 @@ a:hover {
 }
 
 .bg-secondary {
-    background-color: #ff407b !important;
+    background-color: #0086FF !important;
     color: #fff !important;
 }
 
 .bg-success {
-    background-color: #2ec551 !important;
+    background-color: #41E685 !important;
 }
 
 .bg-danger {
-    background-color: #ef172c !important;
+    background-color: #FA3232 !important;
 }
 
 .bg-warning {
-    background-color: #ffc108 !important;
+    background-color: #FFD21E !important;
 }
 
 .bg-info {
-    background-color: #3F6AD8 !important;
+    background-color: #0DB8F6 !important;
     color: white !important;
 }
 
 .bg-light {
-    background-color: #f9f9ff !important;
+    background-color: #F1F4F6 !important;
 }
 
 .bg-dark {
@@ -200,19 +200,19 @@ a.text-primary:hover {
 }
 
 .text-secondary {
-    color: #ff407b !important;
+    color: #0086FF !important;
 }
 
 .text-success {
-    color: #2ec551 !important;
+    color: #41E685 !important;
 }
 
 .text-danger {
-    color: #ef172c !important;
+    color: #FA3232 !important;
 }
 
 .text-warning {
-    color: #ffc108 !important;
+    color: #FFD21E !important;
 }
 
 .text-info {
@@ -292,24 +292,24 @@ a.text-primary:hover {
 }
 
 .btn-secondary {
-    background-color: #ff407b !important;
-    border-color: #ff407b !important;
+    background-color: #0086FF !important;
+    border-color: #0086FF !important;
     color: #fff !important;
 }
 
 .btn-success {
-    background-color: #2ec551 !important;
-    border-color: #2ec551 !important;
+    background-color: #41E685 !important;
+    border-color: #41E685 !important;
 }
 
 .btn-danger {
-    background-color: #ef172c !important;
-    border-color: #ef172c !important;
+    background-color: #FA3232 !important;
+    border-color: #FA3232 !important;
 }
 
 .btn-warning {
-    background-color: #ffc108 !important;
-    border-color: #ffc108 !important;
+    background-color: #FFD21E !important;
+    border-color: #FFD21E !important;
 }
 
 .btn-info {
@@ -393,36 +393,36 @@ a.text-primary:hover {
 
 .btn-outline-success {
     background-color: transparent !important;
-    border-color: #2ec551 !important;
-    color: #2ec551 !important;
+    border-color: #41E685 !important;
+    color: #41E685 !important;
 }
 
 .btn-outline-success:hover {
-    background-color: #2ec551 !important;
+    background-color: #41E685 !important;
     color: #fff !important;
 }
 
 .btn-outline-danger {
     background-color: transparent !important;
-    border-color: #ef172c !important;
-    color: #ef172c !important;
+    border-color: #FA3232 !important;
+    color: #FA3232 !important;
 }
 
 .btn-outline-danger:hover {
-    background-color: #ef172c !important;
-    border-color: #ef172c !important;
+    background-color: #FA3232 !important;
+    border-color: #FA3232 !important;
     color: #fff !important;
 }
 
 .btn-outline-warning {
     background-color: transparent !important;
-    border-color: #ffc108 !important;
-    color: #ffc108 !important;
+    border-color: #FFD21E !important;
+    color: #FFD21E !important;
 }
 
 .btn-outline-warning:hover {
-    background-color: #ffc108 !important;
-    border-color: #ffc108 !important;
+    background-color: #FFD21E !important;
+    border-color: #FFD21E !important;
     color: #fff !important;
 }
 
@@ -560,6 +560,7 @@ a.text-primary:hover {
 
 .dashboard-footer {
     position: fixed;
+    z-index: 200;
     bottom: 0;
     width: 100%;
     background-color: white;
@@ -968,6 +969,42 @@ address {}
     -webkit-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
     -moz-box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
     box-shadow: 0px 1px 2px 1px rgba(154, 154, 204, 0.22);
+    position: relative;
+}
+
+.card .buttons-absolute {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+.card .buttons-absolute .btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.card .buttons-absolute.top {
+    top: 10px;  
+}
+
+.card .buttons-absolute.bottom {
+    bottom: 10px;  
+}
+
+.card .buttons-absolute.left {
+    left: 10px;  
+}
+
+.card .buttons-absolute.right {
+    right: 10px;  
 }
 
 .card.coming-soon::after {
@@ -1107,6 +1144,13 @@ address {}
 
 .object-fit {
     object-fit: cover; 
+    object-position: center center;
+}
+
+.img-fit {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     object-position: center center;
 }
 
@@ -1394,17 +1438,77 @@ address {}
     object-position: center center;
 }
 
+#secondary .checked-list  {
+    position: relative
+}
+
+#secondary .checked-list li {
+    padding-left: 25px;
+    margin-bottom: 25px;
+}
+
+#secondary .checked-list li:last-child {
+    margin-bottom: 0;
+}
+
+#secondary .checked-list li:before {
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    display: inline-block;
+    position: absolute;
+    margin-top: 3px;
+    left: 0;
+    font-size: 14px;
+    color: #ff407b;
+    content: '\f058';
+    font-style: initial;
+}
+
+#secondary .blockquote {
+    z-index: 2;
+}
+
+#secondary .blockquote::before {
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    display: inline-block;
+    position: absolute;
+    top: -15px;
+    left: -20px;
+    font-size: 32px;
+    color: #ff407b;
+    content: '\f10d';
+    font-style: initial;
+    z-index: 1;
+    opacity: 0.3;
+}
+
+#secondary .blockquote::after {
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    display: inline-block;
+    position: absolute;
+    bottom: -15px;
+    right: -10px;
+    font-size: 32px;
+    color: #ff407b;
+    content: '\f10e';
+    font-style: initial;
+    z-index: 1;
+    opacity: 0.3;
+}
+
 
 /* ==========================================================================
    13. SOCIAL CARDS
    ========================================================================== */
 
 .card-facebook {
-    background-color: #3b5999;
+    background-color: #2D88FF;
     color: #fff;
 }
 .card-facebook:hover {
-    background-color: #334e86;
+    background-color: rgb(40, 126, 238);
     color: #fff;
 }
 
@@ -1418,20 +1522,20 @@ address {}
 }
 
 .card-twitter {
-    background-color: #55acee;
+    background-color: #1DA1F2;
     color: #fff;
 }
 .card-twitter:hover {
-    background-color: #4fa0dd;
+    background-color: rgb(25, 155, 236);
     color: #fff;
 }
 
 .card-youtube {
-    background-color: #cd201f;
+    background-color: #FF0000;
     color: #fff;
 }
 .card-youtube:hover {
-    background-color: #b91a1a;
+    background-color: #d60a0a;
     color: #fff;
 }
 
@@ -1454,7 +1558,7 @@ address {}
 }
 
 .card-linkedin {
-    background-color: #0077B5;
+    background-color: #0073B1;
     color: #fff;
 }
 .card-linkedin:hover {

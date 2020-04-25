@@ -1,0 +1,246 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+    <div class="col-md-9 col-12">
+        <div class="row">
+            {% for training in trainings %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <div class="text-center d-flex flex-column align-items-start">
+                            <span class="title">{{ training.name }}</span>
+                            <div class="d-flex font-weight-normal">
+                                {% if not training.is_free %}
+                                <span class="badge badge-info mr-1"><i class="fas fa-dollar-sign"></i></span>
+                                {% endif %}
+                                {% if training.is_active %}
+                                <span class="badge badge-success">Actif</span>
+                                {% else %}
+                                <span class="badge badge-danger">Désactivé</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <a href="#" data-toggle="tooltip" data-placement="top"
+                                title="Description : {{ training.description }}" class="text-secondary mr-1"><i
+                                    class="fas fa-info-circle"></i>
+                            </a>
+                            <a href="#" class="text-warning mr-1" data-toggle="modal" data-target="#editTraining-{{ training.pk }}"><i class="fas fa-edit"></i></a>
+                            <a href="#" class="text-danger" data-toggle="modal" data-target="#deleteTraining-{{ training.pk }}"><i class="fas fa-times-circle"></i></a>
+                        </div>
+
+                        <!-- PUT MODAL -->
+                        <div class="modal fade" id="editTraining-{{ training.pk }}" tabindex="-1" role="dialog"
+                            aria-labelledby="editTrainingTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <form action="{% url 'admin_trainings' %}" method="POST" class="modal-content">
+                                    <input type="hidden" name="pk" value="{{ training.pk }}">
+                                    <input type="hidden" name="_method" value="put">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editTrainingTitle">Modifier {{ training.name }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="name">Nom de la formation :</label>
+                                            <input type="text" name="name" class="form-control" value="{{ training.name }}" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">Description :</label>
+                                            <textarea name="description" class="form-control">{{ training.description }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="link">Lien :</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text"><i class="fab fa-youtube"></i></div>
+                                                </div>
+                                                <input type="text" name="link" value="{{ training.link }}" class="form-control" required />
+                                            </div>
+                                        </div>
+                                        <div class="form-row mt-4">
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-switch">
+                                                        {% if training.is_active %}
+                                                        <input type="checkbox" class="custom-control-input"
+                                                            name="is_active" value="True" id="is_active_switch" checked>
+                                                        {% else %}
+                                                        <input type="checkbox" class="custom-control-input"
+                                                        name="is_active" value="True" id="is_active_switch">
+                                                        {% endif %}
+                                                        <label class="custom-control-label" for="is_active_switch">Actif
+                                                            ?</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-switch">
+                                                        {% if training.is_free %}
+                                                        <input type="checkbox" class="custom-control-input"
+                                                            name="is_free" value="True" id="is_free_switch" checked>
+                                                        {% else %}
+                                                        <input type="checkbox" class="custom-control-input"
+                                                        name="is_free" value="True" id="is_free_switch">
+                                                        {% endif %}
+                                                        <label class="custom-control-label" for="is_free_switch">Gratuit
+                                                            ?</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-link" data-dismiss="modal">Fermer</button>
+                                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- DELETE MODAL -->
+                        <div class="modal fade" id="deleteTraining-{{ training.pk }}" tabindex="-1" role="dialog"
+                            aria-labelledby="deleteTrainingTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <form action="{% url 'admin_trainings' %}" method="POST" class="modal-content">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="pk" value="{{ training.pk }}">
+                                    <input type="hidden" name="_method" value="delete">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editTrainingTitle">Supprimer {{ training.name }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="mb-0">Voulez-vous vraiment supprimer la formation "{{ training.name }}" ?</p>
+                                        <p class="font-weight-bold">Cette action est irréversible.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-danger">Confirmer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mt-3 p-0">
+                        <video-js id="training-{{ training.pk }}"
+                            class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
+                            {% if traning.poster %}poster="{{ training.poster.url }}" {% endif %}
+                            data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "{{ training.link }}"}] }'>
+                            <p class="vjs-no-js">
+                                To view this video please enable JavaScript, and consider upgrading to a
+                                web browser that
+                                <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5
+                                    video</a>
+                            </p>
+                        </video-js>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-3 col-12">
+        <a href="#" class="btn btn-primary w-100" data-toggle="modal" data-target="#addTraining">Créer une
+            formation</a>
+
+        <!-- Form Modal -->
+        <div class="modal fade" id="addTraining" tabindex="-1" role="dialog" aria-labelledby="addTrainingTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <form method="POST" class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTrainingTitle">Créer une formation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="discount">
+                        <div class="form-group">
+                            <label for="name">Nom de la formation :</label>
+                            <input type="text" name="name" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Description :</label>
+                            <textarea name="description" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="link">Lien :</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fab fa-youtube"></i></div>
+                                </div>
+                                <input type="text" name="link" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-row mt-4">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" name="is_active"
+                                            value="True" id="is_active_switch" checked>
+                                        <label class="custom-control-label" for="is_active_switch">Actif ?</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" name="is_free" value="True"
+                                            id="is_free_switch">
+                                        <label class="custom-control-label" for="is_free_switch">Gratuit ?</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card my-3">
+            <div class="card-body">
+                <ul class="metrics list-unstyled mt-4">
+                    <li>
+                        <span>N° de formations</span>
+                        <span class="text-primary font-weight-bold">{{ trainings.count }}</span>
+                    </li>
+                    <li>
+                        <span>Formations gratuites</span>
+                        <span class="text-primary font-weight-bold">{{ frees }}</span>
+                    </li>
+                    <li>
+                        <span>Formations payantes</span>
+                        <span class="text-primary font-weight-bold">{{ premiums }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://vjs.zencdn.net/7.7.5/video.js"></script>
+<script src="{% static 'assets/js/youtube.min.js' %}"></script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+{% endblock %}

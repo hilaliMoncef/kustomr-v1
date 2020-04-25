@@ -18,12 +18,19 @@
                 <div class="row">
                     {% for discount in request.user.vendor.discounts.all %}
                     <div class="col-md-4 mb-4">
-                        <div class="card card-flip">
-                            <div class="card-img-top overflow-hidden position-relative">
+                        <div class="card h-100">
+                            <div class="buttons-absolute top right">
+                                <button type="button" class="btn btn-warning mr-1" data-toggle="modal"
+                                    data-target="#editDiscount-{{ discount.pk }}"><i class="fas fa-pen"></i></button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#deleteDiscount-{{ discount.pk }}"><i
+                                        class="fas fa-times"></i></button>
+                            </div>
+                            <div class="card-img-top flex-grow-1 overflow-hidden position-relative">
                                 {% if discount.image %}
-                                <img class="img-fluid" alt="" src="{{ discount.image.url }}" />
+                                <img class="img-fit" alt="" src="{{ discount.image.url }}" />
                                 {% else %}
-                                <img class="img-fluid" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
+                                <img class="img-fit" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
                                 {% endif %}
                                 <div class="overlay"></div>
                                 <div class="discount-info px-2 py-1">
@@ -38,7 +45,8 @@
                                 </div>
                             </div>
 
-                            <a href="#" data-toggle="modal" data-target="#modalDiscount-{{ discount.pk }}" class="card-footer">
+                            <a href="#" data-toggle="modal" data-target="#modalDiscount-{{ discount.pk }}"
+                                class="card-footer">
                                 <div class="d-flex justify-content-between align-items">
                                     <span>Voir détails</span>
                                     <span><i class="fas fa-caret-right"></i></span>
@@ -47,7 +55,9 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="modalDiscount-{{ discount.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                    <!-- MORE INFO MODAL -->
+                    <div class="modal fade" id="modalDiscount-{{ discount.pk }}" tabindex="-1" role="dialog"
+                        aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -70,11 +80,13 @@
                                         </li>
                                         <li>
                                             <span>Date de début</span>
-                                            <span class="text-primary font-weight-bold">{{ discount.start_date|naturalday }}</span>
+                                            <span
+                                                class="text-primary font-weight-bold">{{ discount.start_date|naturalday }}</span>
                                         </li>
                                         <li>
                                             <span>Date de fin</span>
-                                            <span class="text-primary font-weight-bold">{{ discount.end_date|naturalday }}</span>
+                                            <span
+                                                class="text-primary font-weight-bold">{{ discount.end_date|naturalday }}</span>
                                         </li>
                                         <li>
                                             <span>Nombre d'utilisation</span>
@@ -86,6 +98,139 @@
                                     <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- EDIT OFFER Modal -->
+                    <div class="modal fade" id="editDiscount-{{ discount.pk }}" tabindex="-1" role="dialog"
+                        aria-labelledby="editDiscountTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editDiscountTitle">Modifier {{ discount.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="image">
+                                        <input type="hidden" name="type" value="discount">
+                                        <input type="hidden" name="pk" value="{{ discount.pk }}">
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-4 col-12">
+                                                {% if discount.image %}
+                                                <img class="img-fluid" alt="" src="{{ discount.image.url }}" />
+                                                {% else %}
+                                                <img class="img-fluid" alt=""
+                                                    src="{% static 'assets/img/bg01.jpg' %}" />
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-8 col-12">
+                                                <div class="form-group">
+                                                    <label for="name">Image :</label>
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image" required
+                                                            class="custom-file-input" id="image">
+                                                        <label class="custom-file-label" for="image">Choisir un
+                                                            fichier</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row text-center">
+                                                    <button type="submit" class="btn btn-primary mx-auto">Mettre à
+                                                        jour</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="put">
+                                        <input type="hidden" name="type" value="discount">
+                                        <input type="hidden" name="pk" value="{{ discount.pk }}">
+                                        <div class="form-group">
+                                            <label for="name">Nom de l'offre :</label>
+                                            <input type="text" name="name" class="form-control"
+                                                value="{{ discount.name }}" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">Description :</label>
+                                            <textarea name="description"
+                                                class="form-control">{{ discount.description }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cost">Minimum de points :</label>
+                                            <input type="number" min="0" name="min_points" class="form-control"
+                                                value="{{ discount.min_points }}" required />
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="start_date">Date de début :</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text"><i
+                                                                    class="fas fa-calendar-alt"></i>
+                                                            </div>
+                                                        </div>
+                                                        <input type="date" name="start_date"
+                                                            value='{{ discount.start_date|date:"Y-m-d" }}'
+                                                            class="form-control" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="end_date">Date de fin :</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text"><i
+                                                                    class="fas fa-calendar-alt"></i>
+                                                            </div>
+                                                        </div>
+                                                        <input type="date" name="end_date"
+                                                            value='{{ discount.end_date|date:"Y-m-d" }}'
+                                                            class="form-control" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <button type="submit" class="btn btn-primary mx-auto">Modifier</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DELETE MODAL -->
+                    <div class="modal fade" id="deleteDiscount-{{ discount.pk }}" tabindex="-1" role="dialog"
+                        aria-labelledby="deleteDiscountTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <form method="POST" class="modal-content">
+                                {% csrf_token %}
+                                <input type="hidden" name="type" value="discount">
+                                <input type="hidden" name="pk" value="{{ discount.pk }}">
+                                <input type="hidden" name="_method" value="delete">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteDiscountTitle">Supprimer {{ discount.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-0">Voulez-vous vraiment supprimer la réduction "{{ discount.name }}" ?
+                                    </p>
+                                    <p class="font-weight-bold">Cette action est irréversible.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     {% empty %}
@@ -105,12 +250,18 @@
                 <div class="row">
                     {% for offer in request.user.vendor.offers.all %}
                     <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <div class="card-img-top overflow-hidden position-relative">
+                        <div class="card h-100">
+                            <div class="buttons-absolute top right">
+                                <button type="button" class="btn btn-warning mr-1" data-toggle="modal"
+                                    data-target="#editOffer-{{ offer.pk }}"><i class="fas fa-pen"></i></button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#deleteOffer-{{ offer.pk }}"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="card-img-top flex-grow-1 overflow-hidden position-relative">
                                 {% if offer.image %}
-                                <img class="img-fluid" alt="" src="{{ offer.image.url }}" />
+                                <img class="img-fit" alt="" src="{{ offer.image.url }}" />
                                 {% else %}
-                                <img class="img-fluid" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
+                                <img class="img-fit" alt="" src="{% static 'assets/img/bg01.jpg' %}" />
                                 {% endif %}
                                 <div class="overlay"></div>
                                 <div class="discount-info px-2 py-1">
@@ -124,7 +275,8 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <a href="#" data-toggle="modal" data-target="#modalOffer-{{ offer.pk }}" class="card-footer">
+                            <a href="#" data-toggle="modal" data-target="#modalOffer-{{ offer.pk }}"
+                                class="card-footer">
                                 <div class="d-flex justify-content-between align-items">
                                     <span>Voir détails</span>
                                     <span><i class="fas fa-caret-right"></i></span>
@@ -133,7 +285,9 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="modalOffer-{{ offer.pk }}" tabindex="-1" role="dialog" aria-hidden="true">
+                    <!-- MORE INFO MODAL -->
+                    <div class="modal fade" id="modalOffer-{{ offer.pk }}" tabindex="-1" role="dialog"
+                        aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -155,11 +309,13 @@
                                         </li>
                                         <li>
                                             <span>Date de début</span>
-                                            <span class="text-primary font-weight-bold">{{ offer.start_date|naturalday }}</span>
+                                            <span
+                                                class="text-primary font-weight-bold">{{ offer.start_date|naturalday }}</span>
                                         </li>
                                         <li>
                                             <span>Date de fin</span>
-                                            <span class="text-primary font-weight-bold">{{ offer.end_date|naturalday }}</span>
+                                            <span
+                                                class="text-primary font-weight-bold">{{ offer.end_date|naturalday }}</span>
                                         </li>
                                         <li>
                                             <span>Nombre d'utilisation</span>
@@ -171,6 +327,139 @@
                                     <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- EDIT OFFER Modal -->
+                    <div class="modal fade" id="editOffer-{{ offer.pk }}" tabindex="-1" role="dialog"
+                        aria-labelledby="addDiscountTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addDiscountTitle">Modifier {{ offer.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="image">
+                                        <input type="hidden" name="type" value="offer">
+                                        <input type="hidden" name="pk" value="{{ offer.pk }}">
+                                        <div class="row d-flex align-items-center">
+                                            <div class="col-md-4 col-12">
+                                                {% if offer.image %}
+                                                <img class="img-fluid" alt="" src="{{ offer.image.url }}" />
+                                                {% else %}
+                                                <img class="img-fluid" alt=""
+                                                    src="{% static 'assets/img/bg01.jpg' %}" />
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-8 col-12">
+                                                <div class="form-group">
+                                                    <label for="name">Image :</label>
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image" required
+                                                            class="custom-file-input" id="image">
+                                                        <label class="custom-file-label" for="image">Choisir un
+                                                            fichier</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row text-center">
+                                                    <button type="submit" class="btn btn-primary mx-auto">Mettre à
+                                                        jour</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="_method" value="put">
+                                        <input type="hidden" name="type" value="offer">
+                                        <input type="hidden" name="pk" value="{{ offer.pk }}">
+                                        <div class="form-group">
+                                            <label for="name">Nom de l'offre :</label>
+                                            <input type="text" name="name" class="form-control" value="{{ offer.name }}"
+                                                required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name">Description :</label>
+                                            <textarea name="description"
+                                                class="form-control">{{ offer.description }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cost">Coût en points :</label>
+                                            <input type="number" min="0" name="cost" class="form-control"
+                                                value="{{ offer.cost }}" required />
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="start_date">Date de début :</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text"><i
+                                                                    class="fas fa-calendar-alt"></i>
+                                                            </div>
+                                                        </div>
+                                                        <input type="date" name="start_date"
+                                                            value='{{ offer.start_date|date:"Y-m-d" }}'
+                                                            class="form-control" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="end_date">Date de fin :</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text"><i
+                                                                    class="fas fa-calendar-alt"></i>
+                                                            </div>
+                                                        </div>
+                                                        <input type="date" name="end_date"
+                                                            value='{{ offer.end_date|date:"Y-m-d" }}'
+                                                            class="form-control" required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <button type="submit" class="btn btn-primary mx-auto">Modifier</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DELETE MODAL -->
+                    <div class="modal fade" id="deleteOffer-{{ offer.pk }}" tabindex="-1" role="dialog"
+                        aria-labelledby="deleteDiscountTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <form method="POST" class="modal-content">
+                                {% csrf_token %}
+                                <input type="hidden" name="type" value="offer">
+                                <input type="hidden" name="pk" value="{{ offer.pk }}">
+                                <input type="hidden" name="_method" value="delete">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteDiscountTitle">Supprimer {{ offer.name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-0">Voulez-vous vraiment supprimer la réduction "{{ offer.name }}" ?
+                                    </p>
+                                    <p class="font-weight-bold">Cette action est irréversible.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     {% empty %}
@@ -330,8 +619,8 @@
                 <span class="text-primary font-weight-bold">{{ expired_reductions }}</span>
             </li>
         </ul>
-        <div class="card bg-info">
-            <div class="card-header bg-info">
+        <div class="card bg-secondary">
+            <div class="card-header bg-secondary">
                 <div class="title">
                     CRÉER UNE RÉDUCTION EFFICACE
                 </div>

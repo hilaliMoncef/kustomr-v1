@@ -1008,6 +1008,11 @@ button.btn-list {
   .card-news .card-body {
     z-index: 100; }
 
+.table-social a.check {
+  transition: 0.2s all ease-in-out; }
+  .table-social a.check:hover {
+    color: #41E685 !important; }
+
 /* ==========================================================================
    11. Timeline
    ========================================================================== */

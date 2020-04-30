@@ -4,7 +4,7 @@ from django.views import View
 from .forms import TrainingForm, VendorSignupForm
 from Vendor.forms import VendorForm
 from .models import Training
-from Vendor.models import Vendor
+from Vendor.models import Vendor, FacebookEvent, InstagramEvent
 from Users.models import User
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,6 +12,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.db.models import Avg, Count
+from django.utils import timezone
 import json
 
 
@@ -130,3 +131,56 @@ class TrainingsView(LoginRequiredMixin, View):
         messages.add_message(request, messages.SUCCESS, 'La formation "{}" a été supprimée.'.format(training.name))
         training.delete()
         return redirect('admin_trainings')
+
+
+
+
+class SocialsView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les formations en cours et en créer des nouvelles
+    """
+    http_method_names = ['get', 'post', 'put', 'delete']
+
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_staff:
+            # Quick check if the user is admin
+            return redirect('not-authorized')
+        return super(SocialsView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        fb_events = FacebookEvent.objects.filter(processed=False)
+        fb_events_done = FacebookEvent.objects.filter(processed=True).order_by('-date_processed')
+        ig_events = InstagramEvent.objects.filter(processed=False)
+        ig_events_done = InstagramEvent.objects.filter(processed=True).order_by('-date_processed')
+        return render(request, 'admin/socials.html', locals())
+
+
+def toggle_fb_processed(request, pk):
+    event = get_object_or_404(FacebookEvent, pk=pk)
+    if event.processed:
+        event.processed = False
+        event.date_processed = None
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} n\'est plus marquée comme traitée.'.format(event.vendor.store_name))
+    else:
+        event.processed = True
+        event.date_processed = timezone.now()
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} a été traitée.'.format(event.vendor.store_name))
+ 
+    return redirect('admin_socials')
+
+def toggle_ig_processed(request, pk):
+    event = get_object_or_404(InstagramEvent, pk=pk)
+    if event.processed:
+        event.processed = False
+        event.date_processed = None
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} n\'est plus marquée comme traitée.'.format(event.vendor.store_name))
+    else:
+        event.processed = True
+        event.date_processed = timezone.now()
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} a été traitée.'.format(event.vendor.store_name))
+ 
+    return redirect('admin_socials')

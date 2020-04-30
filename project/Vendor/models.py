@@ -194,6 +194,8 @@ class InstagramEvent(models.Model):
     images = models.ManyToManyField(SocialMedia, related_name="ig_events")
     description = models.TextField()
     post_type = models.CharField(max_length=40, choices=POST_TYPE_CHOICES, default='P')
+    processed = models.BooleanField(default=False)
+    date_processed = models.DateTimeField(blank=True, null=True)
     date_published_char = models.CharField(max_length=255)
     date_published = models.DateTimeField()
 
@@ -214,6 +216,8 @@ class FacebookEvent(models.Model):
     images = models.ManyToManyField(SocialMedia, related_name="fb_events")
     description = models.TextField()
     post_type = models.CharField(max_length=40, choices=POST_TYPE_CHOICES, default='P')
+    processed = models.BooleanField(default=False)
+    date_processed = models.DateTimeField(blank=True, null=True)
     date_published_char = models.CharField(max_length=255)
     date_published = models.DateTimeField()
 

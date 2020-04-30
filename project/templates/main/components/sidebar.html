@@ -82,6 +82,10 @@
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-briefcase"></i> Commerçants</a>
         </li>
         <li class="nav-item">
+            {% url 'admin_socials' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-share-alt"></i> Réseaux sociaux</a>
+        </li>
+        <li class="nav-item">
             {% url 'admin_trainings' as url %}
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-book"></i> Formations</a>
         </li>

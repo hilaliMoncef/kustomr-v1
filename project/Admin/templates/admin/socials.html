@@ -1,0 +1,206 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="title">Campagnes Facebook</div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="facebook_done_switch">
+                    <label class="custom-control-label" for="facebook_done_switch" id="facebook_done_switch_text">Traitées</label>
+                </div>
+            </div>
+            <div class="card-body" id="facebook_list">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Images</th>
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Type</th>
+                            <th scope="col" class="font-weight-bold">Texte</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in fb_events %}
+                        <tr>
+                            <td class="overflow-hidden">
+                                {% if event.images.count > 1 %}
+                                <div class="list-img" style="width: 150px; height: 150px;">
+                                    {% for image in event.images.all %}
+                                    <img src="{{ image.file.url }}" class="img-fit" />
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div style="width: 150px; height: 150px;">
+                                    <img src="{{ event.images.first.file.url }}" class="img-fit" />
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td class="">{{ event.vendor.store_name }}</td>
+                            <td class="">{{ event.get_post_type_display }}</td>
+                            <td class="">{{ event.description }}</td>
+                            <td class="">{{ event.date_published }}</td>
+                            <td class=""><a href="{% url 'admin_facebook_toggle' pk=event.pk %}" class="text-primary check"><i class="fas fa-check"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication programmée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body d-none" id="facebook_done">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Type</th>
+                            <th scope="col" class="font-weight-bold">Texte</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                            <th scope="col" class="font-weight-bold">Date traitement</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in fb_events_done %}
+                        <tr>
+                            <td class="">{{ event.vendor.store_name }}</td>
+                            <td class="">{{ event.get_post_type_display }}</td>
+                            <td class="">{{ event.description }}</td>
+                            <td class="">{{ event.date_published }}</td>
+                            <td class="">{{ event.date_processed }}</td>
+                            <td class=""><a href="{% url 'admin_facebook_toggle' pk=event.pk %}" class="text-primary check"><i class="fas fa-times"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication traitée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="title">Campagnes Instagram</div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="instagram_done_switch">
+                    <label class="custom-control-label" for="instagram_done_switch" id="instagram_done_switch_text">Traitées</label>
+                </div>
+            </div>
+            <div class="card-body" id="instagram_list">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Images</th>
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Type</th>
+                            <th scope="col" class="font-weight-bold">Texte</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in ig_events %}
+                        <tr>
+                            <td class="overflow-hidden">
+                                {% if event.images.count > 1 %}
+                                <div class="list-img" style="width: 150px; height: 150px;">
+                                    {% for image in event.images.all %}
+                                    <img src="{{ image.file.url }}" class="img-fit" />
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div style="width: 150px; height: 150px;">
+                                    <img src="{{ event.images.first.file.url }}" class="img-fit" />
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td class="">{{ event.vendor.store_name }}</td>
+                            <td class="">{{ event.get_post_type_display }}</td>
+                            <td class="">{{ event.description }}</td>
+                            <td class="">{{ event.date_published }}</td>
+                            <td class=""><a href="{% url 'admin_instagram_toggle' pk=event.pk %}" class="text-primary check"><i class="fas fa-check"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication programmée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body d-none" id="instagram_done">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Type</th>
+                            <th scope="col" class="font-weight-bold">Texte</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                            <th scope="col" class="font-weight-bold">Date traitement</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in ig_events_done %}
+                        <tr>
+                            <td class="">{{ event.vendor.store_name }}</td>
+                            <td class="">{{ event.get_post_type_display }}</td>
+                            <td class="">{{ event.description }}</td>
+                            <td class="">{{ event.date_published }}</td>
+                            <td class="">{{ event.date_processed }}</td>
+                            <td class=""><a href="{% url 'admin_instagram_toggle' pk=event.pk %}" class="text-primary check"><i class="fas fa-times"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication traitée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'assets/js/slick.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#facebook_done_switch').change(function() {
+            if($(this).prop('checked')) {
+                $('#facebook_list').addClass('d-none');
+                $('#facebook_done').removeClass('d-none');
+            } else {
+                $('#facebook_list').removeClass('d-none');
+                $('#facebook_done').addClass('d-none');
+            }
+        });
+
+        $('#instagram_done_switch').change(function() {
+            if($(this).prop('checked')) {
+                $('#instagram_list').addClass('d-none');
+                $('#instagram_done').removeClass('d-none');
+            } else {
+                $('#instagram_list').removeClass('d-none');
+                $('#instagram_done').addClass('d-none');
+            }
+        });
+
+        $('.list-img').slick({
+            prevArrow: '<button type="button" class="slick-prev"><i class="fas fa-angle-left"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="fas fa-angle-right"></i></button>',
+        });
+    });
+</script>
+{% endblock %}

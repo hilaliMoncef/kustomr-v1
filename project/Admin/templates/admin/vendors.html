@@ -1,0 +1,157 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+    <div class="col-md-9 col-12 mb-md-0 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <div class="title text-uppercase">Liste de commerçants</div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Status</th>
+                            <th>Gérant</th>
+                            <th>Nom du commerce</th>
+                            <th>Type</th>
+                            <th>Visites</th>
+                            <th>N° de clients</th>
+                            <th>Date de création</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vendor in vendors %}
+                        <tr>
+                            <td>{{ vendor.pk }}</td>
+                            <td>
+                                {% if vendor.user.is_active %}
+                                <span class="badge badge-success">Actif</span>
+                                {% else %}
+                                <span class="badge badge-danger">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ vendor.user }}</td>
+                            <td>{{ vendor.store_name }}</td>
+                            <td>{{ vendor.get_store_type_display }}</td>
+                            <td>{{ vendor.get_store_visits_display }}</td>
+                            <td>{{ vendor.nb_clients }}</td>
+                            <td>{{ vendor.user.date_joined|date:"d/m/Y" }}</td>
+                            <td><a href="" class="text-warning"><i class="fas fa-pen"></i></a></td>
+                            <td><a href="" class="text-danger"><i class="fas fa-times-circle"></i></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-12">
+        <a href="#" class="btn btn-primary w-100" data-toggle="modal" data-target="#addVendor">Ajouter un commerçant</a>
+
+        <!-- Form Modal -->
+        <div class="modal fade" id="addVendor" tabindex="-1" role="dialog" aria-labelledby="addVendorTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <form method="POST" class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addVendorTitle">Ajouter un commerçant</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <input type="hidden" name="type" value="discount">
+                        <div class="form-group">
+                            <label for="email">Email du gérant :</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-at"></i></div>
+                                </div>
+                                <input type="email" name="email" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Mot de passe :</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-lock"></i></div>
+                                </div>
+                                <input type="text" name="password" value="{{ password }}" class="form-control" required />
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="first_name">Prénom :</label>
+                                    <input type="text" name="first_name" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="last_name">Nom :</label>
+                                    <input type="text" name="last_name" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="store_name">Nom de l'enseigne :</label>
+                            <input type="text" name="store_name" class="form-control" required />
+                        </div>
+                        <div class="form-row mt-4">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="store_type">Type de commerce :</label>
+                                    <select class="custom-select" name="store_type">
+                                        {% for x,y in form.fields.store_type.choices %}
+                                        <option value="{{ x }}" {% if form.fields.store_type.value == x %}
+                                            selected{% endif %}>{{ y }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="store_visits">N° de visites :</label>
+                                    <select class="custom-select" name="store_visits">
+                                        {% for x,y in form.fields.store_visits.choices %}
+                                        <option value="{{ x }}" {% if form.fields.store_visits.value == x %}
+                                            selected{% endif %}>{{ y }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card my-3">
+            <div class="card-body">
+                <ul class="metrics list-unstyled mt-4">
+                    <li>
+                        <span>Nombre de commerçants</span>
+                        <span class="text-primary font-weight-bold">{{ vendors_count }}</span>
+                    </li>
+                    <li>
+                        <span>Nombre moyen de clients</span>
+                        <span class="text-primary font-weight-bold">{{ nb_clients_avg }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

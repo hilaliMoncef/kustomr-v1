@@ -34,10 +34,6 @@
                 <a class="dropdown-item" href="/django-admin"><i class="fas fa-user mr-2"></i>Administration Django</a>
                 <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-power-off mr-2"></i>Déconnexion</a>
             </div>
-            {% elif user.is_customer %}
-            <div class="collapse submenu" id="submenu-myuser">
-                <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-power-off mr-2"></i>Déconnexion</a>
-            </div>
             {% endif %}
         </li>
         {% if request.user.is_authenticated %}
@@ -49,20 +45,14 @@
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if 'vendor/customers' in request.path %}active{% endif %}" data-toggle="collapse" aria-expanded="false" data-target="#submenu-clients" aria-controls="submenu-clients" href="#submenu-clients">
+            {% url 'vendor_customers' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}">
                 <i class="fas fa-users"></i> Clients
             </a>
-
-            <div id="submenu-clients" class="collapse submenu">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'vendor_customers' %}">Tous les clients</a>
-                    </li>
-                </ul>
-            </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-chart-area"></i> Analyse</a>
+            {% url 'vendor_analysis' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-chart-area"></i> Analyse</a>
         </li>
         <li class="nav-item">
             {% url 'vendor_discounts' as url %}
@@ -85,22 +75,15 @@
         {% elif request.user.is_staff %}
         <li class="nav-item">
             {% url 'admin_home' as url %}
-            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
+            <a class="nav-link {% if url == request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-tachometer-alt"></i> Administration</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href=""><i class="fas fa-briefcase"></i> Commerçants</a>
+            {% url 'admin_vendors' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-briefcase"></i> Commerçants</a>
         </li>
         <li class="nav-item">
             {% url 'admin_trainings' as url %}
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-book"></i> Formations</a>
-        </li>
-        {% elif request.user.is_customer %}
-        <li class="nav-item">
-            {% url 'customer_home' as url %}
-            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
         </li>
         {% endif %}
         {% endif %}

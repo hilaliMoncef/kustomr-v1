@@ -1,6 +1,8 @@
 from django.forms import ModelForm
+from django.forms import DateTimeField, DateTimeInput
 from django.forms import ValidationError
-from .models import Vendor, RewardCardLayout, Discount, Offer, VendorOpeningHours
+from .models import Vendor, RewardCardLayout, Discount, Offer, VendorOpeningHours, InstagramEvent, FacebookEvent, SocialMedia
+from django.utils import timezone
 
 
 class VendorForm(ModelForm):
@@ -57,3 +59,51 @@ class OfferImageForm(ModelForm):
     class Meta:
         model = Offer
         fields = ['image']
+
+
+class SocialMediaForm(ModelForm):
+    class Meta:
+        model = SocialMedia
+        fields = '__all__'
+
+
+class InstagramEventForm(ModelForm):
+    date_published = DateTimeField(
+        input_formats = ['%Y-%m-%dT%H:%M'],
+        widget = DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%Y-%m-%dT%H:%M')
+    )
+
+    class Meta:
+        model = InstagramEvent
+        exclude = ['vendor']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_published = cleaned_data.get("date_published")
+        if date_published < timezone.now():
+            raise ValidationError("Vous ne pouvez pas programmer des posts dans le passé.")
+
+
+class FacebookEventForm(ModelForm):
+    date_published = DateTimeField(
+        input_formats = ['%Y-%m-%dT%H:%M'],
+        widget = DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%Y-%m-%dT%H:%M')
+    )
+
+    class Meta:
+        model = FacebookEvent
+        exclude = ['vendor']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_published = cleaned_data.get("date_published")
+        if date_published < timezone.now():
+            raise ValidationError("Vous ne pouvez pas programmer des posts dans le passé.")

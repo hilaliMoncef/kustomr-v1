@@ -9,6 +9,9 @@ urlpatterns = [
     path('customer/new', views.NewCustomerView.as_view(), name="vendor_new_customer"),
     path('discounts', views.DiscountsView.as_view(), name="vendor_discounts"),
     path('marketing', views.MarketingView.as_view(), name="vendor_marketing"),
+    path('analysis', views.AnalysisView.as_view(), name="vendor_analysis"),
     path('social', views.SocialView.as_view(), name="vendor_social"),
+    path('social/media/upload', views.upload_medias, name="vendor_social_upload_media"),
+    path('social/new', views.SocialAddView.as_view(), name="vendor_social_add"),
     path('training', views.TrainingView.as_view(), name="vendor_training"),
 ]

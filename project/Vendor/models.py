@@ -3,8 +3,9 @@ from Users.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+import os
 
-# Create your models here.
+
 class Vendor(models.Model):
     """
         This model represents the Store manager. It is linked to a regular user account.
@@ -27,8 +28,8 @@ class Vendor(models.Model):
     store_visits = models.CharField(max_length=40, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
 
     # Store infos
-    store_phone = models.CharField(max_length=255)
-    store_adress = models.TextField()
+    store_phone = models.CharField(blank=True, null=True, max_length=255)
+    store_adress = models.TextField(blank=True, null=True)
 
     # Social links
     website = models.CharField(max_length=255, default='', null=True, blank=True)
@@ -42,6 +43,11 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.store_name
+
+    @property
+    def nb_clients(self):
+        print(self.customers.all().count())
+        return self.customers.all().count()
 
 
 class VendorOpeningHours(models.Model):
@@ -141,3 +147,75 @@ class Offer(models.Model):
                 return 'Expiré'
         else:
             return 'Désactivé'
+
+
+def get_ig_upload_path(instance, filename):
+    """
+    Helper function to get custom path for vendor's uploaded files for INSTAGRAM
+    """
+    print(os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename))
+    return os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename)
+
+def get_fb_upload_path(instance, filename):
+    """
+    Helper function to get custom path for vendor's uploaded files for INSTAGRAM
+    """
+    print(os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename))
+    return os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename)
+
+
+def get_social_upload_path(instance, filename):
+    """
+    Helper function to get custom path for vendor's uploaded files for INSTAGRAM
+    """
+    print(os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename))
+    return os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename)
+
+
+class SocialMedia(models.Model):
+    file = models.FileField(upload_to='posts/medias/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'File uploaded at {}'.format(self.uploaded_at)
+
+
+class InstagramEvent(models.Model):
+    """
+    This model represents an event on instagram
+    """
+    # Choices for store type
+    POST_TYPE_CHOICES = [
+        ('S', 'Story'),
+        ('P', 'Post'),
+    ]
+
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="ig_events")
+    images = models.ManyToManyField(SocialMedia, related_name="ig_events")
+    description = models.TextField()
+    post_type = models.CharField(max_length=40, choices=POST_TYPE_CHOICES, default='P')
+    date_published_char = models.CharField(max_length=255)
+    date_published = models.DateTimeField()
+
+    def __str__(self):
+        return 'Insta post on {} for {}'.format(self.date_published, self.vendor.store_name)
+
+class FacebookEvent(models.Model):
+    """
+    This model represents an event on Facebook
+    """
+    # Choices for store type
+    POST_TYPE_CHOICES = [
+        ('S', 'Story'),
+        ('P', 'Post'),
+    ]
+
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="fb_events")
+    images = models.ManyToManyField(SocialMedia, related_name="fb_events")
+    description = models.TextField()
+    post_type = models.CharField(max_length=40, choices=POST_TYPE_CHOICES, default='P')
+    date_published_char = models.CharField(max_length=255)
+    date_published = models.DateTimeField()
+
+    def __str__(self):
+        return 'Facebook post on {} for {}'.format(self.date_published, self.vendor.store_name)

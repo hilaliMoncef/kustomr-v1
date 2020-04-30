@@ -1,0 +1,470 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="divider">
+    <div class="hr"></div>
+    <div class="text">Voici ce qu'il se passe sur votre commerce aujourd'hui :</div>
+    <div class="hr"></div>
+    <div class="dropdown ml-2">
+        <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">Période entière <i class="fas fa-caret-down"></i></a>
+
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">7 derniers jours</a>
+            <a class="dropdown-item" href="#">30 derniers jours</a>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-12">
+        <div class="card card-statistics">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex flex-column">
+                        <h4 class="font-weight-bold mb-0">MEMBRES</h4>
+                    </div>
+                </div>
+                <div class="chart">
+                    <div id="members-chart-a"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-12">
+        <div class="card card-statistics coming-soon">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex flex-column">
+                        <h4 class="font-weight-bold mb-0 text-uppercase">MEMBRES Récurrents</h4>
+                    </div>
+                </div>
+                <div class="chart">
+                    <div id="members-chart-b"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8 col-md-8 col-12">
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="card card-statistics coming-soon">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex flex-column">
+                                <h4 class="font-weight-bold mb-0">Panier moyen</h4>
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <div id="chart-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <div class="card card-statistics coming-soon">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex flex-column">
+                                <h4 class="font-weight-bold mb-0">Passage par client</h4>
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <div id="chart-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="card card-statistics coming-soon">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex flex-column">
+                                <h4 class="font-weight-bold mb-0">Panier moyen</h4>
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <div id="chart-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <div class="card card-statistics coming-soon">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex flex-column">
+                                <h4 class="font-weight-bold mb-0">Passage par client</h4>
+                            </div>
+                        </div>
+                        <div class="chart">
+                            <div id="chart-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-12">
+        <div class="card coming-soon">
+            <div class="card-header">
+                <div class="title">Produits les plus vendus</div>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li>Produit 1</li>
+                    <li>Produit 1</li>
+                    <li>Produit 1</li>
+                    <li>Produit 1</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        // WE PREPARE CHART OPTIONS HERE
+        var memberChartoptions = {
+            chart: {
+                height: 250,
+                type: 'area',
+                toolbar: {
+                    show: false,
+                },
+                grid: {
+                    show: true,
+                    padding: {
+                        left: 0,
+                        right: 0
+                    }
+                },
+            },
+            colors: ['#EC487F'],
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2.5
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 0.9,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.5,
+                    stops: [0, 80, 100]
+                }
+            },
+            series: [{
+                name: 'Membres',
+                data: {{ customer_count }}
+    }],
+        xaxis: {
+        type: 'datetime',
+        categories: {{ customer_count_index| safe }}
+            },
+        tooltip: {
+        x: {
+            format: 'dd/MM/yy HH:mm'
+        },
+    },
+        }
+
+        var membersChart = new ApexCharts(
+        document.querySelector("#members-chart-a"),
+        memberChartoptions
+    );
+
+    membersChart.render();
+
+
+    var memberChartoptions = {
+        chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                }
+            },
+        },
+        colors: ['#9BD6AC'],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2.5
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.9,
+                opacityFrom: 0.7,
+                opacityTo: 0.5,
+                stops: [0, 80, 100]
+            }
+        },
+        series: [{
+            name: 'Membres',
+            data: [10, 7, 15, 20]
+        }],
+        xaxis: {
+            type: 'datetime',
+            categories: ['2020-04-24', '2020-04-25', '2020-04-26', '2020-04-27']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            },
+        },
+    }
+
+    var members2Chart = new ApexCharts(
+        document.querySelector("#members-chart-b"),
+        memberChartoptions
+    );
+
+    members2Chart.render();
+
+
+    // LAMBDA CHARTS
+    // CHART 1
+    var chart1options = {
+        chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                }
+            },
+        },
+        colors: ['#7FC6FC'],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2.5
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.9,
+                opacityFrom: 0.7,
+                opacityTo: 0.5,
+                stops: [0, 80, 100]
+            }
+        },
+        series: [{
+            name: 'Membres',
+            data: [10, 7, 15, 20]
+        }],
+        xaxis: {
+            type: 'datetime',
+            categories: ['2020-04-24', '2020-04-25', '2020-04-26', '2020-04-27']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            },
+        },
+    }
+
+    var chart1 = new ApexCharts(
+        document.querySelector("#chart-1"),
+        chart1options
+    );
+
+    chart1.render();
+
+    // CHART 2
+    var chart2options = {
+        chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                }
+            },
+        },
+        colors: ['#F0B985'],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2.5
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.9,
+                opacityFrom: 0.7,
+                opacityTo: 0.5,
+                stops: [0, 80, 100]
+            }
+        },
+        series: [{
+            name: 'Membres',
+            data: [10, 7, 15, 20]
+        }],
+        xaxis: {
+            type: 'datetime',
+            categories: ['2020-04-24', '2020-04-25', '2020-04-26', '2020-04-27']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            },
+        },
+    }
+
+    var chart2 = new ApexCharts(
+        document.querySelector("#chart-2"),
+        chart2options
+    );
+
+    chart2.render();
+
+    // CHART 3
+    var chart3options = {
+        chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                }
+            },
+        },
+        colors: ['#BAADE7'],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2.5
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.9,
+                opacityFrom: 0.7,
+                opacityTo: 0.5,
+                stops: [0, 80, 100]
+            }
+        },
+        series: [{
+            name: 'Membres',
+            data: [10, 7, 15, 20]
+        }],
+        xaxis: {
+            type: 'datetime',
+            categories: ['2020-04-24', '2020-04-25', '2020-04-26', '2020-04-27']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            },
+        },
+    }
+
+    var chart3 = new ApexCharts(
+        document.querySelector("#chart-3"),
+        chart3options
+    );
+
+    chart3.render();
+
+    // CHART 3
+    var chart4options = {
+        chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+                show: false,
+            },
+            grid: {
+                show: true,
+                padding: {
+                    left: 0,
+                    right: 0
+                }
+            },
+        },
+        colors: ['#F3EE9C'],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2.5
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.9,
+                opacityFrom: 0.7,
+                opacityTo: 0.5,
+                stops: [0, 80, 100]
+            }
+        },
+        series: [{
+            name: 'Membres',
+            data: [10, 7, 15, 20]
+        }],
+        xaxis: {
+            type: 'datetime',
+            categories: ['2020-04-24', '2020-04-25', '2020-04-26', '2020-04-27']
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yy HH:mm'
+            },
+        },
+    }
+
+    var chart4 = new ApexCharts(
+        document.querySelector("#chart-4"),
+        chart4options
+    );
+
+    chart4.render();
+    });
+</script>
+{% endblock %}

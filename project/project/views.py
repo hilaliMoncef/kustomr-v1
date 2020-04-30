@@ -13,3 +13,7 @@ def index(request):
         return redirect('logout')
     else:
         raise Http404()
+
+
+def not_authorized(request):
+    return render(request, 'generics/not-authorized.html', locals())

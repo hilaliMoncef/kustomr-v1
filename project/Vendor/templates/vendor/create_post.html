@@ -1,0 +1,423 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-6 col-12 mb-md-0 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <div id="post-form">
+                    <div>
+                        <h3>Choix de plateforme</h3>
+                        <section>
+                            <h5>Choix de la plateforme</h5>
+                            <div class="form-row mb-3">
+                                <div class="col-6 text-center">
+                                    <div class="custom-control custom-checkbox custom-control-inline">
+                                        <input type="checkbox" id="facebookCheck" name="isFB"
+                                            class="custom-control-input platform-choice" checked>
+                                        <label class="custom-control-label" for="facebookCheck">Facebook</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div class="custom-control custom-checkbox custom-control-inline">
+                                        <input type="checkbox" id="instagramCheck" name="isIG"
+                                            class="custom-control-input platform-choice" checked>
+                                        <label class="custom-control-label" for="instagramCheck">Instagram</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5>Type de contenu</h5>
+                            <div class="form-row bg-light py-3">
+                                <div class="col-6 text-center">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="postRadio" name="content_type" value="P"
+                                            class="custom-control-input" checked>
+                                        <label class="custom-control-label" for="postRadio">Post</label>
+                                    </div>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="storyRadio" name="content_type" value="S"
+                                            class="custom-control-input">
+                                        <label class="custom-control-label" for="storyRadio">Story</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <h3>Date de publication</h3>
+                        <section>
+                            <h5>Publication</h5>
+                            <div class="form-row mb-4">
+                                <div class="col d-flex align-items-center">
+                                    <span class="mr-3">Immédiat</span>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="immediateCheck" checked>
+                                        <label class="custom-control-label" for="immediateCheck"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="not-immediate" class="d-none">
+                                <h5>Horaire de publication</h5>
+                                <input type="hidden" name="hour" value="8h - 10h">
+                                <div class="form-row bg-light py-2 hours-select mb-3">
+                                    <div class="col-6 text-center">
+                                        <ul class="list-unstyled list-hours mb-0">
+                                            <li class="selected" value="8h - 10h"><span>8h - 10h</span></li>
+                                            <li value="10h - 12h"><span>10h - 12h</span></li>
+                                            <li value="12h - 14h"><span>12h - 14h</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <ul class="list-unstyled list-hours mb-0">
+                                            <li value="16h - 18h"><span>16h - 18h</span></li>
+                                            <li value="18h - 20h"><span>18h - 20h</span></li>
+                                            <li value="20h - 22h"><span>20h - 22h</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <h5>Jour de publication</h5>
+                                <div class="form-row bg-light text-center">
+                                    <input type="hidden" name="date" id="dateInput">
+                                    <div class="w-100 py-2" id="datepicker"></div>
+                                </div>
+                            </div>
+                        </section>
+                        <h3>Post</h3>
+                        <section>
+                            <div class="card mb-3" id="facebook-post">
+                                <div class="card-header card-facebook pb-2">
+                                    <div class="title text-uppercase d-block">Post facebook</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="instagram">Texte du poste</label>
+                                        <textarea name="post_facebook" class="form-control"
+                                            placeholder="Décrivez le contenu de votre post Facebook ici.."></textarea>
+                                    </div>
+                                    <div class="form-group border-dashed">
+                                        <label>Images</label>
+                                        <form action="{% url 'vendor_social_upload_media' %}" class="dropzone"
+                                            id="fbUpload">
+                                            {% csrf_token %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" id="instagram-post">
+                                <div class="card-header card-instagram pb-2">
+                                    <div class="title text-uppercase d-block">Post Instagram</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="instagram">Texte du poste</label>
+                                        <textarea name="post_instagram" class="form-control"
+                                            placeholder="Décrivez le contenu de votre post Instagram ici.."></textarea>
+                                    </div>
+                                    <div class="form-group border-dashed">
+                                        <label>Images</label>
+                                        <form action="{% url 'vendor_social_upload_media' %}" class="dropzone"
+                                            id="igUpload">
+                                            {% csrf_token %}
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-12">
+        <div class="card">
+            <div class="card-header text-center">
+                <div class="title text-uppercase">Résumé des publications</div>
+            </div>
+            <div class="card-body">
+                <div class="" id="facebook-preview">
+                    <div class="row">
+                        <div class="col-4">
+                            <div id="facebook-preview-medias" class="media-preview">
+                                <div class="placeholder"><img src="{% static 'assets/img/placeholder-carousel.jpg' %}"
+                                        alt="" /></div>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <p id="facebook-text-preview">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                                Debitis enim deserunt
+                                temporibus vero magnam eos, officiis nobis animi? Incidunt mollitia praesentium quia
+                                porro vel magni voluptatem reprehenderit eligendi necessitatibus excepturi!</p>
+
+                            <div class="post-meta d-flex align-items-center justify-content-between">
+                                <span class="card-facebook px-3 py-2 rounded align-self-center mr-3">
+                                    <i class="fab fa-facebook"></i>
+                                </span>
+                                <span class="text-small">Publication programmée pour : <span
+                                        class="text-primary post-date">maintenant</span> <span
+                                        class="text-primary post-hour"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="instagram-preview">
+                    <div class="row">
+                        <div class="col-4">
+                            <div id="instagram-preview-medias" class="media-preview">
+                                <div class="placeholder"><img src="{% static 'assets/img/placeholder-carousel.jpg' %}"
+                                        alt="" /></div>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <p id="instagram-text-preview">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                                Debitis enim deserunt
+                                temporibus vero magnam eos, officiis nobis animi? Incidunt mollitia praesentium quia
+                                porro vel magni voluptatem reprehenderit eligendi necessitatibus excepturi!</p>
+
+                            <div class="post-meta d-flex align-items-center justify-content-between">
+                                <span class="card-instagram px-3 py-2 rounded align-self-center mr-3">
+                                    <i class="fab fa-instagram"></i>
+                                </span>
+                                <span class="text-small">Publication programmée pour : <span
+                                        class="text-primary post-date">maintenant</span> <span
+                                        class="text-primary post-hour"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'assets/js/jquery.steps.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'assets/js/slick.min.js' %}"></script>
+<script>
+    Dropzone.options.fbUpload = {
+        init: function () {
+            this.on("success", function (file, response) {
+                // Here we get the response after the uploading files on the fly.
+                // Using a Facebook JS SDK, we will use the file url to upload to facebook
+                // For now, we get the pk only
+                var nb_img = $('.fb_pk_item').length;
+                $('#facebook-post').append('<input type="hidden" class="fb_pk_item" name="fb_pk' + (nb_img + 1) + '" value="' + response.pk + '">');
+                $('#facebook-post').append('<input type="hidden" class="fb_img_item" name="fb_img' + (nb_img + 1) + '" value="' + response.url + '">');
+
+                // Now we update the preview, we clear the placeholders first and then we append
+                $('#facebook-preview-medias .placeholder').remove();
+                $('#facebook-preview-medias').slick('slickAdd', '<div><img src="' + response.url + '" alt="' + response.pk + '" /></div>');
+            });
+        }
+    };
+
+    Dropzone.options.igUpload = {
+        init: function () {
+            this.on("success", function (file, response) {
+                // Here we get the response after the uploading files on the fly.
+                // Using a Facebook JS SDK, we will use the file url to upload to facebook
+                // For now, we get the pk only
+                var nb_img = $('.ig_pk_item').length;
+                $('#instagram-post').append('<input type="hidden" class="ig_pk_item" name="ig_pk' + (nb_img + 1) + '" value="' + response.pk + '">');
+                $('#instagram-post').append('<input type="hidden" class="ig_img_item" name="ig_img' + (nb_img + 1) + '" value="' + response.url + '">');
+
+                // Now we update the preview, we clear the placeholders first and then we append
+                $('#instagram-preview-medias .placeholder').remove();
+                $('#instagram-preview-medias').slick('slickAdd', '<div><img src="' + response.url + '" alt="' + response.pk + '" /></div>');
+            });
+        }
+    };
+
+    var form = $("#post-form");
+    form.children("div").steps({
+        headerTag: "h3",
+        bodyTag: "section",
+        transitionEffect: "slideLeft",
+        labels: {
+            finish: 'Programmer',
+            next: 'Suivant',
+            previous: 'Précédent',
+            loading: 'Chargement ...'
+        },
+        onStepChanging: function (event, currentIndex, newIndex) {
+            if (currentIndex == 0) {
+                // First tab, validate a post type
+                if ($('#facebookCheck').prop('checked') || $('#instagramCheck').prop('checked')) {
+                    return true;
+                }
+                else {
+                    toastr.error('Veuillez choisir au moins une plateforme.');
+                    return false;
+                }
+            } else if (currentIndex == 1) {
+                if (!$('#immediateCheck').prop('checked')) {
+                    if ($('input[name=hour]').val() != '' && $('#dateInput').val() != '') {
+                        return true;
+                    } else {
+                        toastr.error('Veuillez choisir une date et un horaire valides.');
+                        return false;
+                    }
+                }
+            } else if (currentIndex == 2) {
+                var fbOK, igOK;
+                if ($('#facebookCheck').prop('checked')) {
+                    if ($('#facebook-post textarea').val() != '' && $('.fb_pk_item').length > 0) {
+                        fbOK = true;
+                    } else {
+                        toastr.error('Certains champs du post Facebook sont vides ou invalides.');
+                        fbOK = false;
+                    }
+                } else {
+                    fbOK = true;
+                }
+                if ($('#instagramCheck').prop('checked')) {
+                    if ($('#instagram-post textarea').val() != '' && $('.ig_pk_item').length > 0) {
+                        igOK = true;
+                    } else {
+                        toastr.error('Certains champs du post Facebook sont vides ou invalides.');
+                        igOK = false;
+                    }
+                } else {
+                    igOK = true;
+                }
+                return fbOK && igOK;
+            }
+            return true;
+        },
+        onFinished: function (event, currentIndex) {
+            var fbOK, igOK;
+            if ($('#facebookCheck').prop('checked')) {
+                if ($('#facebook-post textarea').val() != '' && $('.fb_pk_item').length > 0) {
+                    fbOK = true;
+                } else {
+                    toastr.error('Certains champs du post Facebook sont vides ou invalides.');
+                    fbOK = false;
+                }
+            } else {
+                fbOK = true;
+            }
+            if ($('#instagramCheck').prop('checked')) {
+                if ($('#instagram-post textarea').val() != '' && $('.ig_pk_item').length > 0) {
+                    igOK = true;
+                } else {
+                    toastr.error('Certains champs du post Facebook sont vides ou invalides.');
+                    igOK = false;
+                }
+            } else {
+                igOK = true;
+            }
+            
+            if(fbOK && igOK) {
+                submitData();
+            }
+        }
+    });
+
+    function submitData() {
+        var formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}')
+        formData.append('isFacebook', $('#facebookCheck').prop('checked'));
+        formData.append('isInstagram', $('#instagramCheck').prop('checked'));
+        formData.append('content_type', $('input[name=content_type]').val());
+        formData.append('immediate', $('#immediateCheck').prop('checked'));
+        if ($('#immediateCheck').val() != 'True') {
+            formData.append('hour', $('input[name=hour]').val());
+            formData.append('date', $('#dateInput').val());
+        }
+        if ($('#facebookCheck').prop('checked')) {
+            formData.append('post_facebook', $('#facebook-post textarea').val());
+            var pks = [];
+            for (let i = 0; i < $('.fb_pk_item').length; i++) {
+                const element = $('.fb_pk_item')[i];
+                pks.push($(element).val())
+            }
+            formData.append('fb_medias', pks);
+        }
+        if ($('#instagramCheck').prop('checked')) {
+            formData.append('post_instagram', $('#instagram-post textarea').val());
+            var ig_pks = [];
+            for (let i = 0; i < $('.ig_pk_item').length; i++) {
+                const element = $('.ig_pk_item')[i];
+                ig_pks.push($(element).val())
+            }
+            formData.append('ig_medias', ig_pks);
+        }
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'vendor_social_add' %}",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (data) {
+                window.location.href = "{% url 'vendor_social' %}";
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+            }
+        })
+    }
+
+    $('#facebook-post textarea').keyup(function () {
+        $('#facebook-text-preview').text($(this).val());
+    });
+
+    $('#instagram-post textarea').keyup(function () {
+        $('#instagram-text-preview').text($(this).val());
+    });
+
+    $('.hours-select li').click(function () {
+        $('input[name=hour]').val($(this).attr('value'));
+        $('.hours-select li.selected').removeClass('selected');
+        $(this).addClass('selected');
+
+        // We update the preview too
+        $('.post-hour').text($(this).attr('value'));
+    })
+
+    $('#immediateCheck').change(function () {
+        if (!this.checked) {
+            $('#not-immediate').removeClass('d-none');
+            $('.post-date').text('');
+            $('.post-hour').text('');
+        } else {
+            $('#not-immediate').addClass('d-none');
+            $('.post-date').text('maintenant');
+            $('.post-hour').text('');
+        }
+    });
+
+    $('#facebookCheck').change(function () {
+        if (this.checked) {
+            $('#facebook-post').removeClass('d-none');
+            $('#facebook-preview').removeClass('d-none');
+        } else {
+            $('#facebook-post').addClass('d-none');
+            $('#facebook-preview').addClass('d-none');
+        }
+    });
+
+    $('#instagramCheck').change(function () {
+        if (this.checked) {
+            $('#instagram-post').removeClass('d-none');
+            $('#instagram-preview').removeClass('d-none');
+        } else {
+            $('#instagram-post').addClass('d-none');
+            $('#instagram-preview').addClass('d-none');
+        }
+    });
+
+    $('#datepicker').datepicker();
+    $('#datepicker').on('changeDate', function () {
+        $('#dateInput').val($('#datepicker').datepicker('getFormattedDate'));
+        // We update the preview too
+        $('.post-date').text($('#datepicker').datepicker('getFormattedDate'));
+    });
+
+    $('.media-preview').slick({
+        prevArrow: '<button type="button" class="slick-prev"><i class="fas fa-angle-left"></i></button>',
+        nextArrow: '<button type="button" class="slick-next"><i class="fas fa-angle-right"></i></button>',
+    });
+</script>
+{% endblock %}

@@ -63,33 +63,149 @@
         </div>
     </div>
     <div class="col-md-4 col-12">
-        <a href="#" class="btn btn-primary w-100">Créer une publication</a>
+        <a href="{% url 'vendor_social_add' %}" class="btn btn-primary w-100">Créer une publication</a>
         <div class="card my-3">
             <div class="card-body">
                 <div id="social-calendar"></div>
                 <hr>
                 <h4 class="text-center">Aujourd'hui</h4>
-                <ul class="metrics list-unstyled mt-4">
+                <ul class="list-events list-unstyled mt-4">
+                    {% for event in fb_today %}
                     <li>
-                        <span>Panier moyen</span>
-                        <span class="text-primary font-weight-bold">36,65€</span>
+                        <span class="card-facebook px-3 align-self-center"><i class="fab fa-facebook"></i></span>
+                        <span class="w-100 mx-3">{{ event.description|truncatechars:30 }}</span>
+                        {% if event.images.all.count > 1 %}
+                        <span class="post-img post-img-slick">
+                            {% for image in event.images.all %}
+                            <img src="{{ image.file.url }}" />
+                            {% endfor %}
+                        </span>
+                        {% else %}
+                        <span class="post-img position-relative">
+                            <img class="img-fit" src="{{ event.images.first.file.url }}" />
+                        </span>
+                        {% endif %}
                     </li>
+                    {% endfor %}
+                    {% for event in ig_today %}
                     <li>
-                        <span>Fréquence des visites</span>
-                        <span class="text-primary font-weight-bold">3 fois / mois</span>
+                        <span class="card-instagram px-3 align-self-center"><i class="fab fa-instagram"></i></span>
+                        <span class="w-100 mx-3">{{ event.description|truncatechars:30 }}</span>
+                        {% if event.images.all.count > 1 %}
+                        <span class="post-img post-img-slick">
+                            {% for image in event.images.all %}
+                            <img src="{{ image.file.url }}" />
+                            {% endfor %}
+                        </span>
+                        {% else %}
+                        <span class="post-img position-relative">
+                            <img class="img-fit" src="{{ event.images.first.file.url }}" />
+                        </span>
+                        {% endif %}
                     </li>
-                    <li>
-                        <span>Taux d'engagement</span>
-                        <span class="text-primary font-weight-bold">5</span>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
+
+
         <button type="button" class="btn btn-secondary w-100" id="logoutAPI">Déconnexion API</button>
 
     </div>
 
 </div>
+
+
+<!-- POST MODAL -->
+<div class="modal fade" id="addPost" tabindex="-1" role="dialog" aria-labelledby="addPostTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPostTitle">Programmer un post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="">Plateforme social</label>
+                    <select class="custom-select post-platform-select" name="type">
+                        <option value="facebook" selected>Facebook</option>
+                        <option value="instagram">Instagram</option>
+                    </select>
+                </div>
+                <hr>
+                <form method="POST" id="facebook-form" class="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="facebook">
+                    <h5>Programmer un post Facebook</h5>
+                    <div class="custom-file mb-3">
+                        <input type="file" name="image" class="custom-file-input" id="fb_image">
+                        <label class="custom-file-label" for="fb_image">Choisir un fichier</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Titre de la publication :</label>
+                        <input type="text" name="title" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Description :</label>
+                        <textarea name="description" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="min_points">Localisation :</label>
+                        <input type="text" name="location" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="date_published">Date de publication :</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                            <input type="datetime-local" name="date_published" class="form-control" required />
+                        </div>
+                    </div>
+                </form>
+                <form method="POST" id="instagram-form" class="d-none" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="instagram">
+                    <h5>Programmer un post Instagram</h5>
+                    <div class="custom-file mb-3">
+                        <input type="file" name="image" class="custom-file-input" id="ig_image">
+                        <label class="custom-file-label" for="ig_image">Choisir un fichier</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Titre de la publication :</label>
+                        <input type="text" name="title" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Description :</label>
+                        <textarea name="description" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="min_points">Localisation :</label>
+                        <input type="text" name="location" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="date_published">Date de publication :</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                            <input type="datetime-local" name="date_published" class="form-control" required />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" id="submit-post">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="row d-none" id="logIn">
     <div class="col">
@@ -115,6 +231,7 @@
 {% block script %}
 <script async defer crossorigin="anonymous"
     src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v6.0&appId=2676493982591304&autoLogAppEvents=1"></script>
+<script src="{% static 'assets/js/slick.min.js' %}"></script>
 <script>
     $(document).ready(function () {
         // WE PREPARE CHART OPTIONS HERE
@@ -126,10 +243,10 @@
             },
             plotOptions: {
                 bar: {
-                    columnWidth: '15%'
+                    columnWidth: '55%'
                 }
             },
-            colors: ['#3b5999', '#e4405f', '#55acee'],
+            colors: ['#2D88FF', '#CA007D', '#55acee'],
             series: [],
             noData: {
                 text: 'Loading...'
@@ -394,11 +511,9 @@
                     "access_token": pageToken
                 },
                 function (response) {
-                    console.log(response);
                     if (response && !response.error) {
                         /* handle the result */
                         var seriesIG = response.data[0].values.map(value => ({ x: moment(value.end_time).format("Do MMM"), y: value.value }));
-                        console.log(seriesIG)
                         socialChart.appendSeries({
                             name: 'Instagram New Followers',
                             data: seriesIG
@@ -427,14 +542,26 @@
             plugins: ['dayGrid', 'frLocale'],
             height: 'auto',
             locale: 'fr',
-            fixedWeekCount: false
+            fixedWeekCount: false,
+            events: {{ events| safe }},
+            eventRender: function (info) {
+                info.el.setAttribute('data-toggle', 'tooltip');
+                info.el.setAttribute('data-placement', 'top');
+                info.el.setAttribute('title', 'Publication : ' + info.event.title);
+                $(info.el).tooltip();
+            }
         });
 
-        calendar.render();
+    calendar.render();
 
+    $('[data-toggle="tooltip"]').tooltip();
 
+    $('.post-img-slick').slick({
+        prevArrow: '<button type="button" class="slick-prev"><i class="fas fa-angle-left"></i></button>',
+        nextArrow: '<button type="button" class="slick-next"><i class="fas fa-angle-right"></i></button>',
     });
 
+    });
 
 </script>
 {% endblock %}

@@ -16,6 +16,9 @@
   <link rel="stylesheet" href="{% static 'assets/fullcalendar/core/main.css' %}">
   <link rel="stylesheet" href="{% static 'assets/fullcalendar/daygrid/main.min.css' %}">
   <link rel="stylesheet" href="{% static 'fonts/circular-std/style.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/dropzone.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/video-js.css' %}" />
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
@@ -47,11 +50,13 @@
         {% block content %}{% endblock %}
         
         <!-- Floating button -->
+        {% if request.user.is_vendor %}
         <div class="card-float bottom right">
             <a href="" class="btn-round btn-primary">
                 <i class="fas fa-user-plus"></i>
             </a>
         </div>
+        {% endif %}
       </div>
       <div class="dashboard-footer">
           {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
@@ -90,8 +95,8 @@
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
-  <!-- jQuery Flip JS -->
-  <script src="{% static 'assets/js/jquery.flip.min.js' %}"></script>
+  <!-- jQuery Dropzone -->
+  <script src="{% static 'assets/js/dropzone.min.js' %}"></script>
 
   <!--  jQuery Loading Plugin -->
   <script src="{% static 'assets/js/jquery.loading.min.js' %}"></script>

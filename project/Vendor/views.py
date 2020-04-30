@@ -5,11 +5,13 @@ from django.urls import reverse
 from django.utils.text import slugify
 from Admin.models import Training
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm
-from .models import Discount, Offer
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, SocialMediaForm
+from .models import Discount, Offer, FacebookEvent, InstagramEvent
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
+from django.http import HttpResponseRedirect, JsonResponse
+import datetime
 import qrcode
 import json
 import pandas as pd
@@ -19,6 +21,13 @@ class DashboardView(LoginRequiredMixin, View):
     """
     Cette page permet de récupérer les principales stats sur le commerçant
     """
+    def dispatch(self, *args, **kwargs):
+        print(self.request.user.is_vendor)
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(DashboardView, self).dispatch(*args, **kwargs)
+        
     def get(self, request, *args, **kwargs):
         vendor = request.user.vendor
         customers = vendor.customers.all()[:5]
@@ -43,16 +52,51 @@ class CustomersView(LoginRequiredMixin, View):
     """
     Cette page permet de gérer au commerçant de gérer ses clients
     """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(CustomersView, self).dispatch(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         customers = request.user.vendor.customers.all()
         return render(request, 'vendor/all_customers.html', locals())
 
 
-class DiscountsView(LoginRequiredMixin, View):
+class AnalysisView(LoginRequiredMixin, View):
     """
-    Cette page permet de récupérer les principales stats sur le commerçant
+    Cette page permet de gérer au commerçant de gérer ses clients
     """
     def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(AnalysisView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        vendor = request.user.vendor
+        df = pd.DataFrame(vendor.customers.values('id', 'user__date_joined'))
+        df['user__date_joined'] = pd.to_datetime(df['user__date_joined'])
+        df.set_index('user__date_joined', drop=True, inplace=True)
+        customer_count = list(df.resample('D').count()['id'])
+        customer_count_index = list(df.resample('D').count().index.strftime("%Y-%m-%d"))
+
+        context = {
+            'customer_count': customer_count,
+            'customer_count_index': customer_count_index
+        }
+        return render(request, 'vendor/analysis.html', context)
+
+
+class DiscountsView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les réductions et offres, d'en rajouter, de les modifier ou supprimer
+    """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+
         method = self.request.POST.get('_method', '').lower()
         if method == 'put':
             return self.put(*args, **kwargs)
@@ -141,6 +185,12 @@ class MarketingView(LoginRequiredMixin, View):
     """
     Cette page permet de récupérer les principales stats sur le commerçant
     """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(MarketingView, self).dispatch(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         customers = request.user.vendor.customers.all()[:5]
         return render(request, 'vendor/marketing.html', locals())
@@ -148,17 +198,106 @@ class MarketingView(LoginRequiredMixin, View):
 
 class SocialView(LoginRequiredMixin, View):
     """
-    Cette page permet de récupérer les principales stats sur le commerçant
+    Cette page permet de récupérer les stats des pages Facebook et Instagram du commerçant (via jQuery)
+    Elle permet également de programmer des posts Instagram et Facebook
     """
-    def get(self, request, *args, **kwargs):
-        customers = request.user.vendor.customers.all()[:5]
-        return render(request, 'vendor/social.html', locals())
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
 
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'put':
+            return self.put(*args, **kwargs)
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        return super(SocialView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        vendor = request.user.vendor
+        events = []
+        fb_events = [{'id': event.pk, 'title': event.description, 'start': event.date_published.strftime('%Y-%m-%d'), 'backgroundColor': '#2D88FF'} for event in list(vendor.fb_events.all())]
+        ig_events = [{'id': event.pk, 'title': event.description, 'start': event.date_published.strftime('%Y-%m-%d'), 'backgroundColor': '#CA007D'} for event in list(vendor.ig_events.all())]
+        events = fb_events + ig_events
+
+        fb_today = vendor.fb_events.filter(date_published__year=timezone.now().year,date_published__month=timezone.now().month,date_published__day=timezone.now().day)
+        ig_today = vendor.ig_events.filter(date_published__year=timezone.now().year,date_published__month=timezone.now().month,date_published__day=timezone.now().day)
+
+        context = {
+            'events': json.dumps(events),
+            'fb_today': fb_today,
+            'ig_today': ig_today
+        }
+        return render(request, 'vendor/social.html', context)
+
+    def put(self, request, *args, **kwargs):
+        pass
+
+    def delete(self, request, *args, **kwargs):
+        pass
+
+class SocialAddView(LoginRequiredMixin, View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'put':
+            return self.put(*args, **kwargs)
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        return super(SocialAddView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        vendor = request.user.vendor
+        return render(request, 'vendor/create_post.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        vendor = request.user.vendor
+        # We first determine a publication date
+        print(request.POST)
+        if request.POST['immediate'] == 'true':
+            date_published = timezone.now()
+            date_published_char = timezone.now().strftime('%d/%m/%Y %H:%M')
+        else:
+            date_published = timezone.make_aware(datetime.datetime.strptime(request.POST['date'], '%m/%d/%Y'), timezone.get_current_timezone())
+            date_published_char = '{} {}'.format(request.POST['date'], request.POST['hour'])
+
+        # We create an event for facebook if needed
+        if request.POST['isFacebook'] == 'true':
+            event = FacebookEvent.objects.create(vendor=vendor, date_published=date_published, date_published_char=date_published_char, post_type=request.POST['content_type'], description=request.POST['post_facebook'])
+            event.images.add(*request.POST['fb_medias'].split(','))
+            event.save()
+
+        # We create an event for Instagram if needed
+        if request.POST['isInstagram'] == 'true':
+            event = InstagramEvent.objects.create(vendor=vendor, date_published=date_published, date_published_char=date_published_char, post_type=request.POST['content_type'], description=request.POST['post_instagram'])
+            event.images.add(*request.POST['ig_medias'].split(','))
+            event.save()
+
+        messages.add_message(request, messages.SUCCESS, 'Le post du {} a été programmé.'.format(event.date_published_char))
+        return JsonResponse({'detail': 'OK'}, status=200)
+
+
+def upload_medias(request):
+    form = SocialMediaForm(request.POST, {'file' : request.FILES.getlist('file')[0]})
+    if form.is_valid():
+        image = form.save()
+        return JsonResponse({'url': image.file.url, 'pk': image.pk}, status=201)
+    else:
+        return JsonResponse(form.errors.as_json(), status=400)
 
 class TrainingView(LoginRequiredMixin, View):
     """
     Cette page permet de récupérer les principales stats sur le commerçant
     """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(TrainingView, self).dispatch(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         trainings = Training.objects.filter(is_active=True).order_by('-date_added')
         return render(request, 'vendor/training.html', locals())
@@ -169,6 +308,12 @@ class SettingsView(LoginRequiredMixin, View):
     Cette vue permet de gérer les paramètres d'une page commerçant, 
     comme la carte de fidélité liée et les informations générales du compte.
     """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(SettingsView, self).dispatch(*args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         vendor = request.user.vendor
         form_infos = VendorForm(instance=vendor)
@@ -220,6 +365,7 @@ class SettingsView(LoginRequiredMixin, View):
 
         # Always redirect to the settings page
         return redirect('vendor_settings')
+
 
 # A adapter, uniquement les admins qui générent des nouveaux clients
 class NewCustomerView(LoginRequiredMixin, View):

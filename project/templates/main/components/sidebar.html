@@ -89,6 +89,10 @@
             {% url 'admin_trainings' as url %}
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-book"></i> Formations</a>
         </li>
+        <li class="nav-item">
+            {% url 'admin_messages' as url %}
+            <a class="nav-link d-flex align-items-center justify-content-between {% if url in request.path %}active{% endif %}" href="{{ url }}"><span><i class="fas fa-envelope"></i> Messages</span> <span class="badge badge-light mr-1">{{ unread }}</span></a>
+        </li>
         {% endif %}
         {% endif %}
     </ul>
@@ -102,7 +106,8 @@
         {% url 'vendor_settings' as url %}
         <a href="{{ url }}" class="nav-link px-0 {% if url in request.path %}active{% endif %}"><i class="fas fa-cog"></i> Réglages</a>
         <div class="divider mx-2"></div>
-        <a href="" class="nav-link p-0"><i class="fas fa-question-circle"></i> Assistance</a>
+        {% url 'vendor_help' as url %}
+        <a href="{{ url }}" class="nav-link p-0 {% if url in request.path %}active{% endif %}"><i class="fas fa-question-circle"></i> Assistance</a>
         {% endif %}
 
         {% endif %}

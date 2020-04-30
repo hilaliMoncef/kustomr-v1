@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .forms import TrainingForm, VendorSignupForm
 from Vendor.forms import VendorForm
-from .models import Training
+from .models import Training, Message
 from Vendor.models import Vendor, FacebookEvent, InstagramEvent
 from Users.models import User
 from django.shortcuts import get_object_or_404
@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.db.models import Avg, Count
 from django.utils import timezone
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 import json
 
 
@@ -27,6 +29,7 @@ class DashboardView(LoginRequiredMixin, View):
         return super(DashboardView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        unread = Message.objects.filter(read=False).count()
         return render(request, 'admin/home.html', locals())
 
 
@@ -41,6 +44,7 @@ class VendorsView(LoginRequiredMixin, View):
         return super(VendorsView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        unread = Message.objects.filter(read=False).count()
         vendors = Vendor.objects.all()
         vendors_count = vendors.count()
         nb_clients_avg = Vendor.objects.all().annotate(nb_customers=Count('customers')).aggregate(Avg('nb_customers'))['nb_customers__avg']
@@ -105,6 +109,7 @@ class TrainingsView(LoginRequiredMixin, View):
         return super(TrainingsView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        unread = Message.objects.filter(read=False).count()
         form = TrainingForm()
         trainings = Training.objects.all()
         frees = Training.objects.filter(is_free=True).count()
@@ -134,7 +139,6 @@ class TrainingsView(LoginRequiredMixin, View):
 
 
 
-
 class SocialsView(LoginRequiredMixin, View):
     """
     Cette page permet de récupérer les formations en cours et en créer des nouvelles
@@ -148,6 +152,7 @@ class SocialsView(LoginRequiredMixin, View):
         return super(SocialsView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        unread = Message.objects.filter(read=False).count()
         fb_events = FacebookEvent.objects.filter(processed=False)
         fb_events_done = FacebookEvent.objects.filter(processed=True).order_by('-date_processed')
         ig_events = InstagramEvent.objects.filter(processed=False)
@@ -184,3 +189,33 @@ def toggle_ig_processed(request, pk):
         messages.add_message(request, messages.SUCCESS, 'La publication de {} a été traitée.'.format(event.vendor.store_name))
  
     return redirect('admin_socials')
+
+
+class MessagesView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les formations en cours et en créer des nouvelles
+    """
+    http_method_names = ['get', 'post', 'put', 'delete']
+
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_staff:
+            # Quick check if the user is admin
+            return redirect('not-authorized')
+        return super(MessagesView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        messages_list = Message.objects.all()
+        unread = Message.objects.filter(read=False).count()
+        return render(request, 'admin/messages.html', locals())
+
+
+def read_message(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+    message.read = True
+    message.save()
+    return JsonResponse({}, status=201)
+
+def delete_message(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+    message.delete()
+    return JsonResponse({}, status=201)

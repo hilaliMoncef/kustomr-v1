@@ -523,8 +523,12 @@ nav.navbar {
   color: #fff;
   opacity: 0.5;
   transition: 0.3s all; }
+  #sidebar-wrapper .nav-link .badge {
+    opacity: 0.5; }
   #sidebar-wrapper .nav-link.active, #sidebar-wrapper .nav-link:hover {
     opacity: 1; }
+    #sidebar-wrapper .nav-link.active .badge, #sidebar-wrapper .nav-link:hover .badge {
+      opacity: 1; }
   #sidebar-wrapper .nav-link i {
     font-size: 18px;
     margin-right: 14px; }
@@ -1378,5 +1382,21 @@ button.btn-list {
     left: 0; }
   .slick-slider .slick-arrow.slick-next {
     right: 0; }
+
+/* ==========================================================================
+   16. INBOX DESIGN
+   ========================================================================== */
+.inbox .mail_list .list-group-item {
+  cursor: pointer;
+  border: none; }
+  .inbox .mail_list .list-group-item:hover {
+    background: #eceeef;
+    border-radius: 0; }
+  .inbox .mail_list .list-group-item.unread {
+    border-left: 3px solid #0086FF !important;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease; }
 
 /*# sourceMappingURL=style.css.map */

@@ -1,0 +1,110 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <div class="title">Inbox</div>
+            </div>
+            <div class="card-body inbox">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5>
+                        {{ unread }} nouveau{% if unread > 1 %}x{% endif %} message{% if unread > 1 %}s{% endif %}
+                    </h5>
+                </div>
+                <ul class="mail_list list-group list-unstyled">
+                    {% for message in messages_list %}
+                    <li class="list-group-item {% if not message.read %}unread{% endif %}" id="mail-{{ message.pk }}">
+                        <div class="media d-flex align-items-start">
+                            <div class="pull-left mr-4 mt-2">
+                                <div class="controls">
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="basic_checkbox_1">
+                                        <label for="basic_checkbox_1"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="media-body mail-trigger" message-id="{{ message.pk }}">
+                                <div class="media-heading">
+                                    <a href="#" class="text-normal font-weight-bold">FROM :
+                                        {{ message.vendor.store_name }} - {{ message.subject }}</a>
+                                </div>
+                                <div class="msg">
+                                    {{ message.message|linebreaks }}
+                                </div>
+                            </div>
+                            <small class="float-right text-muted d-flex flex-column align-items-end">
+                                <time class="hidden-sm-down" datetime="2017">{{ message.date_sent }}</time>
+                                <span class="d-flex align-items-center">
+                                    <a href="#" message-id="{{ message.pk }}"
+                                        class="text-danger d-block mt-2 delete-mail"><i class="fas fa-trash"></i></a>
+                                </span>
+                            </small>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li>Aucun message.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.mail_list .msg').css({ height: '40px', overflow: 'hidden' });
+        $('.mail_list .mail-trigger').click(function () {
+            var $this = $(this).find('.msg');
+            if ($this.data('open')) {
+                $this.animate({ height: '40px' });
+                $this.data('open', 0);
+            } else {
+                $this.css("height", "100%");
+                var h = $this.height();
+                $this.css("height", "40px");
+                $this.animate({ height: h });
+                $this.data('open', 1);
+
+                var pk = $(this).attr("message-id");
+                if ($('#mail-' + pk).hasClass('unread')) {
+                    var url = 'messages/' + pk + '/read';
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            $('#mail-' + pk).removeClass('unread');
+                        },
+                        error: function (e) {
+                            toastr.error('Impossible de marquer le message comme lu.');
+                        }
+                    })
+                }
+            }
+        })
+
+        $('.delete-mail').click(function () {
+            var pk = $(this).attr('message-id');
+            var url = 'messages/' + pk + '/delete';
+            $.ajax({
+                type: 'GET',
+                url: url,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    toastr.success('Message supprimé.');
+                    $('#mail-' + pk).remove();
+                },
+                error: function (e) {
+                    toastr.error('Impossible de marquer le message comme lu.');
+                }
+            })
+        })
+    });
+</script>
+{% endblock %}

@@ -7,5 +7,8 @@ urlpatterns = [
     path('socials', views.SocialsView.as_view(), name="admin_socials"),
     path('socials/facebook/<int:pk>/toggle', views.toggle_fb_processed, name="admin_facebook_toggle"),
     path('socials/instagram/<int:pk>/toggle', views.toggle_ig_processed, name="admin_instagram_toggle"),
-    path('formations', views.TrainingsView.as_view(), name="admin_trainings")
+    path('formations', views.TrainingsView.as_view(), name="admin_trainings"),
+    path('messages', views.MessagesView.as_view(), name="admin_messages"),
+    path('messages/<int:pk>/read', views.read_message, name="admin_read_message"),
+    path('messages/<int:pk>/delete', views.delete_message, name="admin_delete_message")
 ]

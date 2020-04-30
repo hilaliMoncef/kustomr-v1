@@ -679,8 +679,16 @@ nav.navbar {
     opacity: 0.5;
     transition: 0.3s all;
 
+    .badge {
+      opacity: 0.5;
+    }
+
     &.active, &:hover {
       opacity: 1;
+
+      .badge {
+        opacity: 1;
+      }
     }
 
     i {
@@ -1894,4 +1902,31 @@ address {}
         }
     }
     
+}
+
+
+/* ==========================================================================
+   16. INBOX DESIGN
+   ========================================================================== */
+
+.inbox {
+  .mail_list {
+    .list-group-item {
+      cursor: pointer;
+      border: none;
+
+      &:hover {
+        background: #eceeef;
+        border-radius: 0;
+      }
+
+      &.unread {
+        border-left: 3px solid $secondaryColor !important;
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+      }
+    }
+  }
 }

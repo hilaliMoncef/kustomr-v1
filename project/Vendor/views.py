@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.urls import reverse
 from django.utils.text import slugify
-from Admin.models import Training
+from Admin.models import Training, Message
+from Admin.forms import MessageForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, SocialMediaForm
 from .models import Discount, Offer, FacebookEvent, InstagramEvent
@@ -376,3 +377,31 @@ class NewCustomerView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         link = "{}://{}{}".format(request.scheme, request.get_host(), reverse('customer_landing_page', args=(request.user.vendor.pk, slugify(request.user.vendor.store_name),)))
         return render(request, 'add_customer.html', locals())
+
+
+class HelpView(LoginRequiredMixin, View):
+    """
+    Cette page permet d'envoyer des messages d'assistance au support
+    """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(HelpView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'vendor/help.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.vendor = request.user.vendor
+            message.save()
+            messages.add_message(request, messages.SUCCESS, 'Votre message a été envoyé. Il sera traité dans les plus brefs délais.')
+        else:
+            errors = json.loads(form.errors.as_json())
+            for error in errors:
+                messages.add_message(request, messages.ERROR, '{}: {}'.format(error, errors[error][0]['message']))
+        return redirect('vendor_help')

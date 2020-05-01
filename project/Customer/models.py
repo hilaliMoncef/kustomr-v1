@@ -37,3 +37,13 @@ def save_token(sender, instance, created, **kwargs):
         from secrets import token_urlsafe
         instance.token = CustomerToken.objects.create(token=token_urlsafe(20))
         instance.save()
+
+
+class CustomersList(models.Model):
+    name = models.CharField(max_length=255)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="lists")
+    customers = models.ManyToManyField(Customer, related_name="lists")
+    last_update = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'Liste {}'.format(self.name)

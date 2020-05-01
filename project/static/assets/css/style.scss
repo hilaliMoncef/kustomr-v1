@@ -192,11 +192,11 @@ a {
 }
 
 .text-primary {
-  color: #C71A41 !important;
+  color: $primaryColor !important;
 }
 
 a.text-primary:hover {
-  color: rgb(173, 0, 49) !important;
+  color: rgb(196, 0, 55) !important;
 }
 
 .text-brand {
@@ -212,7 +212,7 @@ a.text-primary:hover {
 }
 
 .text-danger {
-  color:  !important;
+  color: $dangerColor important;
 }
 
 .text-warning {

@@ -1,0 +1,472 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<div class="row">
+    <div class="col-md-9 col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="title text-uppercase">Gérer mes listes de clients</div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th colspan="2">Nom de la liste</th>
+                            <th>Nombre de clients</th>
+                            <th>Dernier update</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for list in lists %}
+                        <tr class="general-list" id="list-{{ list.pk }}">
+                            <td>
+                                <a href="" class="text-dark" data-toggle="modal" data-target="#modal-{{ list.pk }}">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                            <td colspan="2">{{ list.name }}</td>
+                            <td>{{ list.customers.count }} client{% if list.customers.count > 1 %}s{% endif %}</td>
+                            <td>{{ list.last_update|naturaltime }}</td>
+                            <td><a href="#" class="text-danger remove-list" target="{{ list.pk }}"><i class="fas fa-trash"></i></a></td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">Aucune liste de clients.</td>
+                        </tr>
+                        {% endfor %}
+
+
+                    </tbody>
+                </table>
+                {% for list in lists %}
+                <div class="modal fade" id="modal-{{ list.pk }}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Liste {{ list.name }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Clients présents dans la liste</h5>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr class="text-primary">
+                                            <th scope="col">Utilisateurs</th>
+                                            <th scope="col">Téléphone</th>
+                                            <th scope="col">Numéro clients</th>
+                                            <th scope="col">Points accumulés</th>
+                                            <th scope="col">Date d'ajout</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="in-list-{{ list.pk }}">
+                                        {% for customer in list.customers.all %}
+                                        <tr class="bg-light" element="{{ customer.pk }}">
+                                            <td>{{ customer.user }}</td>
+                                            <td>{{ customer.user.phone }}</td>
+                                            <td>#{{ customer.pk }}</td>
+                                            <td>{{ customer.points }} point{% if customer.points > 1 %}s{% endif %}</td>
+                                            <td>{{ customer.user.date_joined }}</td>
+                                            <td><a href="#" class="text-danger remove-customer" list="{{ list.pk }}"
+                                                    target="{{ customer.pk }}"><i class="fas fa-times"></i></a></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <h5>Clients non présents</h5>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr class="text-primary">
+                                            <th scope="col">Utilisateurs</th>
+                                            <th scope="col">Téléphone</th>
+                                            <th scope="col">Numéro clients</th>
+                                            <th scope="col">Points accumulés</th>
+                                            <th scope="col">Date d'ajout</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="out-list-{{ list.pk }}">
+                                        {% for customer in request.user.vendor.customers.all %}
+                                        {% if not customer in list.customers.all %}
+                                        <tr class="bg-light" element="{{ customer.pk }}">
+                                            <td>{{ customer.user }}</td>
+                                            <td>{{ customer.user.phone }}</td>
+                                            <td>#{{ customer.pk }}</td>
+                                            <td>{{ customer.points }} point{% if customer.points > 1 %}s{% endif %}</td>
+                                            <td>{{ customer.user.date_joined }}</td>
+                                            <td><a href="#" class="text-success add-customer" list="{{ list.pk }}"
+                                                    target="{{ customer.pk }}"><i class="fas fa-plus-circle"></i></a>
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-12">
+        <a href="#" class="btn btn-primary w-100" data-toggle="modal" data-target="#addList">Créer une
+            liste</a>
+
+        <div class="modal fade" id="addList" tabindex="-1" role="dialog" aria-labelledby="addListTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <form method="POST" class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addListTitle">Ajouter une liste</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Nom de la liste</label>
+                            <input name="name" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-body border-top">
+                        <div class="form-group">
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <label for="customers">Choix des clients</label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="auto_switch">
+                                    <label class="custom-control-label" for="auto_switch"
+                                        id="auto_switch_label">Automatique</label>
+                                </div>
+                            </div>
+                            <div class="my-3"></div>
+                            <div id="filtering">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="filter_select">Filtrer par</label>
+                                            <select class="custom-select" name="filter" id="filter_select">
+                                                <option value="points" selected>Points</option>
+                                                <option value="date">Date d'adhésion</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col" id="points_filter">
+                                        <div class="form-row">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label>Supérieur à</label>
+                                                    <input type="number" class="form-control" name="gte">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label>Inférieur à</label>
+                                                    <input type="number" class="form-control" name="lte">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col d-none" id="date_filter">
+                                        <div class="form-row">
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label>Après le</label>
+                                                    <input type="date" class="form-control" name="gte">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-group">
+                                                    <label>Avant le</label>
+                                                    <input type="date" class="form-control" name="lte">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-100 text-right">
+                                    <span id="automatic_counter" class="text-primary font-weight-bold">{{ request.user.vendor.customers.count }}</span> clients sélectionnés
+                                </div>
+                            </div>
+                            <table class="table" id="manual_selection" style="display: none;">
+                                <thead>
+                                    <tr class="text-primary">
+                                        <th></th>
+                                        <th scope="col">Utilisateurs</th>
+                                        <th scope="col">Téléphone</th>
+                                        <th scope="col">Numéro clients</th>
+                                        <th scope="col">Points accumulés</th>
+                                        <th scope="col">Date d'ajout</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for customer in request.user.vendor.customers.all %}
+                                    <tr class="bg-light">
+                                        <td><input type="checkbox" class="select-customer" pk="{{ customer.pk }}"></td>
+                                        <td>{{ customer.user }}</td>
+                                        <td>{{ customer.user.phone }}</td>
+                                        <td>#{{ customer.pk }}</td>
+                                        <td>{{ customer.points }} point{% if customer.points > 1 %}s{% endif %}</td>
+                                        <td>{{ customer.user.date_joined }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="6" class="text-right"><span id="customer_count">0</span> clients
+                                            sélectionnés</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                        <button type="button" id="submit_form_add" class="btn btn-primary">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <ul class="metrics list-unstyled mt-4">
+            <li>
+                <span>Nombre de listes</span>
+                <span class="text-primary font-weight-bold">{{ lists.count }}</span>
+            </li>
+            <li>
+                <span>Moyenne de client par liste</span>
+                <span class="text-primary font-weight-bold">{{ avg_lists }}</span>
+            </li>
+            <li>
+                <span>Nombre total de clients</span>
+                <span class="text-primary font-weight-bold">{{ request.user.vendor.customers.count }}</span>
+            </li>
+        </ul>
+        <div class="card bg-secondary">
+            <div class="card-header bg-secondary">
+                <div class="title">
+                    CRÉER UNE LISTE EFFICACE
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet dolor perspiciatis fugiat optio
+                    corporis. Eaque tempore pariatur repellat quibusdam sunt numquam, voluptas tempora debitis
+                    soluta
+                    perferendis nemo modi nobis mollitia?</p>
+                <ul class="list-unstyled">
+                    <li class="py-3 border-top border-bottom">Lien aide réduction</li>
+                    <li class="py-3 border-bottom">Lien aide réduction</li>
+                    <li class="py-3 border-bottom">Lien aide réduction</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.general-list').on('click', '.remove-list', function(e) {
+            e.preventDefault();
+            var pk = $(this).attr('target');
+
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('_method', 'delete');
+            formData.append('pk', pk);
+
+            var url = '{% url "vendor_customer_lists" %}';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                context: this,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    toastr.success('Liste supprimée avec succès.');
+                    $('#list-'+ pk).remove();
+                },
+                error: function (e) {
+                    toastr.error('Impossible de supprimer la liste.');
+                }
+            })
+        })
+
+        $('.modal-body').on('click', '.remove-customer', function (e) {
+            e.preventDefault();
+            var pk = $(this).attr('target');
+            var pk_list = $(this).attr('list');
+            var url = '{% url "vendor_customer_remove_list" list_pk=123 pk=456 %}'.replace(123, pk_list).replace(456, pk);
+            $.ajax({
+                type: 'GET',
+                url: url,
+                context: this,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    toastr.success('Client supprimé de la liste.');
+
+                    $(this).removeClass('remove-customer text-danger').addClass('add-customer text-success').html('<i class="fas fa-plus-circle"></i>');
+                    $('#in-list-'+ pk_list +' tr[element=' + pk +']').detach().appendTo('#out-list-' + pk_list);
+                },
+                error: function (e) {
+                    toastr.error('Impossible de supprimer le client de la liste.');
+                }
+            })
+        });
+
+        $('.modal-body').on('click', '.add-customer', function (e) {
+            e.preventDefault();
+            var pk = $(this).attr('target');
+            var pk_list = $(this).attr('list');
+            var url = '{% url "vendor_customer_add_list" list_pk=123 pk=456 %}'.replace(123, pk_list).replace(456, pk);
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                context: this,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    toastr.success('Client ajouté à la liste.');
+                    $(this).removeClass('add-customer text-success').addClass('remove-customer text-danger').html('<i class="fas fa-times"></i>');
+                    $('#out-list-'+ pk_list +' tr[element=' + pk +']').detach().appendTo('#in-list-' + pk_list);
+                },
+                error: function (e) {
+                    toastr.error('Impossible d\'ajouter le client à la liste.');
+                }
+            })
+        })
+
+        $('#auto_switch').change(function () {
+            if ($(this).prop('checked')) {
+                $('#auto_switch_label').text('Manuel');
+                $('#filtering').fadeOut(200, function () {
+                    $('#manual_selection').fadeIn();
+                });
+            } else {
+                $('#auto_switch_label').text('Automatique');
+                $('#manual_selection').fadeOut(200, function () {
+                    $('#filtering').fadeIn();
+                });
+            }
+        });
+
+        $('#filter_select').change(function () {
+            if (this.value == 'points') {
+                $('#date_filter').addClass('d-none');
+                $('#points_filter').removeClass('d-none');
+            } else {
+                $('#date_filter').removeClass('d-none');
+                $('#points_filter').addClass('d-none');
+            }
+        })
+
+        $('#points_filter input').on('input', function() {
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('type', 'points_filter');
+            formData.append('gte', $('#points_filter input[name=gte]').val());
+            formData.append('lte', $('#points_filter input[name=lte]').val());
+
+            var url = '{% url "vendor_customer_lists_count" %}';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                context: this,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#automatic_counter').text(data.count);
+                },
+                error: function (e) {
+                    toastr.error('Impossible de récuperer le nombre de clients.');
+                }
+            });
+        });
+
+        $('#date_filter input').on('input', function() {
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('type', 'date_filter');
+            formData.append('gte', $('#date_filter input[name=gte]').val());
+            formData.append('lte', $('#date_filter input[name=lte]').val());
+
+            var url = '{% url "vendor_customer_lists_count" %}';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                context: this,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#automatic_counter').text(data.count);
+                },
+                error: function (e) {
+                    toastr.error('Impossible de récuperer le nombre de clients.');
+                }
+            });
+        });
+
+        var list_pk = []
+        $('.select-customer').change(function (e) {
+            var pk = $(this).attr('pk');
+            if (list_pk.includes(pk)) {
+                list_pk.splice(list_pk.indexOf(pk), 1);
+            } else {
+                list_pk.push(pk);
+            }
+            $('#customer_count').text(list_pk.length);
+        });
+
+        $('#submit_form_add').click(function() {
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('name', $('input[name=name]').val());
+            formData.append('manual', $('#auto_switch').prop('checked'));
+            if($('#auto_switch').prop('checked')) {
+                formData.append('list_user', list_pk);
+            } else {
+                if($('#filter_select').val() == 'points') {
+                    formData.append('type', 'points_filter');
+                    formData.append('gte', $('#points_filter input[name=gte]').val());
+                    formData.append('lte', $('#points_filter input[name=lte]').val());
+                } else {
+                    formData.append('type', 'date_filter');
+                    formData.append('gte', $('#date_filter input[name=gte]').val());
+                    formData.append('lte', $('#date_filter input[name=lte]').val());
+                }
+            }
+
+            var url = '{% url "vendor_customer_lists" %}';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                context: this,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    window.location.href = "{% url 'vendor_customer_lists' %}";
+                },
+                error: function (e) {
+                    toastr.error('Erreur lors de l\'ajout de la liste.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

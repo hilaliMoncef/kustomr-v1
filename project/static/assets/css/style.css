@@ -145,10 +145,10 @@ a:active, a:hover {
   color: #848484; }
 
 .text-primary {
-  color: #C71A41 !important; }
+  color: #E60041 !important; }
 
 a.text-primary:hover {
-  color: #ad0031 !important; }
+  color: #c40037 !important; }
 
 .text-brand {
   color: #ffc750 !important; }
@@ -160,7 +160,7 @@ a.text-primary:hover {
   color: #41E685 !important; }
 
 .text-danger {
-  color: !important; }
+  color: #FA3232 important; }
 
 .text-warning {
   color: #FFD21E !important; }

@@ -8,9 +8,11 @@ from Admin.forms import MessageForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, SocialMediaForm
 from .models import Discount, Offer, FacebookEvent, InstagramEvent
+from Customer.models import Customer, CustomersList
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
+from django.db.models import Avg, Count
 from django.http import HttpResponseRedirect, JsonResponse
 import datetime
 import qrcode
@@ -23,7 +25,6 @@ class DashboardView(LoginRequiredMixin, View):
     Cette page permet de récupérer les principales stats sur le commerçant
     """
     def dispatch(self, *args, **kwargs):
-        print(self.request.user.is_vendor)
         if not self.request.user.is_vendor:
             # Quick check if the user is vendor
             return redirect('not-authorized')
@@ -62,6 +63,82 @@ class CustomersView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         customers = request.user.vendor.customers.all()
         return render(request, 'vendor/all_customers.html', locals())
+
+
+
+def filter_customers(data):
+    queryset = Customer.objects.all()
+    if data['type'] == 'points_filter':
+        if data['gte']:
+            queryset = queryset.filter(points__gte=data['gte'])
+        if data['lte']:
+            queryset = queryset.filter(points__lte=data['lte'])
+    elif data['type'] == 'date_filter':
+        if data['gte']:
+            queryset = queryset.filter(user__date_joined__gte=data['gte'])
+        if data['lte']:
+            queryset = queryset.filter(user__date_joined__lte=data['lte'])
+    return queryset
+
+
+class CustomerListsView(LoginRequiredMixin, View):
+    """
+    Cette page permet de gérer au commerçant de gérer ses listes de clients (pour la diffusion email & sms)
+    """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        return super(CustomerListsView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        lists = request.user.vendor.lists.all()
+        avg_lists = lists.annotate(nb_customers=Count('customers')).aggregate(Avg('nb_customers'))['nb_customers__avg']
+        return render(request, 'vendor/customers_lists.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        if request.POST['manual'] == 'false':
+            # Automatic filtering
+            queryset = list(filter_customers(request.POST))
+        else:
+            queryset = list(Customer.objects.filter(pk__in=request.POST['list_user'].split(',')))
+
+        liste = CustomersList.objects.create(vendor=request.user.vendor, name=request.POST['name'])
+        liste.customers.add(*queryset)
+        liste.save()
+        return JsonResponse({}, status=200)
+
+    def delete(self, request, *args, **kwargs):
+        liste = get_object_or_404(CustomersList, pk=request.POST['pk'])
+        liste.delete()
+        return JsonResponse({}, status=200)
+
+def CustomerListsCountSelected(request):
+    data = request.POST
+    queryset = filter_customers(data)
+    return JsonResponse({'count': queryset.count()}, status=200)
+
+def CustomerRemoveFromList(request, list_pk, pk):
+    list = get_object_or_404(CustomersList, pk=list_pk)
+    customer = get_object_or_404(Customer, pk=pk)
+    if not customer in list.customers.all():
+        return JsonResponse({}, status=400)
+    else:
+        list.customers.remove(customer)
+    return JsonResponse({'detail': 'OK'}, status=200)
+
+def CustomerAddInList(request, list_pk, pk):
+    list = get_object_or_404(CustomersList, pk=list_pk)
+    customer = get_object_or_404(Customer, pk=pk)
+    if customer in list.customers.all():
+        return JsonResponse({}, status=400)
+    else:
+        list.customers.add(customer)
+    return JsonResponse({'detail': 'OK'}, status=200)
 
 
 class AnalysisView(LoginRequiredMixin, View):
@@ -257,7 +334,6 @@ class SocialAddView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         vendor = request.user.vendor
         # We first determine a publication date
-        print(request.POST)
         if request.POST['immediate'] == 'true':
             date_published = timezone.now()
             date_published_char = timezone.now().strftime('%d/%m/%Y %H:%M')
@@ -393,8 +469,7 @@ class HelpView(LoginRequiredMixin, View):
         return render(request, 'vendor/help.html', locals())
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        form = MessageForm(request.POST)
+        form = p(request.POST)
         if form.is_valid():
             message = form.save(commit=False)
             message.vendor = request.user.vendor

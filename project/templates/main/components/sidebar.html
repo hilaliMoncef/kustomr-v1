@@ -45,10 +45,19 @@
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-home"></i> Dashboard</a>
         </li>
         <li class="nav-item">
-            {% url 'vendor_customers' as url %}
-            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}">
+            <a class="nav-link {% if 'vendor/customer' in request.path %}active{% endif %}" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2" href="#">
                 <i class="fas fa-users"></i> Clients
             </a>
+            <div id="submenu-1-2" class="collapse submenu">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vendor_customers' %}">Tous les clients</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vendor_customer_lists' %}">Mes listes</a>
+                    </li>
+                </ul>
+            </div>
         </li>
         <li class="nav-item">
             {% url 'vendor_analysis' as url %}

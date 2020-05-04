@@ -1,6 +1,6 @@
 from django.db import models
 from Users.models import User
-from Vendor.models import Vendor
+from Vendor.models import Vendor, MailCampaign
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -27,7 +27,7 @@ class Customer(models.Model):
     def next_gift(self):
         discounts = list(self.store_linked.discounts.filter(is_active=True, end_date__gte=timezone.now(), min_points__gt=self.points).values_list('min_points', flat=True))
         offers = list(self.store_linked.offers.filter(is_active=True, end_date__gte=timezone.now(), cost__gt=self.points).values_list('cost', flat=True))
-        all_points = discounts + offers
+        all_points = discounts + offers or [0]
         return min(all_points) - self.points
 
 
@@ -43,6 +43,7 @@ class CustomersList(models.Model):
     name = models.CharField(max_length=255)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="lists")
     customers = models.ManyToManyField(Customer, related_name="lists")
+    mail_campaigns = models.ManyToManyField(MailCampaign, related_name="lists")
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

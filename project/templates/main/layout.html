@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="{% static 'assets/css/dropzone.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/video-js.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}" />
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
   <!-- SEO -->
@@ -48,25 +49,25 @@
     <div id="page-content-wrapper">
       <div class="container-fluid position-relative content py-md-4 px-md-3 py-3 px-2 mb-4">
         {% block content %}{% endblock %}
-        
+
         <!-- Floating button -->
         {% if request.user.is_vendor %}
         <div class="card-float bottom right">
-            <a href="" class="btn-round btn-primary">
-                <i class="fas fa-user-plus"></i>
-            </a>
+          <a href="" class="btn-round btn-primary">
+            <i class="fas fa-user-plus"></i>
+          </a>
         </div>
         {% endif %}
       </div>
       <div class="dashboard-footer">
-          {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
+        {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
       </div>
     </div>
     <div id="right-sidebar">
       {% block rightbar %}{% endblock %}
     </div>
   </div>
-  
+
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -101,7 +102,10 @@
   <!--  jQuery Loading Plugin -->
   <script src="{% static 'assets/js/jquery.loading.min.js' %}"></script>
 
-  <!--  jQuery Loading Plugin -->
+  <!--  jQuery Nice Select -->
+  <script src="{% static 'assets/js/select2.full.min.js' %}"></script>
+
+  <!--  MomentJS -->
   <script src="{% static 'assets/js/moment.js' %}"></script>
   <script>
     moment.locale("fr");
@@ -122,6 +126,11 @@
     });
   </script>
 
+  <script>
+    $(document).ready(function () {
+      $('.select2').select2();
+    });
+  </script>
 
   <!-- Script block -->
   {% block script %}{% endblock %}

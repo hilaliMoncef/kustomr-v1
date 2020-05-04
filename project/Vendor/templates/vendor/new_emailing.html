@@ -1,0 +1,392 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-9 col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="title text-uppercase">Nouvelle campagne d'emailing</div>
+            </div>
+            <div class="card-body">
+                <div id="first-step">
+                    <div class="form-group">
+                        <label for="subject">Objet du mail</label>
+                        <input type="text" name="subject" class="form-control">
+                        <small id="emailHelp" class="form-text text-muted">Attention à choisir un objet de mail
+                            pertinent, il influera énormément sur votre taux d'ouverture.</small>
+                    </div>
+                    <label for="subject">Quel type de mail voulez-vous envoyer ?</label>
+                    <input type="hidden" name="template" id="template_type" value="information">
+                    <div class="form-row mt-2">
+                        <div class="col-4 px-5">
+                            <div class="mail-preview selected" value="information">
+                                <img src="{% static 'assets/img/mail01.jpg' %}" />
+                                <div class="overlay align-items-center justify-content-center">
+                                    <a href="#">
+                                        <i class="fas fa-2x fa-eye"></i>
+                                    </a>
+                                    <a href="#">
+                                        <span>Aperçu</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-normal text-center mt-2">Mail d'information</div>
+                        </div>
+                        <div class="col-4 px-5">
+                            <div class="mail-preview" value="reduction">
+                                <img src="{% static 'assets/img/mail02.jpg' %}" />
+                                <div class="overlay align-items-center justify-content-center">
+                                    <a href="#">
+                                        <i class="fas fa-2x fa-eye"></i>
+                                    </a>
+                                    <a href="#">
+                                        <span>Aperçu</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-normal text-center mt-2">Mail de réduction</div>
+                        </div>
+                        <div class="col-4 px-5">
+                            <div class="mail-preview bg-white disabled">
+                                <div class="overlay active p-3 text-center align-items-center justify-content-between">
+                                    <span>Vous souhaitez faire une campagne plus personnalisée ?</span>
+                                    <a href="{% url 'vendor_help' %}"
+                                        class="btn btn-primary text-uppercase"><small>Faire une
+                                            demande</small></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-5">
+                        <div class="col">
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="allCustomersCheck" checked>
+                                    <label class="custom-control-label" for="allCustomersCheck">Tous les clients
+                                        ({{ request.user.vendor.customers.count }} clients)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: none;" id="list_select_wrapper">
+                        <div class="form-row d-flex align-items-center">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <select class="select2 form-control" id="list_select" multiple name="list">
+                                        {% for list in request.user.vendor.lists.all %}
+                                        <option value="{{ list.pk }}" count="{{ list.customers.count }}">
+                                            {{ list.name }} - {{ list.customers.count }} clients
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12 text-uppercase text-center">
+                                <div class="form-group">
+                                    <span class="text-primary font-weight-bold" id="list-count">0</span> listes
+                                    sélectionnés
+                                    /
+                                    <span class="text-primary font-weight-bold" id="customers-count">0</span> clients
+                                    sélectionnés
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="date_published">Date et heure de programmation</label>
+                                <div class="input-group">
+                                    <input type="datetime-local" name="date_published" class="form-control">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-3">
+                        <div class="col text-center">
+                            <button type="button" id="goNext" class="btn btn-primary">Continuer</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: none;" id="second-step">
+                    <div class="d-flex align-items-center justify-content-between font-weight-bold">
+                        <div class="text-uppercase"><span class="text-primary">OBJET DE VOTRE MAIL :</span> <span
+                                id="email_subject"></span></div>
+                        <div class="text-uppercase"><span class="text-primary">TYPE DE MAIL :</span> <span
+                                id="email_type">INFORMATION</span></div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div><span class="text-primary">Date d'envoi :</span> <span id="email_date_published"></span>
+                        </div>
+                        <div><span class="text-primary" id="final_customer_count">0 clients</span> <span>vont recevoir
+                                ce mail</span></div>
+                    </div>
+                    <div class="email-editor border my-4">
+                        <div class="header"
+                            style="background-color: {{ request.user.vendor.reward_card_layout.bg_color }}">
+                            {% if request.user.vendor.reward_card_layout.logo %}
+                            <img src="{{ request.user.vendor.reward_card_layout.logo.url }}"
+                                alt="Logo {{ vendor.store_name }}" />
+                            {% endif %}
+                        </div>
+
+                        <div class="row my-3">
+                            <div class="col-md-6 col-12 offset-md-3">
+                                <form action="{% url 'vendor_social_upload_media' %}" id="mediaUpload" class="dropzone">
+                                    {% csrf_token %}
+                                </form>
+                                <input type="hidden" name="media" id="media_pk" value="" />
+                                <div id="mediaPreview" class="media-preview" style="display: none;">
+                                    <a href="#" id="dismiss" class="dismiss text-primary"><i
+                                            class="fas fa-times-circle"></i></a>
+                                    <div id="mediaPreviewImg">
+                                        <!-- img will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12 offset-md-3">
+                                <div id="information_mail" class="text-editable" contenteditable="true">
+                                    <h5>Lorem ipsum dolor sit amet</h5>
+                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis voluptatem
+                                        repellat ab assumenda? Nemo rerum quisquam temporibus labore ab, doloribus ea
+                                        vel!
+                                        Vel, possimus nam. Labore architecto ut possimus.</p>
+                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At debitis voluptatem
+                                        repellat ab assumenda? Nemo rerum quisquam temporibus labore ab, doloribus ea
+                                        vel!
+                                        Vel, possimus nam. Labore architecto ut possimus.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12 offset-md-3">
+                                <ul
+                                    class="list-unstyled align-items-center justify-content-center m-0 d-none d-md-flex">
+                                    {% if request.user.vendor.facebook %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.facebook }}"
+                                            class="social-button card-facebook mr-1"><i
+                                                class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.instagram %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.instagram }}"
+                                            class="social-button card-instagram mx-2"><i
+                                                class="fab fa-instagram"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.twitter %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.twitter }}"
+                                            class="social-button card-twitter ml-1"><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.youtube %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.youtube }}"
+                                            class="social-button card-youtube ml-1"><i class="fab fa-youtube"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.linkedin %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.linkedin }}"
+                                            class="social-button card-linkedin ml-1"><i class="fab fa-linkedin"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.pinterest %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.pinterest }}"
+                                            class="social-button card-pinterest ml-1"><i
+                                                class="fab fa-pinterest"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.snapchat %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.snapchat }}"
+                                            class="social-button card-snapchat ml-1"><i
+                                                class="fab fa-snapchat-ghost"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    {% if request.user.vendor.tripadvisor %}
+                                    <li>
+                                        <a href="{{ request.user.vendor.tripadvisor }}"
+                                            class="social-button card-tripadvisor ml-1"><i
+                                                class="fab fa-tripadvisor"></i></a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-10 col-12 offset-md-1 text-small text-normal">
+                                <div class="text-center">© {% now "Y" %} {{ request.user.vendor.store_name }} - Tous
+                                    droits reservés</div>
+                                <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis ab minus
+                                    repellendus explicabo autem reprehenderit nemo, nulla eveniet a animi consequuntur,
+                                    cumque at esse in accusamus eos aut veritatis debitis.</div>
+
+                                <div class="mt-2 text-center">
+                                    Nous serions triste de vous voir partir mais vous pouvez vous désincrire <a href="#"
+                                        class="text-normal">ici</a>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-100 text-center">
+                        <a href="#" id="returnBack" class="btn btn-link mr-2">Retour</a>
+                        <a href="#" id="submit" class="btn btn-primary">Programmer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-12">
+        <div class="card bg-secondary">
+            <div class="card-header bg-secondary">
+                <div class="title">
+                    CRÉER UNE CAMPAGNE EFFICACE
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet dolor perspiciatis fugiat optio
+                    corporis. Eaque tempore pariatur repellat quibusdam sunt numquam, voluptas tempora debitis soluta
+                    perferendis nemo modi nobis mollitia?</p>
+                <ul class="list-unstyled">
+                    <li class="py-3 border-top border-bottom">Lien aide marketing</li>
+                    <li class="py-3 border-bottom">Lien aide marketing</li>
+                    <li class="py-3 border-bottom">Lien aide marketing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    // Email temaplte specific 
+    Dropzone.options.mediaUpload = {
+        init: function () {
+            this.on("success", function (file, response) {
+                // Here we get the response after the uploading files on the fly.
+                $('#media_pk').val(response.pk);
+                $('#mediaPreviewImg').html('<img classs="img-fit" src="' + response.url + '" alt="' + response.pk + '" />');
+                $('#mediaUpload').fadeOut(300, function () {
+                    $('#mediaPreview').fadeIn();
+                });
+            });
+        }
+    };
+
+    $(document).ready(function () {
+        $('.mail-preview').click(function () {
+            if (!$(this).hasClass('disabled')) {
+                $('.mail-preview').removeClass('selected');
+                $(this).addClass('selected');
+                $('#template_type').val($(this).attr('value'));
+            }
+        });
+
+        $('#allCustomersCheck').change(function () {
+            if ($(this).prop('checked')) {
+                $('#list_select_wrapper').fadeOut();
+            } else {
+                $('#list_select_wrapper').fadeIn();
+            }
+        })
+
+        var pks = [];
+        var count = 0;
+        $('#list_select').on('select2:select', function (e) {
+            pks.push($(e.params.data.element).attr('value'));
+            $('#list-count').text(pks.length);
+            count += parseInt($(e.params.data.element).attr('count'));
+            $('#customers-count').text(count);
+            $('#final_customer_count').text(count + ' clients'); // in next page
+        });
+
+        $('#list_select').on('select2:unselect', function (e) {
+            pks.splice(pks.indexOf($(e.params.data.element).attr('value')), 1);
+            $('#list-count').text(pks.length);
+            count -= parseInt($(e.params.data.element).attr('count'));
+            $('#customers-count').text(count);
+            $('#final_customer_count').text(count + ' clients'); // in next page
+        });
+
+        $('#goNext').click(function () {
+            if ($('input[name=subject]').val() && $('#template_type').val() && $('input[name=date_published]').val()) {
+                if ((!$('#allCustomersCheck').prop('checked') && pks.length > 0) || ($('#allCustomersCheck').prop('checked'))) {
+                    $('#email_subject').text($('input[name=subject]').val());
+                    $('#email_type').text($('#template_type').val());
+                    $('#email_date_published').text(moment($('input[name=date_published]').val()).format('LLL'));
+                    $('#first-step').fadeOut(300, function () {
+                        $('#second-step').fadeIn(300);
+                    });
+                } else {
+                    toastr.error('Veuillez sélectionner des listes de clients.');
+                }
+            } else {
+                toastr.error('Des champs sont manquants.');
+            }
+        })
+
+        $('#returnBack').click(function () {
+            $('#second-step').fadeOut(300, function () {
+                $('#first-step').fadeIn(300);
+            })
+        });
+
+        // SUBMITTING THE FORM
+        $('#submit').click(function () {
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('subject', $('input[name=subject]').val());
+            formData.append('image', $('#media_pk').val());
+            formData.append('date_published', $('input[name=date_published]').val());
+            formData.append('to_everyone', $('#allCustomersCheck').prop('checked'));
+            if (!$('#allCustomersCheck').prop('checked')) {
+                formData.append('lists', pks);
+            }
+            formData.append('template', $('#template_type').val());
+            formData.append('content', $('#information_mail').html());
+
+            if ($('#information_mail').text() && $('#media_pk').val()) {
+                $.ajax({
+                    type: 'POST',
+                    url: "{% url 'vendor_add_emailing' %}",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (data) {
+                        window.location.href = "{% url 'vendor_marketing' %}";
+                        toastr.success('La campagne a été programmée.');
+                    },
+                    error: function (e) {
+                        toastr.error('Impossible de programmer la campagne.');
+                    }
+                })
+            } else {
+                toastr.error('Il manque certains champs du template choisi.')
+            }
+        })
+
+
+        // Dropzone dismiss preview
+        $('#dismiss').click(function () {
+            $('#media_pk').val('');
+            $('#mediaPreviewImg').html('');
+            $('#mediaPreview').fadeOut(300, function () {
+                $('#mediaUpload').fadeIn();
+            });
+        })
+
+    });
+</script>
+{% endblock %}

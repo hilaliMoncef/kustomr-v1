@@ -92,7 +92,7 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="instagram">Texte du poste</label>
-                                        <textarea name="post_facebook" class="form-control"
+                                        <textarea rows="10" name="post_facebook" class="form-control"
                                             placeholder="Décrivez le contenu de votre post Facebook ici.."></textarea>
                                     </div>
                                     <div class="form-group border-dashed">
@@ -111,7 +111,7 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="instagram">Texte du poste</label>
-                                        <textarea name="post_instagram" class="form-control"
+                                        <textarea rows="10" name="post_instagram" class="form-control"
                                             placeholder="Décrivez le contenu de votre post Instagram ici.."></textarea>
                                     </div>
                                     <div class="form-group border-dashed">
@@ -260,29 +260,6 @@
                         return false;
                     }
                 }
-            } else if (currentIndex == 2) {
-                var fbOK, igOK;
-                if ($('#facebookCheck').prop('checked')) {
-                    if ($('#facebook-post textarea').val() != '' && $('.fb_pk_item').length > 0) {
-                        fbOK = true;
-                    } else {
-                        toastr.error('Certains champs du post Facebook sont vides ou invalides.');
-                        fbOK = false;
-                    }
-                } else {
-                    fbOK = true;
-                }
-                if ($('#instagramCheck').prop('checked')) {
-                    if ($('#instagram-post textarea').val() != '' && $('.ig_pk_item').length > 0) {
-                        igOK = true;
-                    } else {
-                        toastr.error('Certains champs du post Facebook sont vides ou invalides.');
-                        igOK = false;
-                    }
-                } else {
-                    igOK = true;
-                }
-                return fbOK && igOK;
             }
             return true;
         },
@@ -352,9 +329,10 @@
             data: formData,
             success: function (data) {
                 window.location.href = "{% url 'vendor_social' %}";
+                toastr.success('Le post a été programmé avec succès.');
             },
             error: function (e) {
-                console.log("ERROR : ", e);
+                toastr.success('Impossible de programmer le post.');
             }
         })
     }

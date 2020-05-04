@@ -460,6 +460,7 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
+                    toastr.success('La liste a été ajoutée avec succès.');
                     window.location.href = "{% url 'vendor_customer_lists' %}";
                 },
                 error: function (e) {

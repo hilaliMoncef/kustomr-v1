@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Count, Sum
 from Users.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -172,7 +173,7 @@ def get_social_upload_path(instance, filename):
     return os.path.join("posts", "instagram", "user_%d" % instance.vendor.pk, filename)
 
 
-class SocialMedia(models.Model):
+class Media(models.Model):
     file = models.FileField(upload_to='posts/medias/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
@@ -191,7 +192,7 @@ class InstagramEvent(models.Model):
     ]
 
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="ig_events")
-    images = models.ManyToManyField(SocialMedia, related_name="ig_events")
+    images = models.ManyToManyField(Media, related_name="ig_events")
     description = models.TextField()
     post_type = models.CharField(max_length=40, choices=POST_TYPE_CHOICES, default='P')
     processed = models.BooleanField(default=False)
@@ -213,7 +214,7 @@ class FacebookEvent(models.Model):
     ]
 
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="fb_events")
-    images = models.ManyToManyField(SocialMedia, related_name="fb_events")
+    images = models.ManyToManyField(Media, related_name="fb_events")
     description = models.TextField()
     post_type = models.CharField(max_length=40, choices=POST_TYPE_CHOICES, default='P')
     processed = models.BooleanField(default=False)
@@ -223,3 +224,25 @@ class FacebookEvent(models.Model):
 
     def __str__(self):
         return 'Facebook post on {} for {}'.format(self.date_published, self.vendor.store_name)
+
+
+class MailCampaign(models.Model):
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="mail_campaigns")
+    image = models.ForeignKey(Media, null=True, on_delete=models.SET_NULL, related_name="mail_campaigns")
+    subject = models.CharField(max_length=255)
+    content = models.TextField()
+    to_everyone = models.BooleanField()
+    template = models.CharField(max_length=255)
+    date_published = models.DateTimeField()
+    processed = models.BooleanField(default=False)
+    date_processed = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return "Email Campaign by {} scheduled for {}".format(self.vendor.store_name, self.date_published)
+
+    @property
+    def customers_count(self):
+        if not self.to_everyone:
+            return self.lists.annotate(nb=Count('customers')).aggregate(Sum('nb'))['nb__sum']
+        else:
+            return self.vendor.customers.count()

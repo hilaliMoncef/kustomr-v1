@@ -236,7 +236,7 @@ a.text-primary:hover {
 }
 
 .text-muted {
-  color: #7171a6 !important;
+  color: rgba(123, 123, 123, 0.7) !important;
 }
 
 .text-half-opacity {
@@ -866,7 +866,6 @@ label {
     background-color: #fff;
     border-color: #a7a7f0;
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(227, 92, 123, 0.75);
   }
 }
 
@@ -1461,6 +1460,7 @@ address {}
     align-items: center;
 
     img {
+      width: 100%;
       object-fit: cover;
       object-position: center center;
     }
@@ -1926,6 +1926,133 @@ address {}
         -moz-transition: all 0.5s ease;
         -o-transition: all 0.5s ease;
         transition: all 0.5s ease;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   17. NEW EMAILING CAMPAIGN
+   ========================================================================== */
+
+.mail-preview {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 7px;
+  -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.20);
+  -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.20);
+  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.20);
+
+  &.selected::after {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    font-size: 22px;
+    color: $primaryColor;
+    content: '\f058';
+    font-style: initial;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .overlay {
+    opacity: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: $normalColor;
+    transition: 0.3s all ease-in-out;
+    cursor: pointer;
+
+    &.active {
+      opacity: 1;
+    }
+  }
+
+  &:hover {
+    .overlay {
+      opacity: 1;
+    }
+  }
+}
+
+.select2-container--default {
+  border-color: #d2d2e4 !important;
+}
+
+.select2-container {
+  display: block;
+}
+
+
+.email-editor {
+  .header {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 120px;
+      object-fit: cover;
+      object-position: center center;
+    }
+  }
+
+  .text-editable {
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  .social-button {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+  }
+
+  .media-preview {
+    width: 100%;
+    overflow: hidden;
+    height: 220px;
+    position: relative;
+
+    img {
+      width: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+
+    .dismiss {
+      opacity: 0;
+      position: absolute;
+      right: 10px;
+      top: 5px;
+      font-size: 22px;
+      transition: 0.3s all ease-in-out;
+    }
+
+    &:hover {
+      .dismiss {
+        opacity: 1;
       }
     }
   }

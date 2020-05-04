@@ -51,37 +51,35 @@
         <div class="card mb-3">
             <div class="card-header">
                 <div class="title text-uppercase">Campagnes marketing email</div>
-                <a href="" class="btn btn-primary">Créer une campagne</a>
+                <a href="{% url 'vendor_add_emailing' %}" class="btn btn-primary">Créer une campagne</a>
             </div>
             <div class="card-body">
                 <table class="table">
                     <thead>
                         <tr class="text-primary font-weight-bold">
-                            <th scope="col" class="font-weight-bold">Nom de la campagne</th>
+                            <th scope="col" class="font-weight-bold">Sujet du mail</th>
+                            <th scope="col" class="font-weight-bold text-right">Modèle</th>
+                            <th scope="col" class="font-weight-bold text-right">N° destinataires</th>
                             <th scope="col" class="font-weight-bold text-right">Distribué</th>
                             <th scope="col" class="font-weight-bold text-right">Ouvert</th>
                             <th scope="col" class="font-weight-bold text-right">Conversions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for campaign in mail_campaigns %}
                         <tr>
-                            <td>Noël 2020</td>
-                            <td class="text-right">17000</td>
-                            <td class="text-right">6500</td>
-                            <td class="text-right">500</td>
+                            <td>{{ campaign.subject }}</td>
+                            <td class="text-right text-capitalize">{{ campaign.template }}</td>
+                            <td class="text-right">{{ campaign.customers_count }} client{% if campaign.customers_count > 1 %}s{% endif %}</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">-</td>
+                            <td class="text-right">-</td>
                         </tr>
+                        {% empty %}
                         <tr>
-                            <td>Noël 2020</td>
-                            <td class="text-right">17000</td>
-                            <td class="text-right">6500</td>
-                            <td class="text-right">500</td>
+                            <td colspan="5">Aucune campagne programmée.</td>
                         </tr>
-                        <tr>
-                            <td>Noël 2020</td>
-                            <td class="text-right">17000</td>
-                            <td class="text-right">6500</td>
-                            <td class="text-right">500</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

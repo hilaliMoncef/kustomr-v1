@@ -6,8 +6,8 @@ from django.utils.text import slugify
 from Admin.models import Training, Message
 from Admin.forms import MessageForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, SocialMediaForm
-from .models import Discount, Offer, FacebookEvent, InstagramEvent
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, MediaForm, MailCampaignForm
+from .models import Discount, Offer, FacebookEvent, InstagramEvent, MailCampaign
 from Customer.models import Customer, CustomersList
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -37,10 +37,13 @@ class DashboardView(LoginRequiredMixin, View):
         customers_total = vendor.customers.count()
         
         # Creating a dataframe
-        df = pd.DataFrame(vendor.customers.values('id', 'user__date_joined'))
-        df['user__date_joined'] = pd.to_datetime(df['user__date_joined'])
-        df.set_index('user__date_joined', drop=True, inplace=True)
-        customer_count = list(df.resample('D').count()['id'])
+        if customers_total > 0:
+            df = pd.DataFrame(vendor.customers.values('id', 'user__date_joined'))
+            df['user__date_joined'] = pd.to_datetime(df['user__date_joined'])
+            df.set_index('user__date_joined', drop=True, inplace=True)
+            customer_count = list(df.resample('D').count()['id'])
+        else:
+            customer_count = [0]
 
         context = {
             'customers': customers,
@@ -153,11 +156,15 @@ class AnalysisView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         vendor = request.user.vendor
-        df = pd.DataFrame(vendor.customers.values('id', 'user__date_joined'))
-        df['user__date_joined'] = pd.to_datetime(df['user__date_joined'])
-        df.set_index('user__date_joined', drop=True, inplace=True)
-        customer_count = list(df.resample('D').count()['id'])
-        customer_count_index = list(df.resample('D').count().index.strftime("%Y-%m-%d"))
+        if vendor.customers.count() > 0:
+            df = pd.DataFrame(vendor.customers.values('id', 'user__date_joined'))
+            df['user__date_joined'] = pd.to_datetime(df['user__date_joined'])
+            df.set_index('user__date_joined', drop=True, inplace=True)
+            customer_count = list(df.resample('D').count()['id'])
+            customer_count_index = list(df.resample('D').count().index.strftime("%Y-%m-%d"))
+        else:
+            customer_count = [0]
+            customer_count_index = [timezone.now().strftime("%Y-%m-%d")]
 
         context = {
             'customer_count': customer_count,
@@ -270,7 +277,7 @@ class MarketingView(LoginRequiredMixin, View):
         return super(MarketingView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        customers = request.user.vendor.customers.all()[:5]
+        mail_campaigns = MailCampaign.objects.all().order_by('-date_published')
         return render(request, 'vendor/marketing.html', locals())
 
 
@@ -358,7 +365,7 @@ class SocialAddView(LoginRequiredMixin, View):
 
 
 def upload_medias(request):
-    form = SocialMediaForm(request.POST, {'file' : request.FILES.getlist('file')[0]})
+    form = MediaForm(request.POST, {'file' : request.FILES.getlist('file')[0]})
     if form.is_valid():
         image = form.save()
         return JsonResponse({'url': image.file.url, 'pk': image.pk}, status=201)
@@ -480,3 +487,36 @@ class HelpView(LoginRequiredMixin, View):
             for error in errors:
                 messages.add_message(request, messages.ERROR, '{}: {}'.format(error, errors[error][0]['message']))
         return redirect('vendor_help')
+
+
+
+class NewEmailingView(LoginRequiredMixin, View):
+    """
+    Cette page permet d'ajouter une nouvelle campagne d'emailing
+    """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(NewEmailingView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'vendor/new_emailing.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        form = MailCampaignForm(request.POST)
+        if form.is_valid():
+            campaign = form.save(commit=False)
+            campaign.vendor = request.user.vendor
+            campaign.save()
+
+            # We increment list counters
+            if request.POST['to_everyone'] != 'true':
+                for liste in request.POST['lists'].split(','):
+                    liste.mail_campaigns.add(campaign)
+                    liste.save()
+
+            # Add logic to send mass mailing
+        else:
+            return JsonResponse({}, status=400)
+        return JsonResponse({}, status=200)

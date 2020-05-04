@@ -99,7 +99,7 @@
     </div>
     <div class="row">
         <div class="col-md-8 col-12">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
                     <div class="title text-uppercase text-center w-100 text-primary">Mes réductions et promotions</div>
                 </div>
@@ -130,13 +130,38 @@
                                 </div>
                             </div>
                         </div>
+                        {% empty %}
+                        <div class="col text-center">
+                            <p>Aucune réduction disponible pour le moment.</p>
+                        </div>
                         {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="title text-uppercase text-primary text-center">
+                        L'actualité de votre boutique
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 col-12 position-relative">
+                            <a href="#" class="card card-news text-white position-relative"
+                                style="background-image: url('{% static 'assets/img/bg01.jpg' %}');">
+                                <div class="bottom-overlay"></div>
+                                <div class="card-body flex-column mt-5 pt-5">
+                                    <div class="h5 m-0">COVID-19</div>
+                                    <p class="mb-0">Votre boutique reste ouverte avec toutes les précautions.</p>
+                                </div>
+                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4 col-12">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-header">
                     <div class="title text-uppercase w-100 text-primary text-center">
                         Information de la boutique {{ vendor.store_name }}
@@ -184,121 +209,97 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8 col-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="title text-uppercase text-primary text-center">
-                        L'actualité de votre boutique
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 col-12 position-relative">
-                            <a href="#" class="card card-news text-white position-relative"
-                                style="background-image: url('{% static 'assets/img/bg01.jpg' %}');">
-                                <div class="bottom-overlay"></div>
-                                <div class="card-body flex-column mt-5 pt-5">
-                                    <div class="h5 m-0">COVID-19</div>
-                                    <p class="mb-0">Votre boutique reste ouverte avec toutes les précautions.</p>
-                                </div>
+
+            <div>
+                {% if vendor.facebook %}
+                <a href="{{ vendor.facebook }}" target="_blank" class="card card-facebook mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Facebook</div>
                         </div>
-                        </a>
+                        <i class="fab fa-2x fa-facebook-f"></i>
                     </div>
-                </div>
+                </a>
+                {% endif %}
+                {% if vendor.instagram %}
+                <a href="{{ vendor.instagram }}" target="_blank" class="card card-instagram mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Instagram</div>
+                        </div>
+                        <i class="fab fa-2x fa-instagram"></i>
+                    </div>
+                </a>
+                {% endif %}
+                {% if vendor.twitter %}
+                <a href="{{ vendor.twitter }}" target="_blank" class="card card-twitter mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Twitter</div>
+                        </div>
+                        <i class="fab fa-2x fa-twitter"></i>
+                    </div>
+                </a>
+                {% endif %}
+                {% if vendor.youtube %}
+                <a href="{{ vendor.youtube }}" target="_blank" class="card card-youtube mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Youtube</div>
+                        </div>
+                        <i class="fab fa-2x fa-youtube"></i>
+                    </div>
+                </a>
+                {% endif %}
+                {% if vendor.linkedin %}
+                <a href="{{ vendor.linkedin }}" target="_blank" class="card card-linkedin mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">LinkedIn</div>
+                        </div>
+                        <i class="fab fa-2x fa-linkedin"></i>
+                    </div>
+                </a>
+                {% endif %}
+                {% if vendor.pinterest %}
+                <a href="{{ vendor.pinterest }}" target="_blank" class="card card-pinterest mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Pinterest</div>
+                        </div>
+                        <i class="fab fa-2x fa-pinterest"></i>
+                    </div>
+                </a>
+                {% endif %}
+                {% if vendor.snapchat %}
+                <a href="{{ vendor.snapchat }}" target="_blank" class="card card-snapchat mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-black-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Snapchat</div>
+                        </div>
+                        <i class="fab fa-2x fa-snapchat"></i>
+                    </div>
+                </a>
+                {% endif %}
+                {% if vendor.tripadvisor %}
+                <a href="{{ vendor.tripadvisor }}" target="_blank" class="card card-tripadvisor mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center py-2">
+                        <div class="flex-column">
+                            <div class="text-white-50">Suivez-nous</div>
+                            <div class="font-weight-bold h5">Tripadvisor</div>
+                        </div>
+                        <i class="fab fa-2x fa-tripadvisor"></i>
+                    </div>
+                </a>
+                {% endif %}
             </div>
-        </div>
-        <div class="col-md-4 col-12">
-            {% if vendor.facebook %}
-            <a href="{{ vendor.facebook }}" target="_blank" class="card card-facebook mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Facebook</div>
-                    </div>
-                    <i class="fab fa-2x fa-facebook-f"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.instagram %}
-            <a href="{{ vendor.instagram }}" target="_blank" class="card card-instagram mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Instagram</div>
-                    </div>
-                    <i class="fab fa-2x fa-instagram"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.twitter %}
-            <a href="{{ vendor.twitter }}" target="_blank" class="card card-twitter mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Twitter</div>
-                    </div>
-                    <i class="fab fa-2x fa-twitter"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.youtube %}
-            <a href="{{ vendor.youtube }}" target="_blank"  class="card card-youtube mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Youtube</div>
-                    </div>
-                    <i class="fab fa-2x fa-youtube"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.linkedin %}
-            <a href="{{ vendor.linkedin }}" target="_blank"  class="card card-linkedin mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">LinkedIn</div>
-                    </div>
-                    <i class="fab fa-2x fa-linkedin"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.pinterest %}
-            <a href="{{ vendor.pinterest }}" target="_blank"  class="card card-pinterest mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Pinterest</div>
-                    </div>
-                    <i class="fab fa-2x fa-pinterest"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.snapchat %}
-            <a href="{{ vendor.snapchat }}" target="_blank"  class="card card-snapchat mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-black-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Snapchat</div>
-                    </div>
-                    <i class="fab fa-2x fa-snapchat"></i>
-                </div>
-            </a>
-            {% endif %}
-            {% if vendor.tripadvisor %}
-            <a href="{{ vendor.tripadvisor }}" target="_blank"  class="card card-tripadvisor mb-3">
-                <div class="card-body d-flex justify-content-between align-items-center py-2">
-                    <div class="flex-column">
-                        <div class="text-white-50">Suivez-nous</div>
-                        <div class="font-weight-bold h5">Tripadvisor</div>
-                    </div>
-                    <i class="fab fa-2x fa-tripadvisor"></i>
-                </div>
-            </a>
-            {% endif %}
         </div>
     </div>
 </div>

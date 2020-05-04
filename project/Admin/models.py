@@ -19,7 +19,7 @@ class Message(models.Model):
     """
     This model is used to communicte with to the support
     """
-    vendor = models.ForeignKey(Vendor, default='Unknown', on_delete=models.SET_DEFAULT)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     subject = models.CharField(max_length=255)
     date_sent = models.DateTimeField(auto_now_add=True)
     message = models.TextField()

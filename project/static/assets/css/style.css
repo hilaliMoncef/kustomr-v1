@@ -178,7 +178,7 @@ a.text-primary:hover {
   color: #868aa5 !important; }
 
 .text-muted {
-  color: #7171a6 !important; }
+  color: rgba(123, 123, 123, 0.7) !important; }
 
 .text-half-opacity {
   opacity: 0.5;
@@ -657,8 +657,7 @@ label {
     color: #71748d;
     background-color: #fff;
     border-color: #a7a7f0;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(227, 92, 123, 0.75); }
+    outline: 0; }
 
 input[type=file] {
   color: #71748d;
@@ -1081,6 +1080,7 @@ button.btn-list {
   justify-content: center;
   align-items: center; }
   #secondary .store-logo img {
+    width: 100%;
     object-fit: cover;
     object-position: center center; }
 #secondary .checked-list {
@@ -1398,5 +1398,94 @@ button.btn-list {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease; }
+
+/* ==========================================================================
+   17. NEW EMAILING CAMPAIGN
+   ========================================================================== */
+.mail-preview {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 7px;
+  -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2); }
+  .mail-preview.selected::after {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 900;
+    font-size: 22px;
+    color: #E60041;
+    content: '\f058';
+    font-style: initial; }
+  .mail-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center; }
+  .mail-preview .overlay {
+    opacity: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: #7B7B7B;
+    transition: 0.3s all ease-in-out;
+    cursor: pointer; }
+    .mail-preview .overlay.active {
+      opacity: 1; }
+  .mail-preview:hover .overlay {
+    opacity: 1; }
+
+.select2-container--default {
+  border-color: #d2d2e4 !important; }
+
+.select2-container {
+  display: block; }
+
+.email-editor .header {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+  .email-editor .header img {
+    width: 120px;
+    object-fit: cover;
+    object-position: center center; }
+.email-editor .text-editable:focus {
+  outline: 0; }
+.email-editor .social-button {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 7px; }
+.email-editor .media-preview {
+  width: 100%;
+  overflow: hidden;
+  height: 220px;
+  position: relative; }
+  .email-editor .media-preview img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center center; }
+  .email-editor .media-preview .dismiss {
+    opacity: 0;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 22px;
+    transition: 0.3s all ease-in-out; }
+  .email-editor .media-preview:hover .dismiss {
+    opacity: 1; }
 
 /*# sourceMappingURL=style.css.map */

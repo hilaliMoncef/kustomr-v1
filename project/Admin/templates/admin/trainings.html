@@ -7,8 +7,8 @@
     <div class="col-md-9 col-12">
         <div class="row">
             {% for training in trainings %}
-            <div class="col-md-4">
-                <div class="card mb-3">
+            <div class="col-md-4 col-12 mb-3">
+                <div class="card">
                     <div class="card-header">
                         <div class="text-center d-flex flex-column align-items-start">
                             <span class="title">{{ training.name }}</span>
@@ -143,6 +143,14 @@
                                     video</a>
                             </p>
                         </video-js>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Aucune formation pour l'instant.</h5>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ urlpatterns = [
     path('settings', views.SettingsView.as_view(), name="vendor_settings"),
     path('help', views.HelpView.as_view(), name="vendor_help"),
     path('customers', views.CustomersView.as_view(), name="vendor_customers"),
+    path('customers/search/', views.customers_search, name="vendor_search_customers"),
     path('customers/points/add', views.DashboardView.as_view(), name="vendor_add_points"),
     path('customer/new', views.NewCustomerView.as_view(), name="vendor_new_customer"),
     path('customer/lists', views.CustomerListsView.as_view(), name="vendor_customer_lists"),

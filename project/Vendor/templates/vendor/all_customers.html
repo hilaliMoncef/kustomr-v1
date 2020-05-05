@@ -54,8 +54,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="" class="text-primary toggleRightbar"
-                                    data-target="data-{{ customer.pk }}">
+                                <a href="" class="text-primary toggleRightbar" data-target="data-{{ customer.pk }}">
                                     <i class="fas fa-eye"></i>
                                 </a>
                             </td>
@@ -168,12 +167,12 @@
         </div>
     </div>
     <div class="rightbar-buttons d-flex align-items-center">
-        <button type="button" class="btn btn-primary btn-list border-right flex-grow-1"><i
+        <a href="{% url 'vendor_add_emailing' %}" class="btn btn-primary btn-list border-right flex-grow-1"><i
                 class="fas fa-envelope mr-2"></i>
-            Envoyer un mail</button>
-        <button type="button" class="btn btn-primary btn-list flex-grow-1"><i class="fas fa-comment mr-2"></i> Envoyer
+            Envoyer un mail</a>
+        <a href="{% url 'vendor_add_sms' %}" class="btn btn-primary btn-list flex-grow-1"><i class="fas fa-comment mr-2"></i> Envoyer
             un
-            SMS</button>
+            SMS</a>
     </div>
 </div>
 {% endfor %}
@@ -181,12 +180,42 @@
 
 {% block script %}
 <script>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
     $(document).ready(function () {
+        var customer = getUrlParameter('customer');
+        if (customer) {
+            $('#data-' + customer).toggleClass("d-none");
+            $("#right-sidebar").toggleClass("toggled");
+        }
+
         $(".toggleRightbar").click(function (e) {
             e.preventDefault();
             var target = $(this).attr('data-target');
             $("#" + target).toggleClass("d-none");
             $("#right-sidebar").toggleClass("toggled");
+        });
+
+        $(document).mouseup(function (e) {
+            var container = $("#right-sidebar");
+
+            // if the target of the click isn't the container nor a descendant of the container
+            if (!container.is(e.target) && container.has(e.target).length === 0 && $('#right-sidebar').hasClass("toggled")) {
+                $(".wrapper").addClass("d-none");
+                $("#right-sidebar").toggleClass("toggled");
+            }
         });
 
         $(".closeRightbar").click(function (e) {
@@ -195,6 +224,8 @@
             $("#" + target).toggleClass("d-none");
             $("#right-sidebar").toggleClass("toggled");
         });
+
+
 
         var table = $('#customer_listing').DataTable({
             paging: true,

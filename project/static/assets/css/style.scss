@@ -603,6 +603,16 @@ a.text-primary:hover {
     bottom: 0;
     right: 0;
     width: 100%;
+
+    a {
+      padding-top: 17px;
+      padding-bottom: 17px;
+      border-radius: 0;
+      
+      &:first-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
+      }
+    }
   }
 
   &.toggled {
@@ -715,6 +725,62 @@ nav.navbar {
 }
 
 #topNav {
+  .nav-item {
+    position: relative;
+    .search-bar {
+      border-radius: 7px;
+      z-index: 2;
+      border: 0;
+      -webkit-box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+      -moz-box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+      box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+    }
+
+    .search-result {
+      position: absolute;
+      max-height: 300px;
+      overflow-y: scroll;
+      top: 30px;
+      left: 0;
+      right: 0;
+      background-color: white;
+      padding: 20px 0;
+      color: $normalColor;
+      z-index: 1;
+      -webkit-box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+      -moz-box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+      box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+      border-bottom-left-radius: 7px;
+      border-bottom-right-radius: 7px;
+
+      ul {
+        padding: 0;
+        list-style: none;
+
+        li {
+          padding: 15px 15px;
+          border-bottom: 1px solid $normalColorTransparent;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: 0.3s all;
+          
+          &:hover {
+            background-color: $lightGrey;
+          }
+
+          &:last-child {
+            border: 0;
+          }
+
+          a {
+            color: $primaryColor !important;
+          }
+        }
+      }
+    }
+  }
+
   .nav-link-rounded {
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 50%;
@@ -1375,6 +1441,8 @@ address {}
     }
   }
 }
+
+
 
 /* ==========================================================================
    11. Timeline

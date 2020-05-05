@@ -1,0 +1,168 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="title text-uppercase">Campagnes SMS</div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="sms_done_switch">
+                    <label class="custom-control-label" for="sms_done_switch" id="sms_done_text">Traitées</label>
+                </div>
+            </div>
+            <div class="card-body" id="sms_list">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Texte</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in sms_campaigns %}
+                        <tr>
+                            <td class="">{{ campaign.vendor.store_name }}</td>
+                            <td class="">{{ campaign.content }}</td>
+                            <td class="">{{ campaign.date_published }}</td>
+                            <td class=""><a href="{% url 'admin_sms_toggle' pk=campaign.pk %}" class="text-primary check"><i class="fas fa-check"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication programmée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body d-none" id="sms_done">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                            <th scope="col" class="font-weight-bold">Date traitement</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in sms_campaigns_done %}
+                        <tr>
+                            <td class="">{{ campaign.vendor.store_name }}</td>
+                            <td class="">{{ campaign.date_published }}</td>
+                            <td class="">{{ campaign.date_processed }}</td>
+                            <td class=""><a href="{% url 'admin_sms_toggle' pk=campaign.pk %}" class="text-primary check"><i class="fas fa-times"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication traitée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="title text-uppercase">Campagnes Emailing</div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="mail_done_switch">
+                    <label class="custom-control-label" for="mail_done_switch" id="mail_done_text">Traitées</label>
+                </div>
+            </div>
+            <div class="card-body" id="mail_list">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Modèle</th>
+                            <th scope="col" class="font-weight-bold">Objet</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in mail_campaigns %}
+                        <tr>
+                            <td class="">{{ campaign.vendor.store_name }}</td>
+                            <td class="">{{ campaign.template }}</td>
+                            <td class="">{{ campaign.subject }}</td>
+                            <td class="">{{ campaign.date_published }}</td>
+                            <td class=""><a href="{% url 'admin_email_toggle' pk=campaign.pk %}" class="text-primary check"><i class="fas fa-check"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">Aucune publication programmée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body d-none" id="mail_done">
+                <table class="table table-social">
+                    <thead>
+                        <tr class="text-primary font-weight-bold">
+                            <th scope="col" class="font-weight-bold">Commerçant</th>
+                            <th scope="col" class="font-weight-bold">Modèle</th>
+                            <th scope="col" class="font-weight-bold">Objet</th>
+                            <th scope="col" class="font-weight-bold">Programmation</th>
+                            <th scope="col" class="font-weight-bold">Date traitement</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for campaign in mail_campaigns_done %}
+                        <tr>
+                            <td class="">{{ campaign.vendor.store_name }}</td>
+                            <td class="">{{ campaign.template }}</td>
+                            <td class="">{{ campaign.subject }}</td>
+                            <td class="">{{ campaign.date_published }}</td>
+                            <td class="">{{ campaign.date_processed }}</td>
+                            <td class=""><a href="{% url 'admin_email_toggle' pk=campaign.pk %}" class="text-primary check"><i class="fas fa-times"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">Aucune publication traitée.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#sms_done_switch').change(function() {
+            if($(this).prop('checked')) {
+                $('#sms_list').addClass('d-none');
+                $('#sms_done').removeClass('d-none');
+            } else {
+                $('#sms_list').removeClass('d-none');
+                $('#sms_done').addClass('d-none');
+            }
+        });
+
+        $('#mail_done_switch').change(function() {
+            if($(this).prop('checked')) {
+                $('#mail_list').addClass('d-none');
+                $('#mail_done').removeClass('d-none');
+            } else {
+                $('#mail_list').removeClass('d-none');
+                $('#mail_done').addClass('d-none');
+            }
+        });
+    });
+</script>
+{% endblock %}

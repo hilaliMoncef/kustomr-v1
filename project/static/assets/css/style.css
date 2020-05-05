@@ -472,6 +472,12 @@ a.text-primary:hover {
     bottom: 0;
     right: 0;
     width: 100%; }
+    #right-sidebar .rightbar-buttons a {
+      padding-top: 17px;
+      padding-bottom: 17px;
+      border-radius: 0; }
+      #right-sidebar .rightbar-buttons a:first-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.5) !important; }
   #right-sidebar.toggled {
     margin-right: 0; }
 
@@ -543,6 +549,47 @@ nav.navbar {
   opacity: 0.5;
   background-color: white; }
 
+#topNav .nav-item {
+  position: relative; }
+  #topNav .nav-item .search-bar {
+    border-radius: 7px;
+    z-index: 2;
+    border: 0;
+    -webkit-box-shadow: 0px 5px 10px -1px rgba(0, 0, 0, 0.35);
+    -moz-box-shadow: 0px 5px 10px -1px rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 5px 10px -1px rgba(0, 0, 0, 0.35); }
+  #topNav .nav-item .search-result {
+    position: absolute;
+    max-height: 300px;
+    overflow-y: scroll;
+    top: 30px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 20px 0;
+    color: #7b7b7b;
+    z-index: 1;
+    -webkit-box-shadow: 0px 5px 10px -1px rgba(0, 0, 0, 0.35);
+    -moz-box-shadow: 0px 5px 10px -1px rgba(0, 0, 0, 0.35);
+    box-shadow: 0px 5px 10px -1px rgba(0, 0, 0, 0.35);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px; }
+    #topNav .nav-item .search-result ul {
+      padding: 0;
+      list-style: none; }
+      #topNav .nav-item .search-result ul li {
+        padding: 15px 15px;
+        border-bottom: 1px solid rgba(123, 123, 123, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.3s all; }
+        #topNav .nav-item .search-result ul li:hover {
+          background-color: rgba(204, 204, 204, 0.3); }
+        #topNav .nav-item .search-result ul li:last-child {
+          border: 0; }
+        #topNav .nav-item .search-result ul li a {
+          color: #E60041 !important; }
 #topNav .nav-link-rounded {
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
@@ -1289,7 +1336,7 @@ button.btn-list {
     font-size: 16px;
     text-transform: uppercase;
     font-weight: bold;
-    color: #7B7B7B !important;
+    color: #7b7b7b !important;
     display: none; }
     .wizard .steps ul li a .number {
       color: #E60041; }
@@ -1436,7 +1483,7 @@ button.btn-list {
     height: 100%;
     display: flex;
     flex-direction: column;
-    color: #7B7B7B;
+    color: #7b7b7b;
     transition: 0.3s all ease-in-out;
     cursor: pointer; }
     .mail-preview .overlay.active {

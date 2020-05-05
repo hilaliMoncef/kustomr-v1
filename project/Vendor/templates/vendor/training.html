@@ -21,7 +21,8 @@
                         {% endif %}
                     </div>
                 </div>
-                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Description : {{ training.description }}">
+                <a href="#" data-toggle="tooltip" data-placement="bottom"
+                    title="Description : {{ training.description }}">
                     <i class="fas fa-info-circle"></i>
                 </a>
             </div>
@@ -38,6 +39,10 @@
                 </video-js>
             </div>
         </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <h5>Aucune formation pour le moment.</h5>
     </div>
     {% endfor %}
 </div>

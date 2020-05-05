@@ -4,7 +4,7 @@ from django.views import View
 from .forms import TrainingForm, VendorSignupForm
 from Vendor.forms import VendorForm
 from .models import Training, Message
-from Vendor.models import Vendor, FacebookEvent, InstagramEvent
+from Vendor.models import Vendor, FacebookEvent, InstagramEvent, MailCampaign, SMSCampaign
 from Users.models import User
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -223,3 +223,55 @@ def delete_message(request, pk):
     message = get_object_or_404(Message, pk=pk)
     message.delete()
     return JsonResponse({}, status=201)
+
+
+class MarketingView(LoginRequiredMixin, View):
+    """
+    Cette page permet de récupérer les campagnes marketing des clients et de les traiter.
+    """
+    http_method_names = ['get', 'post', 'put', 'delete']
+
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_staff:
+            # Quick check if the user is admin
+            return redirect('not-authorized')
+        return super(MarketingView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        unread = Message.objects.filter(read=False).count()
+        mail_campaigns = MailCampaign.objects.filter(processed=False)
+        mail_campaigns_done = MailCampaign.objects.filter(processed=True).order_by('-date_processed')
+        sms_campaigns = SMSCampaign.objects.filter(processed=False)
+        sms_campaigns_done = SMSCampaign.objects.filter(processed=True).order_by('-date_processed')
+        return render(request, 'admin/marketings.html', locals())
+
+
+def toggle_email_processed(request, pk):
+    event = get_object_or_404(MailCampaign, pk=pk)
+    if event.processed:
+        event.processed = False
+        event.date_processed = None
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} n\'est plus marquée comme traitée.'.format(event.vendor.store_name))
+    else:
+        event.processed = True
+        event.date_processed = timezone.now()
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} a été traitée.'.format(event.vendor.store_name))
+ 
+    return redirect('admin_marketings')
+
+def toggle_sms_processed(request, pk):
+    event = get_object_or_404(SMSCampaign, pk=pk)
+    if event.processed:
+        event.processed = False
+        event.date_processed = None
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} n\'est plus marquée comme traitée.'.format(event.vendor.store_name))
+    else:
+        event.processed = True
+        event.date_processed = timezone.now()
+        event.save()
+        messages.add_message(request, messages.SUCCESS, 'La publication de {} a été traitée.'.format(event.vendor.store_name))
+ 
+    return redirect('admin_marketings')

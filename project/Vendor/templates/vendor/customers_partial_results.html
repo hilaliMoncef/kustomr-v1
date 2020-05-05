@@ -1,0 +1,15 @@
+{% if customers %}
+<ul>
+  {% for customer in customers %}
+  <li>
+    <div>
+      <span class="text-primary text-uppercase font-weight-bold">{{ customer.user }}</span> -
+      {{ customer.pk }}
+    </div>
+    <a href="{% url 'vendor_customers' %}?customer={{ customer.pk }}" class="text-primary"><i class="fas fa-eye"></i></a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="px-3">Aucun client trouvé.</p>
+{% endif %}

@@ -13,7 +13,7 @@ from Customer.models import Customer, CustomersList
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
-from django.db.models import Avg, Count, Sum
+from django.db.models import Avg, Count, Sum, Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
@@ -94,6 +94,19 @@ class CustomersView(LoginRequiredMixin, View):
         customers = request.user.vendor.customers.all()
         return render(request, 'vendor/all_customers.html', locals())
 
+
+def customers_search(request):
+    url_parameter = request.GET.get("q")
+
+    if url_parameter:
+        customers = request.user.vendor.customers.filter(Q(user__first_name__icontains=url_parameter) | Q(user__last_name__icontains=url_parameter) | Q(pk__istartswith=url_parameter))
+    else:
+        customers = request.user.vendor.customers.all()
+    html = render_to_string(
+        template_name="vendor/customers_partial_results.html", 
+        context={"customers": customers}
+    )
+    return JsonResponse({"html": html}, status=200, safe=False)
 
 
 def filter_customers(data):

@@ -15,6 +15,7 @@ urlpatterns = [
     path('discounts', views.DiscountsView.as_view(), name="vendor_discounts"),
     path('marketing', views.MarketingView.as_view(), name="vendor_marketing"),
     path('marketing/emailing/add', views.NewEmailingView.as_view(), name="vendor_add_emailing"),
+    path('marketing/sms/add', views.NewSMSView.as_view(), name="vendor_add_sms"),
     path('analysis', views.AnalysisView.as_view(), name="vendor_analysis"),
     path('social', views.SocialView.as_view(), name="vendor_social"),
     path('social/media/upload', views.upload_medias, name="vendor_social_upload_media"),

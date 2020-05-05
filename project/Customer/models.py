@@ -44,6 +44,7 @@ class CustomersList(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="lists")
     customers = models.ManyToManyField(Customer, related_name="lists")
     mail_campaigns = models.ManyToManyField(MailCampaign, related_name="lists")
+    sms_campaigns = models.ManyToManyField(MailCampaign, related_name="sms_lists")
     last_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

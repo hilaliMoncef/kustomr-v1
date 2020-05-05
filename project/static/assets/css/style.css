@@ -1488,4 +1488,83 @@ button.btn-list {
   .email-editor .media-preview:hover .dismiss {
     opacity: 1; }
 
+/* ==========================================================================
+   18. NEW SMS CAMPAIGN
+   ========================================================================== */
+.device .device-frame {
+  overflow: hidden; }
+  .device .device-frame .device-content {
+    overflow: hidden; }
+    .device .device-frame .device-content .device-content-header {
+      padding-top: 60px;
+      padding-bottom: 30px;
+      text-align: center;
+      background-color: #F3F3F3;
+      font-size: 20px; }
+    .device .device-frame .device-content .device-main-content {
+      padding: 0 14px; }
+.device .messages {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column; }
+.device .message {
+  border-radius: 20px;
+  padding: 8px 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline-block; }
+.device .yours {
+  align-items: flex-start; }
+.device .yours .message {
+  margin-right: 25%;
+  background-color: #EEE;
+  position: relative; }
+.device .yours .message.last:before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: -7px;
+  height: 20px;
+  width: 20px;
+  background: #EEE;
+  border-bottom-right-radius: 15px; }
+.device .yours .message.last:after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: -10px;
+  width: 10px;
+  height: 20px;
+  background: white;
+  border-bottom-right-radius: 10px; }
+.device .mine {
+  align-items: flex-end; }
+.device .mine .message {
+  color: white;
+  margin-left: 25%;
+  background: #0078fe;
+  position: relative; }
+.device .mine .message.last:before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  right: -8px;
+  height: 20px;
+  width: 20px;
+  background: #0078fe;
+  border-bottom-left-radius: 15px; }
+.device .mine .message.last:after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  right: -10px;
+  width: 10px;
+  height: 20px;
+  background: white;
+  border-bottom-left-radius: 10px; }
+
 /*# sourceMappingURL=style.css.map */

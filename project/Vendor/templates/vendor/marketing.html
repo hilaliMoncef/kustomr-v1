@@ -2,6 +2,7 @@
 
 {% block content %}
 {% load static %}
+{% load humanize %}
 
 <div class="row">
     <div class="col-md-9 col">
@@ -13,37 +14,29 @@
         <div class="card mb-3">
             <div class="card-header">
                 <div class="title text-uppercase">Campagnes marketing SMS</div>
-                <a href="" class="btn btn-primary">Créer une campagne</a>
+                <a href="{% url 'vendor_add_sms' %}" class="btn btn-primary">Créer une campagne</a>
             </div>
             <div class="card-body">
                 <table class="table">
                     <thead>
                         <tr class="text-primary font-weight-bold">
                             <th scope="col" class="font-weight-bold">Nom de la campagne</th>
-                            <th scope="col" class="font-weight-bold text-right">Distribué</th>
-                            <th scope="col" class="font-weight-bold text-right">Ouvert</th>
-                            <th scope="col" class="font-weight-bold text-right">Conversions</th>
+                            <th scope="col" class="font-weight-bold text-right">N° destinataires</th>
+                            <th scope="col" class="font-weight-bold text-right">Date d'envoi</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for campaign in sms_campaigns %}
                         <tr>
-                            <td>Noël 2020</td>
-                            <td class="text-right">17000</td>
-                            <td class="text-right">6500</td>
-                            <td class="text-right">500</td>
+                            <td>{{ campaign.name }}</td>
+                            <td class="text-right">{{ campaign.customers_count }} client{% if campaign.customers_count > 1 %}s{% endif %}</td>
+                            <td class="text-right">{{ campaign.date_published|naturaltime }}</td>
                         </tr>
+                        {% empty %}
                         <tr>
-                            <td>Noël 2020</td>
-                            <td class="text-right">17000</td>
-                            <td class="text-right">6500</td>
-                            <td class="text-right">500</td>
+                            <td colspan="3" class="text-center">Aucune campagne programmée.</td>
                         </tr>
-                        <tr>
-                            <td>Noël 2020</td>
-                            <td class="text-right">17000</td>
-                            <td class="text-right">6500</td>
-                            <td class="text-right">500</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -60,9 +53,7 @@
                             <th scope="col" class="font-weight-bold">Sujet du mail</th>
                             <th scope="col" class="font-weight-bold text-right">Modèle</th>
                             <th scope="col" class="font-weight-bold text-right">N° destinataires</th>
-                            <th scope="col" class="font-weight-bold text-right">Distribué</th>
-                            <th scope="col" class="font-weight-bold text-right">Ouvert</th>
-                            <th scope="col" class="font-weight-bold text-right">Conversions</th>
+                            <th scope="col" class="font-weight-bold text-right">Date d'envoi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,20 +62,18 @@
                             <td>{{ campaign.subject }}</td>
                             <td class="text-right text-capitalize">{{ campaign.template }}</td>
                             <td class="text-right">{{ campaign.customers_count }} client{% if campaign.customers_count > 1 %}s{% endif %}</td>
-                            <td class="text-right">-</td>
-                            <td class="text-right">-</td>
-                            <td class="text-right">-</td>
+                            <td class="text-right">{{ campaign.date_published|naturaltime }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5">Aucune campagne programmée.</td>
+                            <td colspan="5" class="text-center">Aucune campagne programmée.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="card mb-3">
+        <div class="card coming-soon mb-3">
             <div class="card-header">
                 <div class="title text-uppercase">Campagnes marketing Facebook</div>
                 <a href="" class="btn btn-primary">Créer une campagne</a>
@@ -130,7 +119,7 @@
                 </table>
             </div>
         </div>
-        <div class="card mb-3">
+        <div class="card coming-soon mb-3">
             <div class="card-header">
                 <div class="title text-uppercase">Campagnes marketing Google</div>
                 <a href="" class="btn btn-primary">Créer une campagne</a>
@@ -176,7 +165,7 @@
                 </table>
             </div>
         </div>
-        <div class="card mb-3">
+        <div class="card coming-soon mb-3">
             <div class="card-header">
                 <div class="title text-uppercase">Campagnes marketing Youtube</div>
                 <a href="" class="btn btn-primary">Créer une campagne</a>
@@ -226,32 +215,24 @@
     <div class="col-md-3 col">
         <ul class="metrics list-unstyled mt-4">
             <li>
-                <span>Panier moyen</span>
-                <span class="text-primary font-weight-bold">36,65€</span>
+                <span>N° de campagnes</span>
+                <span class="text-primary font-weight-bold">{{ nb_campaigns }}</span>
             </li>
             <li>
-                <span>Fréquence des visites</span>
-                <span class="text-primary font-weight-bold">3 fois / mois</span>
+                <span>N° de campagnes à venir</span>
+                <span class="text-primary font-weight-bold">{{ futur_campaigns }}</span>
             </li>
             <li>
-                <span>Taux d'engagement</span>
-                <span class="text-primary font-weight-bold">5</span>
+                <span>N° d'impressions</span>
+                <span class="text-primary font-weight-bold">{{ nb_impressions }}</span>
             </li>
             <li>
-                <span>Dernière visite</span>
-                <span class="text-primary font-weight-bold">15 Avril 2020</span>
+                <span>N° d'impressions SMS</span>
+                <span class="text-primary font-weight-bold">{{ nb_impressions_sms }}</span>
             </li>
             <li>
-                <span>Point de vente favoris</span>
-                <span class="text-primary font-weight-bold">Paris 17ème</span>
-            </li>
-            <li>
-                <span>Dernière visite</span>
-                <span class="text-primary font-weight-bold">15 Avril 2020</span>
-            </li>
-            <li>
-                <span>Point de vente favoris</span>
-                <span class="text-primary font-weight-bold">Paris 17ème</span>
+                <span>N° d'impressions Emailing</span>
+                <span class="text-primary font-weight-bold">{{ nb_impressions_email }}</span>
             </li>
         </ul>
         <div class="card bg-secondary">

@@ -1,0 +1,250 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-4 col-12">
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="title text-uppercase">Programmer une campagne SMS</div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="name">Nom de la campagne</label>
+                    <input type="text" name="name" class="form-control" id="name">
+                </div>
+                <div class="form-group">
+                    <label for="sms_type">Type de SMS</label>
+                    <select class="custom-select" id="sms_type">
+                        <option value="reduction">SMS de réduction</option>
+                        <option value="custom">Personnalisé..</option>
+                    </select>
+                </div>
+                <div class="form-group" id="reduction_choice">
+                    <label for="reduction">Choisir une réduction</label>
+                    <select class="select2 form-control" id="reduction">
+                        <option></option>
+                        {% for discount in request.user.vendor.discounts.all %}
+                        <option value="{{ discount.pk }}" code="{{ discount.code }}"
+                            expiration="{{ discount.end_date|date:'Y/m/d h:m' }}">{{ discount.name }}</option>
+                        {% endfor %}
+                        {% for offer in request.user.vendor.offers.all %}
+                        <option value="{{ offer.pk }}" code="{{ offer.code }}"
+                            expiration="{{ offer.end_date|date:'Y/m/d h:m' }}">{{ offer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="content">Contenu de votre message</label>
+                    <textarea name="content" rows="6" class="form-control"></textarea>
+                </div>
+                <div class="form-row mt-3">
+                    <div class="col">
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="allCustomersCheck" checked>
+                                <label class="custom-control-label" for="allCustomersCheck">Tous les clients
+                                    ({{ request.user.vendor.customers.count }} clients)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: none;" id="list_select_wrapper">
+                    <div class="form-row d-flex align-items-center">
+                        <div class="col-12 text-uppercase text-center">
+                            <div class="form-group">
+                                <span class="text-primary font-weight-bold" id="list-count">0</span> listes
+                                sélectionnés
+                                /
+                                <span class="text-primary font-weight-bold" id="customers-count">0</span> clients
+                                sélectionnés
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <select class="select2 form-control" id="list_select" multiple name="list">
+                                    {% for list in request.user.vendor.lists.all %}
+                                    <option value="{{ list.pk }}" count="{{ list.customers.count }}">
+                                        {{ list.name }} - {{ list.customers.count }} clients
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="date_published">Date et heure de programmation</label>
+                    <div class="input-group">
+                        <input type="datetime-local" name="date_published" class="form-control">
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fas fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="button" class="btn btn-primary" id="submit">Programmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 col-12">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="device device-iphone-x">
+                    <div class="device-frame">
+                        <div class="device-content">
+                            <div class="device-content-header">
+                                Aperçu de votre message
+                            </div>
+                            <div class="device-main-content">
+                                <div class="device-sms">
+                                    <div class="yours messages">
+                                        <div class="message last">
+                                            <span id="content-preview"></span> <br>
+                                            <span id="link-preview" class="d-flex">Mon profil: <a href="#"
+                                                    class="ml-1">bit.ly/dfa283d</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="device-stripe"></div>
+                    <div class="device-header"></div>
+                    <div class="device-sensors"></div>
+                    <div class="device-btns"></div>
+                    <div class="device-power"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-12">
+        <div class="card bg-secondary">
+            <div class="card-header bg-secondary">
+                <div class="title">
+                    CRÉER UNE CAMPAGNE EFFICACE
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet dolor perspiciatis fugiat optio
+                    corporis. Eaque tempore pariatur repellat quibusdam sunt numquam, voluptas tempora debitis soluta
+                    perferendis nemo modi nobis mollitia?</p>
+                <ul class="list-unstyled">
+                    <li class="py-3 border-top border-bottom">Lien aide marketing</li>
+                    <li class="py-3 border-bottom">Lien aide marketing</li>
+                    <li class="py-3 border-bottom">Lien aide marketing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#sms_type').change(function () {
+            if ($(this).val() == 'reduction') {
+                $("#reduction_choice").fadeIn();
+            } else {
+                $("#reduction_choice").fadeOut();
+            }
+        })
+
+        $('#reduction').select2({
+            placeholder: "Sélectionner une réduction",
+            allowClear: true
+        });
+
+        $('#reduction').on('select2:select', function (e) {
+            var name = $(e.params.data.element).text();
+            var code = $(e.params.data.element).attr('code');
+            var expiration = moment($(e.params.data.element).attr('expiration'), "YYYY/mm/dd h:m");
+
+            $('textarea[name=content]').val('En ce moment chez {{ request.user.vendor.store_name|safe }}, retrouvez la promotion "' + name + '" jusqu\'au ' + expiration.format('LLL') + ' grâce au code promo ' + code + '. A bientôt !')
+            $('#content-preview').text($('textarea[name=content]').val());
+        });
+
+        $('#reduction').on('select2:unselect', function (e) {
+            $('textarea[name=content]').val('')
+            $('#content-preview').text($('textarea[name=content]').val());
+        });
+
+        $('textarea[name=content]').bind('input propertychange', function () {
+            $('#content-preview').text($(this).val());
+        });
+
+        $('#allCustomersCheck').change(function () {
+            if ($(this).prop('checked')) {
+                $('#list_select_wrapper').fadeOut();
+            } else {
+                $('#list_select_wrapper').fadeIn();
+            }
+        });
+
+        var pks = [];
+        var count = 0;
+        $('#list_select').on('select2:select', function (e) {
+            pks.push($(e.params.data.element).attr('value'));
+            $('#list-count').text(pks.length);
+            count += parseInt($(e.params.data.element).attr('count'));
+            $('#customers-count').text(count);
+        });
+
+        $('#list_select').on('select2:unselect', function (e) {
+            pks.splice(pks.indexOf($(e.params.data.element).attr('value')), 1);
+            $('#list-count').text(pks.length);
+            count -= parseInt($(e.params.data.element).attr('count'));
+            $('#customers-count').text(count);
+        });
+
+        $('#submit').click(function () {
+            if ($('input[name=name]').val() == '') {
+                toastr.error('Veuillez donner un nom à cette campagne.');
+                return;
+            }
+            if ($('textarea[name=content]').val() == '') {
+                toastr.error('Impossible de programmer une campagne sans contenu.');
+                return;
+            }
+            if (!$('#allCustomersCheck').prop('checked') && pks.length == 0) {
+                toastr.error('Veuillez sélectionner une liste de clients.');
+                return;
+            }
+            if ($('#sms_type').val() == 'reduction' && $('#reduction').val() == '') {
+                toastr.error('Veuillez sélectionner une réduction.');
+                return;
+            }
+            if ($('input[name=date_published]').val() == '') {
+                toastr.error('Veuillez sélectionner une date et une heure de programmation.');
+                return;
+            }
+            var formData = new FormData();
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+            formData.append('name', $('input[name=name]').val());
+            formData.append('content', $('textarea[name=content]').val());
+            formData.append('to_everyone', $('#allCustomersCheck').prop('checked'));
+            if (!$('#allCustomersCheck').prop('checked')) {
+                formData.append('lists', pks);
+            }
+            formData.append('date_published', $('input[name=date_published]').val());
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'vendor_add_sms' %}",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (data) {
+                    window.location.href = "{% url 'vendor_marketing' %}";
+                    toastr.success('La campagne a été programmée.');
+                },
+                error: function (e) {
+                    toastr.error('Impossible de programmer la campagne.');
+                }
+            })
+        });
+    });
+</script>
+{% endblock %}

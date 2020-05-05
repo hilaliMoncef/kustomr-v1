@@ -75,6 +75,10 @@
                                             <span class="text-primary font-weight-bold">{{ discount.name }}</span>
                                         </li>
                                         <li>
+                                            <span>Code promo</span>
+                                            <span class="text-primary text-uppercase font-weight-bold">{{ discount.code }}</span>
+                                        </li>
+                                        <li>
                                             <span>Minimum de points</span>
                                             <span class="text-primary font-weight-bold">{{ discount.min_points }}</span>
                                         </li>
@@ -154,6 +158,10 @@
                                             <label for="name">Nom de l'offre :</label>
                                             <input type="text" name="name" class="form-control"
                                                 value="{{ discount.name }}" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="code">Code promo :</label>
+                                            <input type="text" name="code" class="form-control" value="{{ discount.code }}" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="name">Description :</label>
@@ -304,6 +312,10 @@
                                             <span class="text-primary font-weight-bold">{{ offer.name }}</span>
                                         </li>
                                         <li>
+                                            <span>Code promo</span>
+                                            <span class="text-primary text-uppercase font-weight-bold">{{ offer.code }}</span>
+                                        </li>
+                                        <li>
                                             <span>Coût en points</span>
                                             <span class="text-primary font-weight-bold">{{ offer.cost }}</span>
                                         </li>
@@ -383,6 +395,10 @@
                                             <label for="name">Nom de l'offre :</label>
                                             <input type="text" name="name" class="form-control" value="{{ offer.name }}"
                                                 required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="code">Code promo :</label>
+                                            <input type="text" name="code" class="form-control" value="{{ offer.code }}" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="name">Description :</label>
@@ -503,6 +519,10 @@
                                 <input type="text" name="name" class="form-control" required />
                             </div>
                             <div class="form-group">
+                                <label for="code">Code promo :</label>
+                                <input type="text" name="code" class="form-control" required />
+                            </div>
+                            <div class="form-group">
                                 <label for="name">Description :</label>
                                 <textarea name="description" class="form-control"></textarea>
                             </div>
@@ -548,6 +568,10 @@
                             <div class="form-group">
                                 <label for="name">Nom de l'offre :</label>
                                 <input type="text" name="name" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="code">Code promo :</label>
+                                <input type="text" name="code" class="form-control" required />
                             </div>
                             <div class="form-group">
                                 <label for="name">Description :</label>

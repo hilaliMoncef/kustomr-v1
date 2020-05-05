@@ -99,6 +99,7 @@ class Discount(models.Model):
     image = models.FileField(default=None, blank=True, null=True, upload_to="discounts/")
     is_active = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
+    code = models.CharField(max_length=40)
     description = models.TextField()
     min_points = models.IntegerField(default=0)
     start_date = models.DateTimeField(default=None, null=True, blank=True)
@@ -129,6 +130,7 @@ class Offer(models.Model):
     image = models.FileField(default=None, blank=True, null=True, upload_to="offers/")
     is_active = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
+    code = models.CharField(max_length=40)
     description = models.TextField()
     cost = models.IntegerField()
     start_date = models.DateTimeField(default=None, null=True, blank=True)
@@ -246,3 +248,27 @@ class MailCampaign(models.Model):
             return self.lists.annotate(nb=Count('customers')).aggregate(Sum('nb'))['nb__sum']
         else:
             return self.vendor.customers.count()
+
+
+class SMSCampaign(models.Model):
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="sms_campaigns")
+    name = models.CharField(max_length=255)
+    content = models.TextField()
+    to_everyone = models.BooleanField()
+    date_published = models.DateTimeField()
+    processed = models.BooleanField(default=False)
+    date_processed = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return "SMS Campaign by {} scheduled for {}".format(self.vendor.store_name, self.date_published)
+
+    @property
+    def customers_count(self):
+        if not self.to_everyone:
+            return self.sms_lists.annotate(nb=Count('customers')).aggregate(Sum('nb'))['nb__sum']
+        else:
+            return self.vendor.customers.count()
+
+    @property
+    def length(self):
+        return len(self.content)

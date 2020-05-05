@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.forms import DateTimeField, DateTimeInput
 from django.forms import ValidationError
-from .models import Vendor, RewardCardLayout, Discount, Offer, VendorOpeningHours, InstagramEvent, FacebookEvent, Media, MailCampaign
+from .models import Vendor, RewardCardLayout, Discount, Offer, VendorOpeningHours, InstagramEvent, FacebookEvent, Media, MailCampaign, SMSCampaign
 from django.utils import timezone
 
 
@@ -121,6 +121,27 @@ class MailCampaignForm(ModelForm):
     
     class Meta:
         model = MailCampaign
+        exclude = ['vendor', 'date_processed']
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        date_published = cleaned_data.get("date_published")
+        if date_published < timezone.now():
+            raise ValidationError("Vous ne pouvez pas programmer une campagne dans le passé.")
+
+
+class SMSCampaignForm(ModelForm):
+    date_published = DateTimeField(
+        input_formats = ['%Y-%m-%dT%H:%M'],
+        widget = DateTimeInput(
+            attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'},
+            format='%Y-%m-%dT%H:%M')
+    )
+    
+    class Meta:
+        model = SMSCampaign
         exclude = ['vendor', 'date_processed']
     
     def clean(self):

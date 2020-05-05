@@ -1,23 +1,50 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.sites.shortcuts import get_current_site
 from django.views import View
 from django.urls import reverse
 from django.utils.text import slugify
 from Admin.models import Training, Message
 from Admin.forms import MessageForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, MediaForm, MailCampaignForm
-from .models import Discount, Offer, FacebookEvent, InstagramEvent, MailCampaign
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, MediaForm, MailCampaignForm, SMSCampaignForm
+from .models import Discount, Offer, FacebookEvent, InstagramEvent, MailCampaign, SMSCampaign
 from Customer.models import Customer, CustomersList
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
 from django.http import HttpResponseRedirect, JsonResponse
+from django.template.loader import render_to_string
+from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
 import datetime
 import qrcode
 import json
 import pandas as pd
+
+
+
+def send_mass_html_mail(datatuple, fail_silently=False, user=None, password=None, 
+                        connection=None):
+    """
+    Given a datatuple of (subject, text_content, html_content, from_email,
+    recipient_list), sends each message to each recipient list. Returns the
+    number of emails sent.
+
+    If from_email is None, the DEFAULT_FROM_EMAIL setting is used.
+    If auth_user and auth_password are set, they're used to log in.
+    If auth_user is None, the EMAIL_HOST_USER setting is used.
+    If auth_password is None, the EMAIL_HOST_PASSWORD setting is used.
+
+    """
+    connection = connection or get_connection(
+        username=user, password=password, fail_silently=fail_silently)
+    messages = []
+    for subject, text, html, from_email, recipient in datatuple:
+        message = EmailMultiAlternatives(subject, text, from_email, recipient)
+        message.attach_alternative(html, 'text/html')
+        messages.append(message)
+    return connection.send_messages(messages)
 
 
 class DashboardView(LoginRequiredMixin, View):
@@ -268,7 +295,7 @@ class DiscountsView(LoginRequiredMixin, View):
 
 class MarketingView(LoginRequiredMixin, View):
     """
-    Cette page permet de récupérer les principales stats sur le commerçant
+    Cette page permet de récupérer les informations sur les campagnes marketing en cours et à venir.
     """
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_vendor:
@@ -278,6 +305,12 @@ class MarketingView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         mail_campaigns = MailCampaign.objects.all().order_by('-date_published')
+        sms_campaigns = SMSCampaign.objects.all().order_by('-date_published')
+        nb_campaigns = MailCampaign.objects.count() + SMSCampaign.objects.count()
+        futur_campaigns = MailCampaign.objects.filter(date_published__gte=timezone.now()).count() + SMSCampaign.objects.filter(date_published__gte=timezone.now()).count()
+        nb_impressions_email = sum([campaign.customers_count for campaign in MailCampaign.objects.all()])
+        nb_impressions_sms = sum([campaign.customers_count for campaign in SMSCampaign.objects.all()])
+        nb_impressions = nb_impressions_email + nb_impressions_sms
         return render(request, 'vendor/marketing.html', locals())
 
 
@@ -517,6 +550,54 @@ class NewEmailingView(LoginRequiredMixin, View):
                     liste.save()
 
             # Add logic to send mass mailing
+            current_site = get_current_site(request)
+            mail_subject = campaign.subject
+
+            mails = []
+            if request.POST['to_everyone'] == 'true':
+                list_receivers = list(request.user.vendor.customers.all())
+            else:
+                for liste in request.POST['lists'].split(','):
+                    list_receivers.append(*list(liste.customers.all()))
+             
+            for customer in list_receivers:
+                message = render_to_string('emails/information_mail.html', {
+                    'customer': customer,
+                    'media': campaign.image,
+                    'content': campaign.content,
+                    'domain': current_site.domain,
+                    'vendor': request.user.vendor
+                })
+                mails.append((mail_subject, campaign.content, message, None, [customer.user.email]))
+
+            send_mass_html_mail(mails)
+
+        else:
+            return JsonResponse({}, status=400)
+        return JsonResponse({}, status=200)
+
+
+class NewSMSView(LoginRequiredMixin, View):
+    """
+    Cette page permet d'ajouter une nouvelle campagne de SMS
+    """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        return super(NewSMSView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'vendor/new_sms.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        form = SMSCampaignForm(request.POST)
+        if form.is_valid():
+            campaign = form.save(commit=False)
+            campaign.vendor = request.user.vendor
+            campaign.save()
+
+            # Send the SMS to Twilio here
         else:
             return JsonResponse({}, status=400)
         return JsonResponse({}, status=200)

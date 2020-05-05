@@ -15,6 +15,7 @@ from django.db.models import Avg, Count
 from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.hashers import make_password
 import json
 
 
@@ -57,6 +58,7 @@ class VendorsView(LoginRequiredMixin, View):
         if form.is_valid():
             # The User form is OK
             user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data['password'])
             user.is_vendor = True
             user.is_customer = False
             user.save()
@@ -76,8 +78,10 @@ class VendorsView(LoginRequiredMixin, View):
                     'password': request.POST['password']
                 })
                 to_email = user.email
-                send_mail(mail_subject, message, 'hilali.moncef@gmail.com', [to_email], html_message=message, fail_silently=False)
-
+                try:
+                    send_mail(mail_subject, message, 'hilali.moncef@gmail.com', [to_email], html_message=message, fail_silently=False)
+                except Exception as err:
+                    print('Mailing error: {}'.format(err))
                 messages.add_message(request, messages.SUCCESS, 'Le commerçant a été ajouté. Un email récapitulatif a été envoyé.')
             else:
                 errors = json.loads(form_vendor.errors.as_json())

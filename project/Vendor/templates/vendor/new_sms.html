@@ -1,9 +1,15 @@
 {% extends 'main/layout.html' %}
 
-{% block content %}
 {% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/devices.min.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/css/jquery.datetimepicker.min.css' %}" />
+{% endblock %}
+
+{% block content %}
 <div class="row">
-    <div class="col-md-4 col-12">
+    <div class="col-xl-4 col-12">
         <div class="card mb-3">
             <div class="card-header">
                 <div class="title text-uppercase">Programmer une campagne SMS</div>
@@ -77,7 +83,7 @@
                 <div class="form-group">
                     <label for="date_published">Date et heure de programmation</label>
                     <div class="input-group">
-                        <input type="datetime-local" name="date_published" class="form-control">
+                        <input type="text" name="date_published" class="form-control">
                         <div class="input-group-append">
                             <div class="input-group-text"><i class="fas fa-calendar"></i></div>
                         </div>
@@ -89,7 +95,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-5 col-12">
+    <div class="col-xl-5 col-12">
         <div class="card mb-3">
             <div class="card-body">
                 <div class="device device-iphone-x">
@@ -120,7 +126,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-12">
+    <div class="col-xl-3 col-12">
         <div class="card bg-secondary">
             <div class="card-header bg-secondary">
                 <div class="title">
@@ -143,8 +149,50 @@
 {% endblock %}
 
 {% block script %}
+<script src="{% static 'assets/js/jquery.datetimepicker.full.min.js' %}"></script>
 <script>
+    jQuery.datetimepicker.setLocale('fr');
+
     $(document).ready(function () {
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+
+        var customer = getUrlParameter('customer');
+        if (customer) {
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'vendor_customer' pk=123 %}".replace(123, customer),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var user = data.user;
+                    var customer = data.customer;
+
+                    $('input[name=name]').val('SMS personnalisé pour '+ user.first_name +' '+ user.last_name);
+                    $('#sms_type').val('custom');
+                    $('textarea[name=content]').val('Bonjour '+ user.first_name +' '+ user.last_name +' !');
+                    $('#content-preview').text('Bonjour '+ user.first_name +' '+ user.last_name +' !');
+                },
+                error: function (e) {
+                    toastr.error('Impossible de récupérer les informations du client.');
+                }
+            });
+        }
+
+        $('input[name=date_published]').datetimepicker();
+
         $('#sms_type').change(function () {
             if ($(this).val() == 'reduction') {
                 $("#reduction_choice").fadeIn();

@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password
+from django.contrib.sites.shortcuts import get_current_site
 import json
 
 
@@ -30,6 +31,8 @@ class DashboardView(LoginRequiredMixin, View):
         return super(DashboardView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        current_site = get_current_site(request)
+        print(current_site.domain)
         unread = Message.objects.filter(read=False).count()
         return render(request, 'admin/home.html', locals())
 
@@ -48,6 +51,7 @@ class VendorsView(LoginRequiredMixin, View):
         unread = Message.objects.filter(read=False).count()
         vendors = Vendor.objects.all()
         vendors_count = vendors.count()
+        domain = get_current_site(request).domain
         nb_clients_avg = Vendor.objects.all().annotate(nb_customers=Count('customers')).aggregate(Avg('nb_customers'))['nb_customers__avg']
         password = User.objects.make_random_password()
         form = VendorForm()
@@ -79,7 +83,7 @@ class VendorsView(LoginRequiredMixin, View):
                 })
                 to_email = user.email
                 try:
-                    send_mail(mail_subject, message, 'hilali.moncef@gmail.com', [to_email], html_message=message, fail_silently=False)
+                    send_mail(mail_subject, message, 'no-reply@app.kustomr.fr', [to_email], html_message=message, fail_silently=False)
                 except Exception as err:
                     print('Mailing error: {}'.format(err))
                 messages.add_message(request, messages.SUCCESS, 'Le commerçant a été ajouté. Un email récapitulatif a été envoyé.')

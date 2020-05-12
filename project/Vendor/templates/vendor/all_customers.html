@@ -1,7 +1,12 @@
 {% extends 'main/layout.html' %}
 
-{% block content %}
 {% load static %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'assets/DataTables/datatables.min.css' %}" />
+{% endblock %}
+
+{% block content %}
 
 <div class="divider">
     <div class="hr"></div>
@@ -66,6 +71,46 @@
         </div>
     </div>
 </div>
+
+<!-- POINTS ADDING MODAL -->
+<div class="modal fade" id="pointsModal" tabindex="-1" role="dialog"
+    aria-labelledby="pointsModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form method="POST" class="modal-content">
+            {% csrf_token %}
+            <input type="hidden" name="_method" value="update_points">
+            <input type="hidden" id="selectedCustomer" name="pk" value="">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pointsModalTitle">Que voulez-vous faire ?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="d-block">Type d'opération</label>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline1" value="achats" name="type"
+                            class="custom-control-input" checked>
+                        <label class="custom-control-label" for="customRadioInline1">Achats</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="customRadioInline2" value="remboursements" name="type"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="customRadioInline2">Remboursements</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="points">Montant</label>
+                    <input type="number" min="0" class="form-control" name="points">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block rightbar %}
@@ -88,8 +133,8 @@
                     <span><i class="fas fa-phone mt-2 text-primary"></i> {{ customer.user.phone }}</span>
                 </div>
 
-                <button type="button"
-                    class="btn btn-primary d-flex flex-column align-items-center rounded justify-content-center">
+                <button type="button" data-toggle="modal" data-target="#pointsModal" data-customer="{{ customer.pk }}"
+                    class="btn btn-primary d-flex flex-column align-items-center rounded justify-content-center points-modal-toggle">
                     <i class="fas fa-2x fa-hand-holding-usd"></i>
                     <span class="text-uppercase font-weight-bold">Encaisser</span>
                 </button>
@@ -114,26 +159,19 @@
                     <div class="timeline-wrapper">
                         <div class="timeline">
                             <ul>
+                                {% for transaction in customer.transactions.all %}
                                 <li>
                                     <span class="dot"></span>
-                                    <span>15 avril 2020 à 12h53</span>
-                                    <span>56 points</span>
+                                    <span>{{ transaction.date|date:'d F Y H:i'}}</span>
+                                    <span>
+                                        {% if transaction.category == 'R' %}
+                                        -{{ transaction.amount }} points
+                                        {% else %}
+                                        {{ transaction.amount }} points
+                                        {% endif %}
+                                    </span>
                                 </li>
-                                <li>
-                                    <span class="dot"></span>
-                                    <span>15 avril 2020 à 12h53</span>
-                                    <span>56 points</span>
-                                </li>
-                                <li>
-                                    <span class="dot"></span>
-                                    <span>15 avril 2020 à 12h53</span>
-                                    <span>56 points</span>
-                                </li>
-                                <li>
-                                    <span class="dot"></span>
-                                    <span>15 avril 2020 à 12h53</span>
-                                    <span>56 points</span>
-                                </li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
@@ -170,7 +208,8 @@
         <a href="{% url 'vendor_add_emailing' %}" class="btn btn-primary btn-list border-right flex-grow-1"><i
                 class="fas fa-envelope mr-2"></i>
             Envoyer un mail</a>
-        <a href="{% url 'vendor_add_sms' %}" class="btn btn-primary btn-list flex-grow-1"><i class="fas fa-comment mr-2"></i> Envoyer
+        <a href="{% url 'vendor_add_sms' %}?customer={{ customer.pk }}" class="btn btn-primary btn-list flex-grow-1"><i
+                class="fas fa-comment mr-2"></i> Envoyer
             un
             SMS</a>
     </div>
@@ -179,6 +218,9 @@
 {% endblock %}
 
 {% block script %}
+<!-- DataTables -->
+<script type="text/javascript" src="{% static 'assets/DataTables/datatables.min.js' %}"></script>
+
 <script>
     var getUrlParameter = function getUrlParameter(sParam) {
         var sPageURL = window.location.search.substring(1),
@@ -210,9 +252,10 @@
 
         $(document).mouseup(function (e) {
             var container = $("#right-sidebar");
+            var pointsContainer = $("#pointsModal");
 
             // if the target of the click isn't the container nor a descendant of the container
-            if (!container.is(e.target) && container.has(e.target).length === 0 && $('#right-sidebar').hasClass("toggled")) {
+            if (!container.is(e.target) && !pointsContainer.is(e.target) && container.has(e.target).length === 0 && pointsContainer.has(e.target).length === 0 && $('#right-sidebar').hasClass("toggled")) {
                 $(".wrapper").addClass("d-none");
                 $("#right-sidebar").toggleClass("toggled");
             }
@@ -225,7 +268,10 @@
             $("#right-sidebar").toggleClass("toggled");
         });
 
-
+        $('.points-modal-toggle').click(function (e) {
+            var pk = $(this).attr('data-customer');
+            $('#selectedCustomer').val(pk);
+        });
 
         var table = $('#customer_listing').DataTable({
             paging: true,

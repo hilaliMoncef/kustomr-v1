@@ -1,7 +1,12 @@
 {% extends 'main/layout.html' %}
 
-{% block content %}
 {% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/video-js.css' %}" />
+{% endblock %}
+
+{% block content %}
 
 <div class="row">
     {% for training in trainings %}

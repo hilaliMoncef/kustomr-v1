@@ -76,6 +76,10 @@
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-link"></i> Social</a>
         </li>
         <li class="nav-item">
+            {% url 'vendor_articles' as url %}
+            <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-newspaper"></i> Articles</a>
+        </li>
+        <li class="nav-item">
             {% url 'vendor_training' as url %}
             <a class="nav-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i class="fas fa-book"></i> Formations</a>
         </li>

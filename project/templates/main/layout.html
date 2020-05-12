@@ -11,17 +11,12 @@
   <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'assets/DataTables/datatables.min.css' %}" />
   <link rel="stylesheet" href="{% static 'assets/css/all.min.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/fullcalendar/core/main.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/fullcalendar/daygrid/main.min.css' %}">
-  <link rel="stylesheet" href="{% static 'fonts/circular-std/style.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/dropzone.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/css/video-js.css' %}" />
   <link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}" />
-  <link rel="stylesheet" href="{% static 'assets/css/devices.min.css' %}" />
+  {% block head %}{% endblock %}
   <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
   <!-- SEO -->
@@ -82,20 +77,10 @@
   <!-- Bootstrap JS -->
   <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 
-  <!-- DataTables -->
-  <script type="text/javascript" src="{% static 'assets/DataTables/datatables.min.js' %}"></script>
-
   <!-- Fullcalendar -->
   <script type="text/javascript" src="{% static 'assets/fullcalendar/core/main.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'assets/fullcalendar/daygrid/main.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'assets/fullcalendar/core/locales/fr.js' %}"></script>
-
-  <!-- ApexCharts JS -->
-  <script src="{% static 'assets/js/apexcharts.min.js' %}"></script>
-
-  <!-- jQuery Custom Scroller CDN -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
   <!-- jQuery Dropzone -->
   <script src="{% static 'assets/js/dropzone.min.js' %}"></script>
@@ -116,10 +101,6 @@
   <script src="{% static 'assets/js/toastr.min.js' %}"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      $(".nav-left-sidebar").mCustomScrollbar({
-        theme: "minimal"
-      });
-
       $("#sidebarCollapse").click(function (e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");

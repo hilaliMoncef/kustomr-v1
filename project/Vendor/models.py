@@ -4,6 +4,7 @@ from Users.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.text import slugify
 import os
 
 
@@ -13,8 +14,18 @@ class Vendor(models.Model):
     """
     # Choices for store type
     STORE_TYPE_CHOICES = [
-        ('FOOD', 'Restaurant & bar'),
-        ('SUPERMARKET', 'Supermarché'),
+        ('AL', 'Alimentation'),
+        ('BA', 'Banque et assurance'),
+        ('MT', 'Multimédia/Technologie'),
+        ('TH', 'Textile/Habillement/Chaussure'),
+        ('SE', 'Services aux entreprises'),
+        ('AU', 'Automobile'),
+        ('AM', 'Ameublement'),
+        ('AR', 'Art (Artisanat)'),
+        ('CO', 'Commerce de détail'),
+        ('EV', 'Evenementiel'),
+        ('HR', 'Hôtellerie/Restauration'),
+        ('SM', 'Santé/Médical'),
     ]
     # Choices for store type
     STORE_TYPES_VISITS_CHOICES = [
@@ -25,8 +36,8 @@ class Vendor(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="vendor")
     store_name = models.CharField(max_length=255)
-    store_type = models.CharField(max_length=40, choices=STORE_TYPE_CHOICES, default='FOOD')
-    store_visits = models.CharField(max_length=40, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
+    store_type = models.CharField(max_length=2, choices=STORE_TYPE_CHOICES, default='AL')
+    store_visits = models.CharField(max_length=2, choices=STORE_TYPES_VISITS_CHOICES, default="SM")
 
     # Store infos
     store_phone = models.CharField(blank=True, null=True, max_length=255)
@@ -47,8 +58,11 @@ class Vendor(models.Model):
 
     @property
     def nb_clients(self):
-        print(self.customers.all().count())
         return self.customers.all().count()
+
+    @property
+    def slug(self):
+        return slugify(self.store_name)
 
 
 class VendorOpeningHours(models.Model):
@@ -272,3 +286,17 @@ class SMSCampaign(models.Model):
     @property
     def length(self):
         return len(self.content)
+
+
+class Article(models.Model):
+    """
+    Model used to display some news to customers
+    """
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="articles")
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.ForeignKey(Media, null=True, on_delete=models.SET_NULL, related_name="articles")
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title

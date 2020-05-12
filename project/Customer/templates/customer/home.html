@@ -36,9 +36,11 @@
                         </li>
                     </ul>
                     <div class="card card-outline-primary py-2 mt-5">
-                        <span class="h3 text-primary font-weight-bold mb-1">{{ customer.points }}</span>
+                        <span class="h3 text-primary font-weight-bold mb-1">{{ customer.points }} </span>{% if customer.next_gift < 1 %}points{% endif %}
+                        {% if customer.next_gift > 0 %}
                         <span>Prochaine récompense dans <span class="text-primary">{{ customer.next_gift }}
                                 points</span></span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -141,21 +143,23 @@
             <div class="card">
                 <div class="card-header">
                     <div class="title text-uppercase text-primary text-center">
-                        L'actualité de votre boutique
+                        L'actualité de votre boutique 
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
+                        {% for article in articles %}
                         <div class="col-md-6 col-12 position-relative">
                             <a href="#" class="card card-news text-white position-relative"
-                                style="background-image: url('{% static 'assets/img/bg01.jpg' %}');">
+                                style="background-image: url('{{ article.image.file.url }}');">
                                 <div class="bottom-overlay"></div>
                                 <div class="card-body flex-column mt-5 pt-5">
-                                    <div class="h5 m-0">COVID-19</div>
-                                    <p class="mb-0">Votre boutique reste ouverte avec toutes les précautions.</p>
+                                    <div class="h5 m-0">{{ article.title }}</div>
+                                    <p class="mb-0">{{ article.description }}</p>
                                 </div>
+                            </a>
                         </div>
-                        </a>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

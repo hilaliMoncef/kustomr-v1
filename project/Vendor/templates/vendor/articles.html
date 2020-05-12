@@ -1,0 +1,135 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+{% load static %}
+<div class="row">
+    <div class="col-md-9 col-12 mb-4">
+        <div class="divider">
+            <div class="hr"></div>
+            <div class="text">Retrouvez vos derniers articles ci-dessous :</div>
+            <div class="hr"></div>
+        </div>
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 col-12 position-relative">
+                <div class="card card-news text-white position-relative"
+                    style="background-image: url('{{ article.image.file.url }}');">
+                    <div class="bottom-overlay"></div>
+                    <div class="card-body flex-column mt-5 pt-5">
+                        <a href="#" data-toggle="modal" data-target="#deleteArticle-{{ article.pk }}" class="delete-button">
+                            <i class="fas fa-times"></i>
+                        </a>
+                        <div class="h5 m-0">{{ article.title }}</div>
+                        <p class="mb-0">{{ article.description }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE MODAL -->
+            <div class="modal fade" id="deleteArticle-{{ article.pk }}" tabindex="-1" role="dialog"
+                aria-labelledby="deleteDiscountTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <form method="POST" class="modal-content">
+                        {% csrf_token %}
+                        <input type="hidden" name="pk" value="{{ article.pk }}">
+                        <input type="hidden" name="_method" value="delete">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteDiscountTitle">Supprimer {{ article.title }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-0">Voulez-vous vraiment supprimer l'article "{{ article.title }}" ?
+                            </p>
+                            <p class="font-weight-bold">Cette action est irréversible.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link" data-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-danger">Confirmer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col">
+                <p>Aucun article pour le moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-3 col-12">
+        <a href="#" class="btn btn-primary w-100" data-toggle="modal" data-target="#addDiscount">Créer un article</a>
+
+        <!-- Form Modal -->
+        <div class="modal fade" id="addDiscount" tabindex="-1" role="dialog" aria-labelledby="addDiscountTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addDiscountTitle">Créer un article</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" id="article-form" class="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="title">Titre de l'article :</label>
+                                <input type="text" name="title" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description :</label>
+                                <textarea name="description" required class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Image :</label>
+                                <input type="file" name="file" required class="form-control-file" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" id="submit-article">Sauvegarder</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="metrics list-unstyled mt-4">
+            <li>
+                <span>N° d'articles</span>
+                <span class="text-primary font-weight-bold">{{ articles.count }}</span>
+            </li>
+        </ul>
+        <div class="card bg-secondary">
+            <div class="card-header bg-secondary">
+                <div class="title">
+                    CRÉER UNE COMMUNICATION EFFICACE
+                </div>
+            </div>
+            <div class="card-body">
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet dolor perspiciatis fugiat optio
+                    corporis. Eaque tempore pariatur repellat quibusdam sunt numquam, voluptas tempora debitis soluta
+                    perferendis nemo modi nobis mollitia?</p>
+                <ul class="list-unstyled">
+                    <li class="py-3 border-top border-bottom">Lien aide marketing</li>
+                    <li class="py-3 border-bottom">Lien aide marketing</li>
+                    <li class="py-3 border-bottom">Lien aide marketing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#submit-article').click(function () {
+            $('#article-form').submit();
+        })
+    });
+</script>
+{% endblock %}

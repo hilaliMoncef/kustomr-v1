@@ -49,3 +49,19 @@ class CustomersList(models.Model):
 
     def __str__(self):
         return 'Liste {}'.format(self.name)
+
+
+class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('A', 'Achat'),
+        ('R', 'Remboursement')
+    ]
+
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name="transactions")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="transactions")
+    category = models.CharField(max_length=1, choices=TRANSACTION_TYPES, default='A')
+    amount = models.IntegerField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{} pour {} chez {} le {}'.format(self.category, self.customer.user, self.vendor.store_name, self.date)

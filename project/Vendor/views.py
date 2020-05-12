@@ -7,9 +7,9 @@ from django.utils.text import slugify
 from Admin.models import Training, Message
 from Admin.forms import MessageForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, MediaForm, MailCampaignForm, SMSCampaignForm
-from .models import Discount, Offer, FacebookEvent, InstagramEvent, MailCampaign, SMSCampaign
-from Customer.models import Customer, CustomersList
+from .forms import VendorForm, RewardCardLayoutForm, OfferForm, DiscountForm, VendorOpeningHoursForm, OfferImageForm, DiscountImageForm, InstagramEventForm, FacebookEventForm, MediaForm, MailCampaignForm, SMSCampaignForm, ArticleForm
+from .models import Discount, Offer, FacebookEvent, InstagramEvent, MailCampaign, SMSCampaign, Article
+from Customer.models import Customer, CustomersList, Transaction
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.utils import timezone
@@ -17,6 +17,7 @@ from django.db.models import Avg, Count, Sum, Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
+from django.forms.models import model_to_dict
 import datetime
 import qrcode
 import json
@@ -88,11 +89,26 @@ class CustomersView(LoginRequiredMixin, View):
         if not self.request.user.is_vendor:
             # Quick check if the user is vendor
             return redirect('not-authorized')
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'update_points':
+            return self.update_points(*args, **kwargs)
         return super(CustomersView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         customers = request.user.vendor.customers.all()
         return render(request, 'vendor/all_customers.html', locals())
+
+    def update_points(self, request, *args, **kwargs):
+        customer = get_object_or_404(Customer, pk=request.POST['pk'])
+        if request.POST['type'] == 'achats':
+            customer.points += round(float(request.POST['points']))
+            Transaction.objects.create(vendor=request.user.vendor, customer=customer, amount=round(float(request.POST['points'])), category="A")
+        else:
+            customer.points -= round(float(request.POST['points']))
+            Transaction.objects.create(vendor=request.user.vendor, customer=customer, amount=round(float(request.POST['points'])), category="R")
+        customer.save()
+
+        return redirect("vendor_customers")
 
 
 def customers_search(request):
@@ -581,7 +597,7 @@ class NewEmailingView(LoginRequiredMixin, View):
                     'domain': current_site.domain,
                     'vendor': request.user.vendor
                 })
-                mails.append((mail_subject, campaign.content, message, None, [customer.user.email]))
+                mails.append((mail_subject, campaign.content, message, 'no-reply@app.kustomr.fr', [customer.user.email]))
 
             send_mass_html_mail(mails)
 
@@ -604,6 +620,7 @@ class NewSMSView(LoginRequiredMixin, View):
         return render(request, 'vendor/new_sms.html', locals())
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         form = SMSCampaignForm(request.POST)
         if form.is_valid():
             campaign = form.save(commit=False)
@@ -614,3 +631,56 @@ class NewSMSView(LoginRequiredMixin, View):
         else:
             return JsonResponse({}, status=400)
         return JsonResponse({}, status=200)
+
+
+class ArticlesView(LoginRequiredMixin, View):
+    """
+    Cette page permet de gérer au commerçant de gérer ses clients
+    """
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_vendor:
+            # Quick check if the user is vendor
+            return redirect('not-authorized')
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'delete':
+            return self.delete(*args, **kwargs)
+        return super(ArticlesView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        vendor = request.user.vendor
+        articles = vendor.articles.all()
+        return render(request, 'vendor/articles.html', locals())
+
+    def post(self, request, *args, **kwargs):
+        vendor = request.user.vendor
+        formMedia = MediaForm(request.POST, request.FILES)
+        if formMedia.is_valid():
+            media = formMedia.save()
+            form = ArticleForm(request.POST)
+            if form.is_valid():
+                article = form.save(commit=False)
+                article.vendor = vendor
+                article.image = media
+                article.save()
+                messages.add_message(request, messages.SUCCESS, 'L\'article a été publié.')
+            else:
+                errors = json.loads(form.errors.as_json())
+                for error in errors:
+                    messages.add_message(request, messages.ERROR, '{} : {}'.format(error, errors[error][0]['message']))
+        else:
+            errors = json.loads(formMedia.errors.as_json())
+            for error in errors:
+                messages.add_message(request, messages.ERROR, '{} : {}'.format(error, errors[error][0]['message']))
+        return redirect('vendor_articles')
+
+    def delete(self, request, *args, **kwargs):
+        obj = get_object_or_404(Article, pk=request.POST['pk'])
+        messages.add_message(request, messages.SUCCESS, 'L\'article "{}" a été supprimée.'.format(obj.title))
+        obj.delete()
+        return redirect('vendor_articles')
+
+
+def CustomerById(request, pk):
+    customer = get_object_or_404(Customer, pk=pk)
+    data = model_to_dict(customer.user)
+    return JsonResponse({'customer': model_to_dict(customer), 'user': model_to_dict(customer.user)}, status=200)

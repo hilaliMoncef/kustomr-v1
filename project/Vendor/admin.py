@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Vendor, RewardCardLayout, VendorOpeningHours, Discount, Offer, InstagramEvent, FacebookEvent, MailCampaign
+from .models import Vendor, RewardCardLayout, VendorOpeningHours, Discount, Offer, InstagramEvent, FacebookEvent, MailCampaign, Article
 
 
 admin.site.register(Vendor)
@@ -10,3 +10,4 @@ admin.site.register(VendorOpeningHours)
 admin.site.register(InstagramEvent)
 admin.site.register(FacebookEvent)
 admin.site.register(MailCampaign)
+admin.site.register(Article)

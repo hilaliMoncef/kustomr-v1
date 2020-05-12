@@ -49,7 +49,7 @@ class LandingPageView(View):
                     'vendor': vendor
                 })
                 to_email = user.email
-                send_mail(mail_subject, message, 'hilali.moncef@gmail.com', [to_email], html_message=message, fail_silently=False)
+                send_mail(mail_subject, message, 'no-reply@app.kustomr.fr', [to_email], html_message=message, fail_silently=False)
 
                 ## Then we log the newly created user
                 login(request, user)
@@ -72,10 +72,12 @@ class DashboardView(View):
         customer = request.user.get_customer(store=self.kwargs['vendor'])
         discounts = list(vendor.discounts.filter(is_active=True, end_date__gte=timezone.now()))
         offers = list(vendor.offers.filter(is_active=True, end_date__gte=timezone.now()))
+        articles = vendor.articles.all()
         
         context = {
             'vendor': vendor,
             'customer': customer,
-            'discounts': discounts + offers
+            'discounts': discounts + offers,
+            'articles': articles
         }
         return render(request, 'customer/home.html', context)

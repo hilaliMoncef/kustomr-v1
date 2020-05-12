@@ -23,8 +23,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color: #848484;
-  margin: 0px 0px 15px 0px;
-  font-family: 'Circular Std Medium'; }
+  margin: 0px 0px 15px 0px; }
 
 h1 {
   font-size: 34px; }
@@ -457,7 +456,7 @@ a.text-primary:hover {
   background-color: white;
   height: 100%;
   width: 100%;
-  z-index: 1000;
+  z-index: 1041;
   margin-right: -100%;
   -webkit-transition: margin .25s ease-out;
   -moz-transition: margin .25s ease-out;
@@ -1040,6 +1039,18 @@ button.btn-list {
   -moz-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0);
   box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0);
   transition: all 400ms ease-in-out; }
+  .card-news .delete-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FA3232;
+    color: white; }
   .card-news .bottom-overlay {
     position: absolute;
     width: 100%;
@@ -1613,5 +1624,42 @@ button.btn-list {
   height: 20px;
   background: white;
   border-bottom-left-radius: 10px; }
+
+.notfound-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; }
+  .notfound-wrapper .left-bar {
+    display: block;
+    width: 52%;
+    align-self: flex-start;
+    height: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background-color: white; }
+  .notfound-wrapper .right-bar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 52%;
+    align-self: flex-end;
+    height: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: white;
+    margin-top: 30px; }
+    .notfound-wrapper .right-bar span {
+      margin-top: -30px;
+      font-weight: bold;
+      letter-spacing: 1px; }
+  .notfound-wrapper .btn-white {
+    background-color: white;
+    border-color: white;
+    color: black !important;
+    margin-top: 40px; }
 
 /*# sourceMappingURL=style.css.map */

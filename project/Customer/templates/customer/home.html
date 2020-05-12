@@ -150,8 +150,8 @@
                     <div class="row">
                         {% for article in articles %}
                         <div class="col-md-6 col-12 position-relative">
-                            <a href="#" class="card card-news text-white position-relative"
-                                style="background-image: url('{{ article.image.file.url }}');">
+                            <a href="#" class="card card-news text-white position-relative">
+                                <img src="{{ article.image.file.url }}" alt="" />
                                 <div class="bottom-overlay"></div>
                                 <div class="card-body flex-column mt-5 pt-5">
                                     <div class="h5 m-0">{{ article.title }}</div>

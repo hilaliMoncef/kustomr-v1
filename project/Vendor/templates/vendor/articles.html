@@ -12,8 +12,8 @@
         <div class="row">
             {% for article in articles %}
             <div class="col-md-6 col-12 position-relative">
-                <div class="card card-news text-white position-relative"
-                    style="background-image: url('{{ article.image.file.url }}');">
+                <div class="card card-news text-white position-relative">
+                    <img src="{{ article.image.file.url }}" alt="" />
                     <div class="bottom-overlay"></div>
                     <div class="card-body flex-column mt-5 pt-5">
                         <a href="#" data-toggle="modal" data-target="#deleteArticle-{{ article.pk }}" class="delete-button">

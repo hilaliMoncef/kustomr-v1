@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'assets/css/toastr.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/animsition.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datepicker.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/dropzone.min.css' %}">
@@ -43,7 +44,7 @@
       {% block sidebar %}{% include 'main/components/sidebar.html' %}{% endblock %}
     </div>
     <div id="page-content-wrapper">
-      <div class="container-fluid position-relative content py-md-4 px-md-3 py-3 px-2 mb-4">
+      <div class="container-fluid animsition position-relative content py-md-4 px-md-3 py-3 px-2 mb-4">
         {% block content %}{% endblock %}
 
         <!-- Floating button -->
@@ -77,6 +78,9 @@
   <!-- Bootstrap JS -->
   <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
 
+  <!-- Animsition JS -->
+  <script src="{% static 'assets/js/animsition.min.js' %}"></script>
+
   <!-- Fullcalendar -->
   <script type="text/javascript" src="{% static 'assets/fullcalendar/core/main.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'assets/fullcalendar/daygrid/main.min.js' %}"></script>
@@ -104,6 +108,33 @@
       $("#sidebarCollapse").click(function (e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
+      });
+    });
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $(".animsition").animsition({
+        inClass: 'fade-in-left',
+        outClass: 'fade-out-right',
+        inDuration: 700,
+        outDuration: 500,
+        linkElement: '.animsition-link',
+        // e.g. linkElement: 'a:not([target="_blank"]):not([href^="#"])'
+        loading: true,
+        loadingParentElement: 'body', //animsition wrapper element
+        loadingClass: 'animsition-loading',
+        loadingInner: '', // e.g '<img src="loading.svg" />'
+        timeout: false,
+        timeoutCountdown: 5000,
+        onLoadEvent: true,
+        browser: ['animation-duration', '-webkit-animation-duration'],
+        // "browser" option allows you to disable the "animsition" in case the css property in the array is not supported by your browser.
+        // The default setting is to disable the "animsition" in a browser that does not support "animation-duration".
+        overlay: false,
+        overlayClass: 'animsition-overlay-slide',
+        overlayParentElement: 'body',
+        transition: function (url) { window.location.href = url; }
       });
     });
   </script>

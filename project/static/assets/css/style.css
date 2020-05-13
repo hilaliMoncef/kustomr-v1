@@ -479,6 +479,8 @@ a.text-primary:hover {
         border-right: 1px solid rgba(255, 255, 255, 0.5) !important; }
   #right-sidebar.toggled {
     margin-right: 0; }
+    #right-sidebar.toggled .dashboard-footer {
+      width: 100%; }
 
 @media (min-width: 769px) {
   #sidebar-wrapper {
@@ -489,12 +491,14 @@ a.text-primary:hover {
     width: 100%;
     margin-left: 240px; }
 
+  #wrapper .dashboard-footer {
+    width: calc(100% - 240px); }
   #wrapper.toggled #sidebar-wrapper {
     margin-left: -250px; }
   #wrapper.toggled #page-content-wrapper {
     margin-left: 0; }
-  #wrapper .dashboard-footer {
-    width: calc(100% - 240px); }
+  #wrapper.toggled .dashboard-footer {
+    width: 100%; }
 
   #right-sidebar {
     width: 400px !important;

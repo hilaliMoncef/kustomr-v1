@@ -616,6 +616,10 @@ a.text-primary:hover {
 
   &.toggled {
     margin-right: 0;
+
+    .dashboard-footer {
+      width: 100%;
+    }
   }
 }
 
@@ -631,6 +635,10 @@ a.text-primary:hover {
   }
 
   #wrapper {
+    .dashboard-footer {
+      width: calc(100% - 240px);
+    }
+
     &.toggled {
       #sidebar-wrapper {
         margin-left: -250px;
@@ -639,10 +647,10 @@ a.text-primary:hover {
       #page-content-wrapper {
         margin-left: 0;
       }
-    }
 
-    .dashboard-footer {
-      width: calc(100% - 240px);
+      .dashboard-footer {
+        width: 100%;
+      }
     }
   }
 

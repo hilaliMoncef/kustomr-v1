@@ -24,8 +24,6 @@
                             <th>N° de clients</th>
                             <th>Date de création</th>
                             <th></th>
-                            <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,8 +44,7 @@
                             <td>{{ vendor.nb_clients }}</td>
                             <td>{{ vendor.user.date_joined|date:"d/m/Y" }}</td>
                             <td><a href="#" data-toggle="modal" data-target="#qrcode-{{ vendor.pk }}" class="text-dark"><i class="fas fa-qrcode"></i></a></td>
-                            <td><a href="" class="text-warning"><i class="fas fa-pen"></i></a></td>
-                            <td><a href="" class="text-danger"><i class="fas fa-times-circle"></i></a></td>
+                           
                         </tr>
                         {% endfor %}
                     </tbody>

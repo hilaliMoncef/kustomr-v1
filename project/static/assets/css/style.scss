@@ -7,7 +7,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Extended+Text&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;600&display=swap');
 
 @import "variables";
 
@@ -16,7 +16,7 @@
    ========================================================================== */
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Jost', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -262,19 +262,7 @@ a.text-primary:hover {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
   transition: 0.3s all;
-
-  &:hover {
-    -webkit-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0.7);
-    -moz-box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0.7);
-    box-shadow: 0px 0px 7px 1px rgba(154, 154, 204, 0.7);
-  }
-
-  i {
-    font-size: 20px;
-  }
 }
 
 .btn-primary {
@@ -295,9 +283,19 @@ a.text-primary:hover {
 }
 
 .btn-secondary {
-  background-color: $secondaryColor !important;
-  border-color: $secondaryColor !important;
-  color: #fff !important;
+  background-color: white !important;
+  border-color: white !important;
+  color: $textColor !important;
+  transition: 0.3s all ease-in-out;
+
+  &:hover {
+    color: $primaryColor !important;
+  }
+
+  &.active {
+    color: white !important;
+    background-color: $primaryColor !important;
+  }
 }
 
 .btn-success {
@@ -483,6 +481,32 @@ a.text-primary:hover {
   color: #c5fad3 !important;
 }
 
+.inline-buttons {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  
+  li{
+    margin-right: 5px;
+
+    &:first-child {
+      .btn {
+        border-bottom-left-radius: 20px;
+        border-top-left-radius: 20px;
+      }
+    }
+    &:last-child {
+      margin: 0;
+
+      .btn {
+        border-bottom-right-radius: 20px;
+        border-top-right-radius: 20px;
+      }
+    }
+  }
+}
+
 /* ==========================================================================
    3. Containers & Wrappers
    ========================================================================== */
@@ -496,13 +520,13 @@ a.text-primary:hover {
 }
 
 #wrapper {
-  height: calc(100vh - 65px);
+  height: 100vh;
 }
 
 #sidebar-wrapper {
   position: fixed;
   z-index: 901;
-  top: 65px;
+  top: 0;
   left: 0;
   min-height: 100%;
   margin-left: -15rem;
@@ -510,6 +534,27 @@ a.text-primary:hover {
   -moz-transition: margin .25s ease-out;
   -o-transition: margin .25s ease-out;
   transition: margin .25s ease-out;
+  padding: 10px;
+
+  .inner-wrapper {
+    height: calc(100vh - 20px);
+    background-color: $primaryColor;
+    border-radius: 30px;
+
+    .sidebar-logo {
+      padding: 10px;
+      height: 50px;
+      width: 100%;
+      text-align: center;
+      margin: auto;
+      margin-bottom: 40px;
+
+      img {
+        object-fit: cover;
+        height: 100%;
+      }
+    }
+  }
 }
 
 .dashboard-header {
@@ -531,10 +576,6 @@ a.text-primary:hover {
     width: 240px;
   }
 
-  > div.position-relative {
-    height: calc(100vh - 65px);
-  }
-
   .sidebar-buttons-bottom {
     position: absolute;
     bottom: 0;
@@ -543,6 +584,7 @@ a.text-primary:hover {
 
     .nav-link {
       font-size: 12px !important;
+      margin-left: 0;
     }
   }
 }
@@ -550,7 +592,7 @@ a.text-primary:hover {
 #page-content-wrapper {
   position: relative;
   min-width: 100%;
-  margin-top: 65px;
+  margin-top: 0;
   -webkit-transition: margin .25s ease-out;
   -moz-transition: margin .25s ease-out;
   -o-transition: margin .25s ease-out;
@@ -631,12 +673,12 @@ a.text-primary:hover {
   #page-content-wrapper {
     min-width: 0;
     width: 100%;
-    margin-left: 240px;
+    margin-left: 270px;
   }
 
   #wrapper {
     .dashboard-footer {
-      width: calc(100% - 240px);
+      width: calc(100% - 270px);
     }
 
     &.toggled {
@@ -685,27 +727,89 @@ nav.navbar {
     font-size: 12px;
   }
 
+  .nav-item {
+    position: relative;
+    margin: 15px 0;
+
+    &.active {
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: -20px;
+        right: 0;
+        background-color: #F1F4F6;
+        width: 20px;
+        height: 20px;
+        overflow: hidden;
+        z-index: 0;
+      }
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: -20px;
+        right: 0;
+        background-color: #F1F4F6;
+        width: 20px;
+        height: 20px;
+        overflow: hidden;
+        z-index: 0;
+      }
+    }
+  }
+
   .nav-link {
+    position: relative;
     font-size: 14px;
-    padding: 14px 20px;
+    margin-left: 30px;
+    padding-left: 15px;
+    padding-right: 30px;
     transition: 0.3s;
     display: flex;
     align-items: center;
     text-transform: uppercase;
     color: #fff;
-    opacity: 0.5;
+    opacity: 1;
     transition: 0.3s all;
+
+    &.active {
+      background-color: #F1F4F6;
+      color: $primaryColor;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+
+      &::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: -20px;
+        right: 0;
+        background-color: $primaryColor;
+        width: 20px;
+        height: 20px;
+        border-bottom-right-radius: 20px;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: -20px;
+        right: 0;
+        background-color: $primaryColor;
+        width: 20px;
+        height: 20px;
+        border-top-right-radius: 20px;
+        overflow: hidden;
+        z-index: 1;
+      }
+    }
 
     .badge {
       opacity: 0.5;
-    }
-
-    &.active, &:hover {
-      opacity: 1;
-
-      .badge {
-        opacity: 1;
-      }
     }
 
     i {
@@ -732,15 +836,32 @@ nav.navbar {
 }
 
 #topNav {
+
   .nav-item {
     position: relative;
+    
     .search-bar {
-      border-radius: 7px;
-      z-index: 2;
-      border: 0;
-      -webkit-box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
-      -moz-box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
-      box-shadow: 0px 5px 10px -1px rgba(0,0,0,0.35);
+      .input-group-append {
+        .input-group-text {
+          border-bottom-left-radius: 20px;
+          border-top-left-radius: 20px;
+          background-color: white;
+          border: 0;
+          color: $normalColor;
+        }
+      }
+
+      .form-control {
+        z-index: 2;
+        border: 0;
+        outline: 0;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+
+        ::placeholder {
+          color: $textColor !important;
+        }
+      }
     }
 
     .search-result {
@@ -789,13 +910,24 @@ nav.navbar {
   }
 
   .nav-link-rounded {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #EDEEF3;
     border-radius: 50%;
-    color: white;
+    color: #C6C6C6;
     opacity: 1;
     height: 32px;
     width: 32px;
-    margin: 14px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-item-rounded {
+    background-color: #EDEEF3;
+    border-radius: 50%;
+    color: #C6C6C6;
+    opacity: 1;
+    height: 32px;
+    width: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -803,12 +935,10 @@ nav.navbar {
 
   .nav-link {
     font-size: 14px;
-    padding: 14px 12px;
     transition: 0.3s;
     display: flex;
     align-items: center;
-    color: #fff;
-    opacity: 0.5;
+    color: #C6C6C6;
     transition: 0.3s all;
   }
 
@@ -831,34 +961,6 @@ nav.navbar {
 }
 
 #sidebar-wrapper {
-  .nav-link[data-toggle="collapse"] {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    &::after {
-      display: inline-block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      right: 20px;
-      vertical-align: 0.255em;
-      content: "";
-      border-top: 0.3em solid;
-      border-right: 0.3em solid transparent;
-      border-bottom: 0;
-      border-left: 0.3em solid transparent;
-    }
-
-    &[aria-expanded="false"]:after {
-      transform: rotate(-90deg);
-    }
-
-    &:after {
-      transition: transform .35s ease, opacity .35s ease;
-      opacity: .5;
-    }
-  }
 
   .submenu {
     padding-left: 12px;
@@ -933,12 +1035,14 @@ label {
   background-image: none;
   border: 1px solid #d2d2e4;
   border-radius: 2px;
+  outline: none;
 
   &:focus {
     color: #71748d;
     background-color: #fff;
     border-color: #a7a7f0;
-    outline: 0;
+    outline: none !important;
+    box-shadow: none;
   }
 }
 
@@ -990,11 +1094,12 @@ textarea.form-control {
 
 input, textarea {
   &::-webkit-input-placeholder {
-    color: #71748d !important;
+    color: $normalColor !important;
+    transition: 0.3s all ease-in-out;
   }
 
   &:focus::-webkit-input-placeholder {
-    color: #5969ff !important;
+    color: $textColor !important;
   }
 }
 
@@ -2312,4 +2417,61 @@ address {}
     margin-top: 40px;
   }
   
+}
+
+.toggleRightbar {
+  cursor: pointer;
+}
+
+#customer_listing {
+  border-collapse: separate;
+  border-spacing: 0 15px;
+
+  .dropdown-toggle {
+    color: $textColor;
+    transition: 0.3s all ease-in-out;
+
+    &:after {
+      display: none !important;
+    }
+
+    &:hover {
+      color: $primaryColor;
+    }
+  }
+
+  thead {
+    tr {
+      th {
+        border: 0;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      height: 70px;
+      background-color: white;
+      border-radius: 5px;
+      transition: 0.2s all ease-in-out;
+
+      &:hover {
+        -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.15);
+        -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.15);
+        box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.15);
+      }
+
+      td {
+        vertical-align: middle;
+        
+        &:first-child, &:last-child {
+          border-radius: 5px;
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
 }

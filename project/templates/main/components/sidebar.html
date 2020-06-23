@@ -1,6 +1,9 @@
 {% load static %}
-<div class="position-relative">
+<div class="inner-wrapper position-relative">
     <div class="py-4">
+        <div class="sidebar-logo">
+            <img src="{% static 'assets/img/logo.png' %}" alt="Kustomr" />
+        </div>
         <ul class="navbar-nav flex-column">
             <li class="nav-item dropdown d-lg-none">
                 <a class="nav-link d-flex align-items-center" data-toggle="collapse" aria-expanded="false"
@@ -45,87 +48,69 @@
 
             <!-- VENDOR LINKS -->
             {% if request.user.is_vendor %}
-            <li class="nav-item">
-                {% url 'vendor_home' as url %}
+
+            {% url 'vendor_home' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
-                        class="fas fa-home"></i> Dashboard</a>
+                        class="fas fa-home"></i> Accueil</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {% if 'vendor/customer' in request.path %}active{% endif %}" data-toggle="collapse"
-                    aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2" href="#">
+            {% url 'vendor_customers' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
+                <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}">
                     <i class="fas fa-users"></i> Clients
                 </a>
-                <div id="submenu-1-2" class="collapse submenu">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link animsition-link " href="{% url 'vendor_customers' %}">Tous les clients</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link animsition-link " href="{% url 'vendor_customer_lists' %}">Mes listes</a>
-                        </li>
-                    </ul>
-                </div>
             </li>
-            <li class="nav-item">
-                {% url 'vendor_analysis' as url %}
-                <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
-                        class="fas fa-chart-area"></i> Analyse</a>
-            </li>
-            <li class="nav-item">
-                {% url 'vendor_discounts' as url %}
+            
+            {% url 'vendor_discounts' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
                         class="fas fa-divide"></i> Réductions</a>
             </li>
-            <li class="nav-item">
-                {% url 'vendor_marketing' as url %}
+            {% url 'vendor_social' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
-                        class="fas fa-broadcast-tower"></i> Marketing</a>
+                        class="fas fa-bullhorn"></i> Communication</a>
             </li>
-            <li class="nav-item">
-                {% url 'vendor_social' as url %}
+            {% url 'vendor_analysis' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
-                        class="fas fa-link"></i> Social</a>
+                        class="fas fa-chart-bar"></i> Statistiques</a>
             </li>
-            <li class="nav-item">
-                {% url 'vendor_articles' as url %}
-                <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
-                        class="fas fa-newspaper"></i> Articles</a>
-            </li>
-            <li class="nav-item">
-                {% url 'vendor_training' as url %}
+            {% url 'vendor_training' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
                         class="fas fa-book"></i> Formations</a>
             </li>
 
             <!-- ADMINISTRATION LINKS-->
             {% elif request.user.is_staff %}
-            <li class="nav-item">
-                {% url 'admin_home' as url %}
+            {% url 'admin_home' as url %}
+            <li class="nav-item {% if url == request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url == request.path %}active{% endif %}" href="{{ url }}"><i
-                        class="fas fa-home"></i> Dashboard</a>
+                        class="fas fa-home"></i> Accueil</a>
             </li>
-            <li class="nav-item">
-                {% url 'admin_vendors' as url %}
+            {% url 'admin_vendors' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
                         class="fas fa-briefcase"></i> Commerçants</a>
             </li>
-            <li class="nav-item">
-                {% url 'admin_socials' as url %}
+            {% url 'admin_socials' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
                         class="fas fa-share-alt"></i> Réseaux sociaux</a>
             </li>
-            <li class="nav-item">
-                {% url 'admin_marketings' as url %}
+            {% url 'admin_marketings' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
                         class="fas fa-broadcast-tower"></i> Marketing</a>
             </li>
-            <li class="nav-item">
-                {% url 'admin_trainings' as url %}
+            {% url 'admin_trainings' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link {% if url in request.path %}active{% endif %}" href="{{ url }}"><i
                         class="fas fa-book"></i> Formations</a>
             </li>
-            <li class="nav-item">
-                {% url 'admin_messages' as url %}
+            {% url 'admin_messages' as url %}
+            <li class="nav-item {% if url in request.path %}active{% endif %}">
                 <a class="nav-link animsition-link d-flex align-items-center justify-content-between {% if url in request.path %}active{% endif %}"
                     href="{{ url }}"><span><i class="fas fa-envelope"></i> Messages</span> <span
                         class="badge badge-light mr-1">{{ unread }}</span></a>
@@ -135,20 +120,15 @@
         </ul>
     </div>
     <div class="sidebar-buttons-bottom">
-        <div class="d-flex align-items-center justify-content-around w-100 px-3">
+        <div class="d-flex align-items-center justify-content-around w-100">
             {% if request.user.is_authenticated %}
 
             <!-- VENDOR LINKS -->
             {% if request.user.is_vendor %}
             {% url 'vendor_settings' as url %}
-            <a href="{{ url }}" class="nav-link animsition-link px-0 {% if url in request.path %}active{% endif %}"><i
-                    class="fas fa-cog"></i> Réglages</a>
-            <div class="divider mx-2"></div>
-            {% url 'vendor_help' as url %}
-            <a href="{{ url }}" class="nav-link animsition-link p-0 {% if url in request.path %}active{% endif %}"><i
-                    class="fas fa-question-circle"></i> Assistance</a>
-            {% endif %}
+            <a href="{{ url }}" class="text-white animsition-link py-2 text-uppercase {% if url in request.path %}active{% endif %}">Réglages</a>
 
+            {% endif %}
             {% endif %}
         </div>
     </div>

@@ -36,28 +36,15 @@
 </head>
 
 <body>
-  <div class="dashboard-header">
-    {% block header %}{% include 'main/components/header.html' %}{% endblock %}
-  </div>
   <div class="d-flex" id="wrapper">
-    <div class="bg-primary" id="sidebar-wrapper">
+    <div id="sidebar-wrapper">
       {% block sidebar %}{% include 'main/components/sidebar.html' %}{% endblock %}
     </div>
     <div id="page-content-wrapper">
       <div class="container-fluid animsition position-relative content py-md-4 px-md-3 py-3 px-2 mb-4">
-        {% block content %}{% endblock %}
+        {% block header %}{% include 'main/components/header.html' %}{% endblock %}
 
-        <!-- Floating button -->
-        {% if request.user.is_vendor %}
-        <div class="card-float bottom right">
-          <a href="" class="btn-round btn-primary">
-            <i class="fas fa-user-plus"></i>
-          </a>
-        </div>
-        {% endif %}
-      </div>
-      <div class="dashboard-footer">
-        {% block footer %}{% include 'main/components/footer.html' %}{% endblock %}
+        {% block content %}{% endblock %}
       </div>
     </div>
     <div id="right-sidebar">

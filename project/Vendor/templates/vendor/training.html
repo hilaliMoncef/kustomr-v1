@@ -7,43 +7,33 @@
 {% endblock %}
 
 {% block content %}
-
+<div class="row">
+    <div class="col-12">
+        <ul class="list-unstyled inline-buttons mr-2">
+            <li>
+                <button class="btn btn-secondary" type="button"><i class="fas fa-filter"></i> Filtrer</button>
+            </li>
+            <li>
+                <button class="btn btn-secondary" type="button"><i class="fas fa-sort"></i> Trier</button>
+            </li>
+        </ul>
+    </div>
+</div>
 <div class="row">
     {% for training in trainings %}
     <div class="col-md-4 col-12">
-        <div class="card mb-3">
-            <div class="card-header justify-content-between">
-                <div class="text-center d-flex flex-column align-items-start">
-                    <span class="title">{{ training.name }}</span>
-                    <div class="d-flex font-weight-normal">
-                        {% if not training.is_free %}
-                        <span class="badge badge-info mr-1"><i class="fas fa-dollar-sign"></i></span>
-                        {% endif %}
-                        {% if training.is_active %}
-                        <span class="badge badge-success">Actif</span>
-                        {% else %}
-                        <span class="badge badge-danger">Désactivé</span>
-                        {% endif %}
-                    </div>
-                </div>
-                <a href="#" data-toggle="tooltip" data-placement="bottom"
-                    title="Description : {{ training.description }}">
-                    <i class="fas fa-info-circle"></i>
-                </a>
-            </div>
-            <div class="card-body mt-3 p-0">
-                <video-js id="training-{{ training.pk }}"
-                    class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto"
-                    {% if traning.poster %}poster="{{ training.poster.url }}" {% endif %}
-                    data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "{{ training.link }}"}] }'>
-                    <p class="vjs-no-js">
-                        To view this video please enable JavaScript, and consider upgrading to a
-                        web browser that
-                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                    </p>
-                </video-js>
-            </div>
+        <div class="card rounded overflow-hidden mb-3">
+            <video-js id="training-{{ training.pk }}" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                controls preload="auto" {% if traning.poster %}poster="{{ training.poster.url }}" {% endif %}
+                data-setup='{"fluid": true, "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "{{ training.link }}"}] }'>
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a
+                    web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </video-js>
         </div>
+        <span class="title">{{ training.name }}</span>
     </div>
     {% empty %}
     <div class="col-12">
